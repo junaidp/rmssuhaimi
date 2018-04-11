@@ -1,0 +1,63 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:m="urn:import:gwt.material.design.client.ui">
+	<ui:style>
+	.important {
+		font-weight: bold;
+	}
+	</ui:style>
+	<g:HTMLPanel>
+		<div class="header">
+			<!-- <g:Label text="APPLICATION NAME " styleName="heading" /> -->
+		</div>
+
+		<div class="loginArea" ui:field="loginArea">
+			<m:MaterialRow height="150px">
+				<g:Label />
+				<m:MaterialColumn styleName="border" width="500px">
+					<g:HTMLPanel styleName="headerSignin" height="30px"
+						width="500px">
+						Sign in
+					</g:HTMLPanel>
+
+					<m:MaterialColumn styleName="fieldsStyle">
+						<m:MaterialRow width="290px">
+							<g:Label ui:field="lblError" styleName="errorFields"
+								height="16px" width="279px" />
+						</m:MaterialRow>
+						<g:Label ui:field=" lblUserName " width="50px" styleName="h1"
+							text="Username">
+							username
+						</g:Label>
+						<m:MaterialRow>
+							<g:TextBox ui:field="txtUserName" width="250px" height="20px" />
+							<g:Hyperlink styleName="register">
+							</g:Hyperlink>
+						</m:MaterialRow>
+					</m:MaterialColumn>
+
+					<m:MaterialColumn styleName="fieldsStyle">
+						<g:Label ui:field=" lblPassword " width="50px" text="Password">
+							password
+						</g:Label>
+						<m:MaterialRow>
+							<g:PasswordTextBox ui:field="txtPassword"
+								width="250px" height="20px" />
+							<g:Hyperlink styleName="register"></g:Hyperlink>
+						</m:MaterialRow>
+					</m:MaterialColumn>
+					<m:MaterialRow>
+						<m:MaterialRow width="100px"></m:MaterialRow>
+						<m:MaterialButton ui:field="btnSubmit" text="Sign in">
+							
+						</m:MaterialButton>
+						
+
+					</m:MaterialRow>
+
+				</m:MaterialColumn>
+			</m:MaterialRow>
+		</div>
+	</g:HTMLPanel>
+
+</ui:UiBinder> 
