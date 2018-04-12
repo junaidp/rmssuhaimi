@@ -3,6 +3,7 @@ package com.leavemanagement.client.view;
 import java.util.ArrayList;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -12,8 +13,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
+
+
+import gwt.material.design.addins.client.tree.MaterialTree;
+import gwt.material.design.addins.client.tree.MaterialTreeItem;
 import gwt.material.design.client.ui.MaterialColumn;
 import com.leavemanagement.client.GreetingService;
 import com.leavemanagement.client.GreetingServiceAsync;
@@ -31,6 +34,7 @@ public class RatingView extends MaterialColumn{
 	private int totalRatingValue = 0;
 	
 	public RatingView(User loggedInUser){
+		container.getElement().getStyle().setHeight(400, Unit.PX);
 		this.loggedInUser = loggedInUser;
 		Label lblAttributes = new Label("Ratings");
 		container.add(lblAttributes);
@@ -75,13 +79,13 @@ public class RatingView extends MaterialColumn{
 	
 	private void populateJobsList(ArrayList<JobUsersDTO> jobUsersDTO) {
 		container.clear();
-		Tree tree = new Tree();
+		MaterialTree tree = new MaterialTree();
 	
 		container.add(tree);
 		for(int i=0; i<jobUsersDTO.size(); i++ ){
 			final Job job =jobUsersDTO.get(i).getJob();
 //			final TreeItem jobTree = new TreeItem(job.getJobName());
-			final TreeItem jobTree = new TreeItem();
+			final MaterialTreeItem jobTree = new MaterialTreeItem();
 			jobTree.setText(job.getJobName());
 			//////////////////////////
 			
@@ -92,8 +96,8 @@ public class RatingView extends MaterialColumn{
 				listUsers.addItem( jobUsersDTO.get(i).getUsers().get(j).getName(), jobUsersDTO.get(i).getUsers().get(j).getUserId()+"");
 			}
 //			hpnl.add(jobTree.as);
-			tree.addItem(jobTree);
-			tree.addItem(listUsers);
+			tree.add(jobTree);
+			tree.add(listUsers);
 			
 			//////////////////////////
 			
@@ -101,7 +105,7 @@ public class RatingView extends MaterialColumn{
 			MaterialColumn vpnlMain = new MaterialColumn();
 			final Label lblTotal = new Label(".");
 			final MaterialColumn vpnl = new MaterialColumn();
-			jobTree.addItem(vpnlMain);
+			jobTree.add(vpnlMain);
 			vpnlMain.add(lblTotal);
 			vpnlMain.add(vpnl);
 			

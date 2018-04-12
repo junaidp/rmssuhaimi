@@ -2,6 +2,7 @@ package com.leavemanagement.client.view;
 
 import com.google.gwt.user.client.ui.Label;
 
+import gwt.material.design.client.ui.MaterialColumn;
 import gwt.material.design.client.ui.MaterialRow;
 
 public class AdminRowHeading extends MaterialRow{
@@ -15,12 +16,12 @@ public class AdminRowHeading extends MaterialRow{
 	Label lblDecision = new Label("Decision");
 	
 	
-	lblName.setWidth("180px");
-	lblType.setWidth("180px");
-	lblFrom.setWidth("180px");
-	lblTo.setWidth("180px");
-	lblDays.setWidth("180px");
-	lblDecision.setWidth("180px");
+	lblName.setWidth("120px");
+	lblType.setWidth("120px");
+	lblFrom.setWidth("140px");
+	lblTo.setWidth("140px");
+	lblDays.setWidth("120px");
+	lblDecision.setWidth("120px");
 	
 	lblName.setStyleName("blue");
 	lblType.setStyleName("blue");
@@ -29,12 +30,24 @@ public class AdminRowHeading extends MaterialRow{
 	lblDays.setStyleName("blue");
 	lblDecision.setStyleName("blue");
 	
-	add(lblName);
-	add(lblType);
-	add(lblFrom);
-	add(lblTo);
-	add(lblDays);
-	add(lblDecision);
+	MaterialColumn colLblName = new MaterialColumn();
+	colLblName.add(lblName);
+	add(colLblName);
+	MaterialColumn colLblType = new MaterialColumn();
+	colLblType.add(lblType);
+	add(colLblType);
+	MaterialColumn colLblFrom = new MaterialColumn();
+	colLblFrom.add(lblFrom);
+	add(colLblFrom);
+	MaterialColumn colLblTo = new MaterialColumn();
+	colLblTo.add(lblTo);
+    add(colLblTo);
+	MaterialColumn colLblDays = new MaterialColumn();
+    colLblDays.add(lblDays);
+	add(colLblDays);
+	MaterialColumn colLblDecision = new MaterialColumn();
+    colLblDecision.add(lblDecision);
+	add(colLblDecision);
 	}
 	
 	

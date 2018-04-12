@@ -1,6 +1,6 @@
 package com.leavemanagement.client.view;
 
-import com.google.gwt.user.client.ui.Button;
+import gwt.material.design.client.ui.MaterialButton;
 import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -9,16 +9,16 @@ public class AddAttributeWidget extends MaterialRow {
 
 	TextBox txtAttribute = new TextBox();
 	ListBox lstAttribute = new ListBox();
-	Button btnSave = new Button("Save");
-	Button btnDelete = new Button("Delete");
+	MaterialButton btnSave = new MaterialButton("Save");
+	MaterialButton btnDelete = new MaterialButton("Delete");
 	private int jobId=0;
 
 	public AddAttributeWidget() {
-		lstAttribute.addItem("10%", "0");
-		lstAttribute.addItem("20%", "1");
-		lstAttribute.addItem("30%", "2");
-		lstAttribute.addItem("40%", "3");
-		lstAttribute.addItem("50%", "4");
+		lstAttribute.addItem( "0","10%");
+		lstAttribute.addItem( "1","20%");
+		lstAttribute.addItem( "2","30%");
+		lstAttribute.addItem( "3","40%");
+		lstAttribute.addItem( "4","50%");
 
 		btnSave.setWidth("100px");
 		btnDelete.setWidth("100px");
@@ -52,19 +52,19 @@ public class AddAttributeWidget extends MaterialRow {
 		this.lstAttribute = lstAttribute;
 	}
 
-	public Button getBtnSave() {
+	public MaterialButton getBtnSave() {
 		return btnSave;
 	}
 
-	public void setBtnSave(Button btnSave) {
+	public void setBtnSave(MaterialButton btnSave) {
 		this.btnSave = btnSave;
 	}
 
-	public Button getBtnDelete() {
+	public MaterialButton getBtnDelete() {
 		return btnDelete;
 	}
 
-	public void setBtnDelete(Button btnDelete) {
+	public void setBtnDelete(MaterialButton btnDelete) {
 		this.btnDelete = btnDelete;
 	}
 

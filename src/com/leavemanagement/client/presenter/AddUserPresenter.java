@@ -7,12 +7,15 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
+import gwt.material.design.client.ui.MaterialButton;
+import gwt.material.design.client.ui.MaterialListBox;
+
 import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
@@ -36,21 +39,21 @@ public class AddUserPresenter implements Presenter
 	{
 		Widget asWidget();
 		Object getHtmlErrorMessage = null;
-		Button getBtnSend();
-		Button getBtnRemove();
+		MaterialButton getBtnSend();
+		MaterialButton getBtnRemove();
 		TextBox getTxtUser();
 		TextBox getTxtPassword();
 		TextBox getTxtConfrimPassword();
 		TextBox getTxtEmail();
 		TextBox getTxtExamLeaves();
-		ListBox getListUser();
-		Button getBtnUpdate();
+		MaterialListBox getListUser();
+		MaterialButton getBtnUpdate();
 		TextBox getContactNumber();
 		TextBox getChargeRate();
 		TextBox getBankAccountNumber();
 		DateBox getJoiningDate();
-		ListBox getListDesignation();
-		ListBox getListReportingTo();
+		MaterialListBox getListDesignation();
+		MaterialListBox getListReportingTo();
 	}  
 
 	public AddUserPresenter(GreetingServiceAsync rpcService, HandlerManager eventBus, Display view, User loggedInUser) 
@@ -84,7 +87,7 @@ public class AddUserPresenter implements Presenter
 				display.getListDesignation().clear();
 				for(int i=0; i< result.size(); i++)
 				{
-					display.getListDesignation().addItem(result.get(i).getRoleName(), result.get(i).getRoleId()+"");
+					display.getListDesignation().addItem( result.get(i).getRoleId()+"",result.get(i).getRoleName());
 				}	
 				}});
 	}
@@ -111,8 +114,8 @@ final LoadingPopup loadingPopup = new LoadingPopup();
 				users.clear();
 				
 				for(int i=0; i< result.size(); i++){
-				display.getListUser().addItem(result.get(i).getName(), (result.get(i).getUserId()+""));
-				display.getListReportingTo().addItem(result.get(i).getName(), (result.get(i).getUserId()+""));
+				display.getListUser().addItem((result.get(i).getUserId())+"",result.get(i).getName());
+				display.getListReportingTo().addItem( (result.get(i).getUserId())+"",result.get(i).getName());
 				users.add(result.get(i));
 				}
 				if(loadingPopup!=null){
@@ -122,10 +125,13 @@ final LoadingPopup loadingPopup = new LoadingPopup();
 	}
 
 	private void bind() {
-		display.getListUser().addChangeHandler(new ChangeHandler() {
+		display.getListUser().addValueChangeHandler(new ValueChangeHandler<String>() {
 			
 			@Override
-			public void onChange(ChangeEvent event) {
+			public void onValueChange(ValueChangeEvent<String> event) {
+				// TODO Auto-generated method stub
+				
+				
 				for(int i=0; i< users.size(); i++){
 					if(users.get(i).getUserId() == Integer.parseInt(display.getListUser().getValue(display.getListUser().getSelectedIndex()))){
 						display.getTxtUser().setText(users.get(i).getName());

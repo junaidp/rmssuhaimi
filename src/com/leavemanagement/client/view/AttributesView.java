@@ -14,6 +14,9 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
+
+import gwt.material.design.addins.client.tree.MaterialTree;
+import gwt.material.design.addins.client.tree.MaterialTreeItem;
 import gwt.material.design.client.ui.MaterialColumn;
 import com.leavemanagement.client.GreetingService;
 import com.leavemanagement.client.GreetingServiceAsync;
@@ -70,22 +73,25 @@ public class AttributesView extends MaterialColumn{
 	
 	private void populateJobsList(ArrayList<Job> jobs) {
 		container.clear();
-		Tree tree = new Tree();
+		MaterialTree tree = new MaterialTree();
 		container.add(tree);
 		for(int i=0; i<jobs.size(); i++ ){
 			final Job job =jobs.get(i);
 //			final TreeItem jobTree = new TreeItem(job.getJobName());
-			final TreeItem jobTree = new TreeItem();
+			final MaterialTreeItem jobTree = new MaterialTreeItem();
 			jobTree.setText(job.getJobName());
-			tree.addItem(jobTree);
+			tree.add(jobTree);
 			Image btnAddAttribute = new Image("add.png");
 			final Label lblTotalAttributesLeve = new Label("Total:");
 			final MaterialColumn vpnl = new MaterialColumn();
-			jobTree.addItem(vpnl);
+			jobTree.add(vpnl);
 			
 			if(loggedInUser.getRoleId().getRoleId() == 5){
 				MaterialRow hpnl = new MaterialRow();
-				hpnl.add(btnAddAttribute);
+				MaterialColumn colBtnAddAttribute = new MaterialColumn();
+				colBtnAddAttribute.add(btnAddAttribute);
+				hpnl.add(colBtnAddAttribute);
+				//hpnl.add(btnAddAttribute);
 				hpnl.add(lblTotalAttributesLeve);
 				vpnl.add(hpnl);
 			}

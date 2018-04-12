@@ -7,17 +7,21 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
+import gwt.material.design.client.base.validator.ValidationChangedEvent;
+import gwt.material.design.client.ui.MaterialButton;
 import com.google.gwt.user.client.ui.FlexTable;
 import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.StackPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import gwt.material.design.client.ui.MaterialColumn;
+import gwt.material.design.client.ui.MaterialListBox;
+
 import com.google.gwt.user.client.ui.Widget;
 import com.leavemanagement.client.GreetingService;
 import com.leavemanagement.client.GreetingServiceAsync;
@@ -33,23 +37,23 @@ import com.leavemanagement.shared.User;
 
 public class JobCreationView extends MaterialColumn {
 	
-	private ListBox listLineOfService = new ListBox();
-	private ListBox listDomain = new ListBox();
-	private ListBox listSubLineofService = new ListBox();
-	private ListBox listLocation = new ListBox();
+	private MaterialListBox listLineOfService = new MaterialListBox();
+	private MaterialListBox listDomain = new MaterialListBox();
+	private MaterialListBox listSubLineofService = new MaterialListBox();
+	private MaterialListBox listLocation = new MaterialListBox();
 	private TextBox txtJobName = new TextBox();
-	private ListBox listCountry = new ListBox();
-	private ListBox listSupervisor = new ListBox();
-	private ListBox listPrincipalConsultant = new ListBox();
+	private MaterialListBox listCountry = new MaterialListBox();
+	private MaterialListBox listSupervisor = new MaterialListBox();
+	private MaterialListBox listPrincipalConsultant = new MaterialListBox();
 	private TextBox txtClient = new TextBox();
 	private TextBox txtClientFee = new TextBox();
-	private Button btnSubmit = new Button("Submit/Update");
-	private Button btnPhase = new Button("Add Phase");
+	private MaterialButton btnSubmit = new MaterialButton("Submit/Update");
+	private MaterialButton btnPhase = new MaterialButton("Add Phase");
 	private TextBox textSupervisorHours = new TextBox();
 	private TextBox textPrinicialConsultantHours = new TextBox();
 	private ArrayList<Phases> phases = new ArrayList<Phases>();
 	JobsListView jobsListView ;
-//	private ListBox listEmployee1 = new ListBox();
+//	private MaterialListBox listEmployee1 = new MaterialListBox();
 	private Job selectedJob;
 	GreetingServiceAsync rpcService = GWT.create(GreetingService.class);
 	private Label lblCountryName = new Label("Country Name");
@@ -181,6 +185,8 @@ public class JobCreationView extends MaterialColumn {
 		    panel.add(jobsListView, "Jobs List");
 		    add(panel);
 		
+		//setSpacing(5);
+		
 		costWidget.getImgRefresh().addClickHandler(new ClickHandler(){
 
 			@Override
@@ -220,11 +226,10 @@ public class JobCreationView extends MaterialColumn {
 					return;
 				}
 				}});
-		
-		listLocation.addChangeHandler(new ChangeHandler(){
-
+listLocation.addValueChangeHandler(new ValueChangeHandler<String>() {
+			
 			@Override
-			public void onChange(ChangeEvent event) {
+			public void onValueChange(ValueChangeEvent<String> event) {
 				if(listLocation.getSelectedIndex()==1){
 					lblCountryName.setVisible(true);
 					listCountry.setVisible(true);
@@ -232,23 +237,49 @@ public class JobCreationView extends MaterialColumn {
 					lblCountryName.setVisible(false);
 					listCountry.setVisible(false);
 				}
-			}});
-		
-		listLineOfService.addChangeHandler(new ChangeHandler() {
-			
-			@Override
-			public void onChange(ChangeEvent event) {
-				fetchDomains();
 			}
 		});
-		
-		listDomain.addChangeHandler(new ChangeHandler() {
-			
-			@Override
-			public void onChange(ChangeEvent event) {
-				fetchSubLineofServices();
-			}
-		});
+listLineOfService.addValueChangeHandler(new ValueChangeHandler<String>() {
+	
+	@Override
+	public void onValueChange(ValueChangeEvent<String> event) {
+		fetchDomains();
+	}
+});
+listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
+	
+	@Override
+	public void onValueChange(ValueChangeEvent<String> event) {
+		fetchSubLineofServices();
+	}
+});
+//
+//			@Override
+//			public void onChange(ChangeEvent event) {
+//				if(listLocation.getSelectedIndex()==1){
+//					lblCountryName.setVisible(true);
+//					listCountry.setVisible(true);
+//				}else{
+//					lblCountryName.setVisible(false);
+//					listCountry.setVisible(false);
+//				}
+//			}});
+//		
+//		listLineOfService.addChangeHandler(new ChangeHandler() {
+//			
+//			@Override
+//			public void onChange(ChangeEvent event) {
+//				fetchDomains();
+//			}
+//		});
+//		
+//		listDomain.addChangeHandler(new ChangeHandler() {
+//			
+//			@Override
+//			public void onChange(ChangeEvent event) {
+//				fetchSubLineofServices();
+//			}
+//		});
 		
 		
 		btnSubmit.addClickHandler(new ClickHandler(){
@@ -417,7 +448,7 @@ public class JobCreationView extends MaterialColumn {
 			public void onSuccess(ArrayList<Domains> result) {
 				listDomain.clear();
 				for(int i=0; i< result.size(); i++){
-					listDomain.addItem(result.get(i).getName(), result.get(i).getDomainId()+"");
+					listDomain.addItem(result.get(i).getDomainId()+"", result.get(i).getName());
 				}
 				fetchSubLineofServices();
 			}});
@@ -431,6 +462,7 @@ public class JobCreationView extends MaterialColumn {
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
+
 				
 			}
 
@@ -438,7 +470,7 @@ public class JobCreationView extends MaterialColumn {
 			public void onSuccess(ArrayList<SubLineofService> result) {
 				listSubLineofService.clear();
 				for(int i=0; i< result.size(); i++){
-					listSubLineofService.addItem(result.get(i).getName(), result.get(i).getSubLineofServiceId()+"");
+					listSubLineofService.addItem( result.get(i).getSubLineofServiceId()+"",result.get(i).getName());
 				}
 			}});
 	}
@@ -468,9 +500,9 @@ public class JobCreationView extends MaterialColumn {
 				
 				for(int i=0; i< result.size(); i++){
 //					listEmployee1.addItem(result.get(i).getName(), result.get(i).getUserId()+"");
-					listSupervisor.addItem(result.get(i).getName(), result.get(i).getUserId()+"");
+					listSupervisor.addItem( result.get(i).getUserId()+"",result.get(i).getName());
 					if(result.get(i).getRoleId().getRoleId() == 5){
-						listPrincipalConsultant.addItem(result.get(i).getName(), result.get(i).getUserId()+"");
+						listPrincipalConsultant.addItem( result.get(i).getUserId()+"",result.get(i).getName());
 							
 					}
 				}
@@ -496,57 +528,57 @@ public class JobCreationView extends MaterialColumn {
 		listDomain.clear();
 		
 		for(int i=0; i< countries.size(); i++){
-			listCountry.addItem(countries.get(i).getName(), countries.get(i).getCountryId()+"");
+			listCountry.addItem( countries.get(i).getCountryId()+"",countries.get(i).getName());
 		}
 		for(int i=0; i< lineofServices.size(); i++){
-			listLineOfService.addItem(lineofServices.get(i).getName(), lineofServices.get(i).getLineofServiceId()+"");
+			listLineOfService.addItem( lineofServices.get(i).getLineofServiceId()+"",lineofServices.get(i).getName());
 		}
 		for(int i=0; i< sublineofServices.size(); i++){
-			listSubLineofService.addItem(sublineofServices.get(i).getName(), sublineofServices.get(i).getSubLineofServiceId()+"");
+			listSubLineofService.addItem( sublineofServices.get(i).getSubLineofServiceId()+"",sublineofServices.get(i).getName());
 		}
 		for(int i=0; i< domains.size(); i++){
-			listDomain.addItem(domains.get(i).getName(), domains.get(i).getDomainId()+"");
+			listDomain.addItem( domains.get(i).getDomainId()+"",domains.get(i).getName());
 		}
 		
 	}
 
-	public Button getBtnSubmit() {
+	public MaterialButton getBtnSubmit() {
 		return btnSubmit;
 	}
 
-	public void setBtnSubmit(Button btnSubmit) {
+	public void setBtnSubmit(MaterialButton btnSubmit) {
 		this.btnSubmit = btnSubmit;
 	}
 
-	public ListBox getListLineOfService() {
+	public MaterialListBox getListLineOfService() {
 		return listLineOfService;
 	}
 
-	public void setListLineOfService(ListBox listLineOfService) {
+	public void setListLineOfService(MaterialListBox listLineOfService) {
 		this.listLineOfService = listLineOfService;
 	}
 
-	public ListBox getListDomain() {
+	public MaterialListBox getListDomain() {
 		return listDomain;
 	}
 
-	public void setListDomain(ListBox listDomain) {
+	public void setListDomain(MaterialListBox listDomain) {
 		this.listDomain = listDomain;
 	}
 
-	public ListBox getListSubLineofService() {
+	public MaterialListBox getListSubLineofService() {
 		return listSubLineofService;
 	}
 
-	public void setListSubLineofService(ListBox listSubLineofService) {
+	public void setListSubLineofService(MaterialListBox listSubLineofService) {
 		this.listSubLineofService = listSubLineofService;
 	}
 
-	public ListBox getListLocation() {
+	public MaterialListBox getListLocation() {
 		return listLocation;
 	}
 
-	public void setListLocation(ListBox listLocation) {
+	public void setListLocation(MaterialListBox listLocation) {
 		this.listLocation = listLocation;
 	}
 
@@ -558,11 +590,11 @@ public class JobCreationView extends MaterialColumn {
 		this.txtJobName = txtJobName;
 	}
 
-	public ListBox getListCountry() {
+	public MaterialListBox getListCountry() {
 		return listCountry;
 	}
 
-	public void setListCountry(ListBox listCountry) {
+	public void setListCountry(MaterialListBox listCountry) {
 		this.listCountry = listCountry;
 	}
 
@@ -598,19 +630,19 @@ public class JobCreationView extends MaterialColumn {
 		this.selectedJob = selectedJob;
 	}
 
-	public ListBox getListSupervisor() {
+	public MaterialListBox getListSupervisor() {
 		return listSupervisor;
 	}
 
-	public void setListSupervisor(ListBox listSupervisor) {
+	public void setListSupervisor(MaterialListBox listSupervisor) {
 		this.listSupervisor = listSupervisor;
 	}
 
-	public ListBox getListPrincipalConsultant() {
+	public MaterialListBox getListPrincipalConsultant() {
 		return listPrincipalConsultant;
 	}
 
-	public void setListPrincipalConsultant(ListBox listPrincipalConsultant) {
+	public void setListPrincipalConsultant(MaterialListBox listPrincipalConsultant) {
 		this.listPrincipalConsultant = listPrincipalConsultant;
 	}
 

@@ -9,16 +9,20 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
+import gwt.material.design.client.ui.MaterialButton;
 import com.google.gwt.user.client.ui.HTML;
 import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import gwt.material.design.client.ui.MaterialColumn;
+import gwt.material.design.client.ui.MaterialListBox;
+
 import com.leavemanagement.client.GreetingService;
 import com.leavemanagement.client.GreetingServiceAsync;
 import com.leavemanagement.shared.Job;
@@ -30,12 +34,12 @@ import com.leavemanagement.shared.User;
 public class TimeSheetReportView extends MaterialColumn{
 	
 	private 	GreetingServiceAsync rpcService = GWT.create(GreetingService.class);
-	private ListBox listUsers = new ListBox();
-	private ListBox listJobs = new ListBox();
-	private ListBox listMonth = new ListBox();
-	private ListBox listJobType = new ListBox();
+	private MaterialListBox listUsers = new MaterialListBox();
+	private MaterialListBox listJobs = new MaterialListBox();
+	private MaterialListBox listMonth = new MaterialListBox();
+	private MaterialListBox listJobType = new MaterialListBox();
 	private User loggedInUser = null;
-	private Button btnSearch = new Button("Search");
+	private MaterialButton btnSearch = new MaterialButton("Search");
 	private MaterialColumn vpnlResult = new MaterialColumn();
 	Column<TimeSheet, String> jobName;
 	Column<TimeSheet, String> jobType;
@@ -47,19 +51,19 @@ public class TimeSheetReportView extends MaterialColumn{
 	
 	public TimeSheetReportView(User loggedInUser){
 		this.loggedInUser = loggedInUser;
-		listMonth.addItem("All Months", "0");
-		listMonth.addItem("Jan", "1");
-		listMonth.addItem("Feb", "2");
-		listMonth.addItem("Mar", "3");
-		listMonth.addItem("Apr", "4");
-		listMonth.addItem("May", "5");
-		listMonth.addItem("Jun", "6");
-		listMonth.addItem("Jul", "7");
-		listMonth.addItem("Aug", "8");
-		listMonth.addItem("Sep", "9");
-		listMonth.addItem("Oct", "10");
-		listMonth.addItem("Nev", "11");
-		listMonth.addItem("Dec", "12");
+		listMonth.addItem("0","All Months"  );
+		listMonth.addItem( "1","Jan");
+		listMonth.addItem( "2","Feb");
+		listMonth.addItem("3","Mar");
+		listMonth.addItem("4","Apr" );
+		listMonth.addItem("5","May" );
+		listMonth.addItem("6","Jun" );
+		listMonth.addItem( "7","Jul");
+		listMonth.addItem( "8","Aug");
+		listMonth.addItem("9","Sep" );
+		listMonth.addItem("10","Oct" );
+		listMonth.addItem("11","Nev" );
+		listMonth.addItem("12","Dec" );
 		
 		fetchJobs();
 		fetchUsers();
@@ -67,6 +71,7 @@ public class TimeSheetReportView extends MaterialColumn{
 		
 		MaterialRow hpnlSearch = new MaterialRow();
 		add(hpnlSearch);
+		
 		hpnlSearch.add(listJobs);
 		hpnlSearch.add(listMonth);
 		hpnlSearch.add(listUsers);
@@ -123,10 +128,13 @@ public class TimeSheetReportView extends MaterialColumn{
 		};
 		
 		table.addColumn(jobName,"Name");
-	}
 	
+	
+	
+	}
 	private void fetchTimeReport() {
 		int selectedMonth = Integer.parseInt(listMonth.getValue(listMonth.getSelectedIndex()));
+
 		int selecteduser = Integer.parseInt(listUsers.getValue(listUsers.getSelectedIndex()));
 		int selectedJob = Integer.parseInt(listJobs.getValue(listJobs.getSelectedIndex()));
 		int selectedJobType = Integer.parseInt(listJobType.getValue(listJobType.getSelectedIndex()));
@@ -163,9 +171,9 @@ public class TimeSheetReportView extends MaterialColumn{
 			@Override
 			public void onSuccess(ArrayList<Job> result) {
 				listJobs.clear();
-				listJobs.addItem("All Jobs", "0");
+				listJobs.addItem( "0","All Jobs" );
 				for(int i=0; i< result.size(); i++){
-					listJobs.addItem(result.get(i).getJobName(), result.get(i).getJobId()+"");
+					listJobs.addItem(  result.get(i).getJobId()+"",result.get(i).getJobName());
 					
 				}
 			}
@@ -188,9 +196,9 @@ public class TimeSheetReportView extends MaterialColumn{
 			@Override
 			public void onSuccess(ArrayList<User> result) {
 				listUsers.clear();
-				listUsers.addItem("All users", "0");
+				listUsers.addItem( "0","All users" );
 				for(int i=0; i< result.size(); i++){
-					listUsers.addItem(result.get(i).getName(), result.get(i).getUserId()+"");
+					listUsers.addItem(  result.get(i).getUserId()+"",result.get(i).getName());
 				}
 			}
 		});
@@ -207,9 +215,9 @@ public class TimeSheetReportView extends MaterialColumn{
 			@Override
 			public void onSuccess(ArrayList<LineofService> result) {
 				listJobType.clear();
-				listJobType.addItem("All Job Types", "0");
+				listJobType.addItem( "0","All Job Types" );
 				for(int i=0; i< result.size(); i++){
-					listJobType.addItem(result.get(i).getName(), result.get(i).getLineofServiceId()+"");
+					listJobType.addItem(  result.get(i).getLineofServiceId()+"",result.get(i).getName());
 				}
 			}
 		});

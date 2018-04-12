@@ -13,7 +13,7 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
+import gwt.material.design.client.ui.MaterialButton;
 import com.google.gwt.user.client.ui.HasWidgets;
 
 import gwt.material.design.client.ui.MaterialColumn;
@@ -46,7 +46,7 @@ public class LeaveHistoryPresenter implements Presenter
 		Widget asWidget();
 		Object getHtmlErrorMessage = null;
 		MaterialColumn getVpnlContainer();
-		Button getBtnBack();
+		MaterialButton getBtnBack();
 		
 	}  
 

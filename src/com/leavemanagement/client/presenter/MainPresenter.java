@@ -14,7 +14,7 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
+import gwt.material.design.client.ui.MaterialButton;
 import com.google.gwt.user.client.ui.HasWidgets;
 import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.Label;
@@ -55,7 +55,7 @@ public class MainPresenter implements Presenter
 		 DateBox getTo();
 		 Label getLblNoOfDays();
 		 TextArea getReason();
-		 Button getBtnSubmit();
+		 MaterialButton getBtnSubmit();
 		 Anchor getLogOff() ;
 		 Label getLoggedInUserName();
 		 Anchor getLeaveHistory();

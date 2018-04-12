@@ -5,7 +5,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
+import gwt.material.design.client.ui.MaterialButton;
 import com.google.gwt.user.client.ui.DecoratedTabPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import gwt.material.design.client.ui.MaterialRow;
@@ -13,6 +13,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.TabPanel;
+
+import gwt.material.design.client.ui.MaterialAnchorButton;
 import gwt.material.design.client.ui.MaterialColumn;
 import com.leavemanagement.client.presenter.AdminPresenter.Display;
 import com.leavemanagement.shared.User;
@@ -22,7 +24,7 @@ public class AdminView extends MaterialColumn implements IsWidget,Display {
 	
 	private MaterialColumn vpnlContainer = new MaterialColumn();
 	private Anchor logOff = new Anchor("Log off");
-	private Button btnBack = new Button("Back");
+	private MaterialButton btnBack = new MaterialButton("Back");
 	private Anchor addUser = new Anchor("Add User");
 	private Anchor changePassword = new Anchor("Change Password");
 	private Anchor addCompany = new Anchor("Add Company");
@@ -57,9 +59,15 @@ public class AdminView extends MaterialColumn implements IsWidget,Display {
 		MaterialColumn vpnlLeave  = new MaterialColumn();
 		vpnlLeave.setWidth("100%");
 		add(vpnlLeave);
-		vpnlLeave.add(addUser);
-		vpnlLeave.add(changePassword);
-		vpnlLeave.add(addCompany);
+		MaterialRow rowAddUser = new MaterialRow();
+		rowAddUser.add(addUser);
+		vpnlLeave.add(rowAddUser);
+		MaterialRow rowChangePAssword = new MaterialRow();
+		rowChangePAssword.add(changePassword);
+		vpnlLeave.add(rowChangePAssword);
+		MaterialRow rowAddCompany = new MaterialRow();
+        rowAddCompany.add(addCompany);
+		vpnlLeave.add(rowAddCompany);
 		TabPanel tabPanel = new TabPanel();
 		tabPanel.add(vpnlLeaveRecords ,    "Pending Leave Requests");
 		tabPanel.add(vpnlContainer, "Leaves History");
@@ -95,12 +103,12 @@ public class AdminView extends MaterialColumn implements IsWidget,Display {
 	}
 
 
-	public Button getBtnBack() {
+	public MaterialButton getBtnBack() {
 		return btnBack;
 	}
 
 
-	public void setBtnBack(Button btnBack) {
+	public void setBtnBack(MaterialButton btnBack) {
 		this.btnBack = btnBack;
 	}
 

@@ -2,7 +2,7 @@ package com.leavemanagement.client.view;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
+import gwt.material.design.client.ui.MaterialButton;
 import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -19,7 +19,7 @@ import com.leavemanagement.client.presenter.AddCompanyPresenter.Display;
 
 public class AddCompanyView extends DecoratorPanel implements Display {
 	
-	private Button btnSend = new Button("Save");
+	private MaterialButton btnSend = new MaterialButton("Save");
 	TextBox txtUser = new TextBox();
 	PasswordTextBox txtPassword = new PasswordTextBox();
 	PasswordTextBox txtConfrimPassword = new PasswordTextBox();
@@ -27,7 +27,7 @@ public class AddCompanyView extends DecoratorPanel implements Display {
 	TextBox txtCompanyName = new TextBox();
 	
 	
-	private Button btnUpdate = new Button("update");
+	private MaterialButton btnUpdate = new MaterialButton("update");
 	
 	
 	public AddCompanyView(){
@@ -83,11 +83,11 @@ public class AddCompanyView extends DecoratorPanel implements Display {
 			 txtCompanyName.setWidth("200px");
 	}
 
-	public Button getBtnSend() {
+	public MaterialButton getBtnSend() {
 		return btnSend;
 	}
 
-	public void setBtnSend(Button btnSend) {
+	public void setBtnSend(MaterialButton btnSend) {
 		this.btnSend = btnSend;
 	}
 

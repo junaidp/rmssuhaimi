@@ -1,7 +1,7 @@
 package com.leavemanagement.client.view;
 
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
+import gwt.material.design.client.ui.MaterialButton;
 import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -18,7 +18,7 @@ public class ChangePasswordView extends DecoratorPanel implements IsWidget,Displ
 	PasswordTextBox oldPassword = new PasswordTextBox();
 	PasswordTextBox newPassword = new PasswordTextBox();
 	PasswordTextBox confrimPassword = new PasswordTextBox();
-	Button btnSubmit = new Button("Submit");
+	MaterialButton btnSubmit = new MaterialButton("Submit");
 
 	public ChangePasswordView(){
 		btnSubmit.setStyleName("btnStyle");
@@ -75,11 +75,11 @@ public class ChangePasswordView extends DecoratorPanel implements IsWidget,Displ
 		this.confrimPassword = confrimPassword;
 	}
 
-	public Button getBtnSubmit() {
+	public MaterialButton getBtnSubmit() {
 		return btnSubmit;
 	}
 
-	public void setBtnSubmit(Button btnSubmit) {
+	public void setBtnSubmit(MaterialButton btnSubmit) {
 		this.btnSubmit = btnSubmit;
 	}
 }

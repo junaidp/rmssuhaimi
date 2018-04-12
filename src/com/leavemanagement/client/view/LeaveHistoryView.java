@@ -5,7 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
+import gwt.material.design.client.ui.MaterialButton;
 import com.google.gwt.user.client.ui.DecoratedTabPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import gwt.material.design.client.ui.MaterialRow;
@@ -19,7 +19,7 @@ public class LeaveHistoryView extends MaterialColumn implements IsWidget,Display
 	
 	private MaterialColumn vpnlContainer = new MaterialColumn();
 	private Anchor logOff = new Anchor("Log off");
-	private Button btnBack = new Button("Back");
+	private MaterialButton btnBack = new MaterialButton("Back");
 	
 	public LeaveHistoryView(){
 		Label lblHeading = new Label("Leave History");
@@ -65,12 +65,12 @@ public class LeaveHistoryView extends MaterialColumn implements IsWidget,Display
 	}
 
 
-	public Button getBtnBack() {
+	public MaterialButton getBtnBack() {
 		return btnBack;
 	}
 
 
-	public void setBtnBack(Button btnBack) {
+	public void setBtnBack(MaterialButton btnBack) {
 		this.btnBack = btnBack;
 	}
 

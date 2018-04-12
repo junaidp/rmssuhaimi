@@ -2,7 +2,7 @@ package com.leavemanagement.client.view;
 
 import java.util.Date;
 
-import com.google.gwt.user.client.ui.Button;
+import gwt.material.design.client.ui.MaterialButton;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
@@ -15,9 +15,9 @@ public class JobPhaseView extends MaterialColumn {
 	private DateBox startDate = new DateBox();
 	private DateBox submissionDate = new DateBox();
 	private DateBox deliveryDate = new DateBox();
-	private Button btnCancel = new Button("Cancel");
-	private Button btnSubmit = new Button("Submit/Update Phase");
-	private Button btnDelete = new Button("Delete Phase");
+	private MaterialButton btnCancel = new MaterialButton("Cancel");
+	private MaterialButton btnSubmit = new MaterialButton("Submit/Update Phase");
+	private MaterialButton btnDelete = new MaterialButton("Delete Phase");
 	
 	public JobPhaseView(){
 		btnDelete.setVisible(false);
@@ -74,19 +74,19 @@ public class JobPhaseView extends MaterialColumn {
 		this.deliveryDate = deliveryDate;
 	}
 
-	public Button getBtnCancel() {
+	public MaterialButton getBtnCancel() {
 		return btnCancel;
 	}
 
-	public void setBtnCancel(Button btnCancel) {
+	public void setBtnCancel(MaterialButton btnCancel) {
 		this.btnCancel = btnCancel;
 	}
 
-	public Button getBtnSubmit() {
+	public MaterialButton getBtnSubmit() {
 		return btnSubmit;
 	}
 
-	public void setBtnSubmit(Button btnSubmit) {
+	public void setBtnSubmit(MaterialButton btnSubmit) {
 		this.btnSubmit = btnSubmit;
 	}
 
@@ -98,11 +98,11 @@ public class JobPhaseView extends MaterialColumn {
 		this.submissionDate = submissionDate;
 	}
 
-	public Button getBtnDelete() {
+	public MaterialButton getBtnDelete() {
 		return btnDelete;
 	}
 
-	public void setBtnDelete(Button btnDelete) {
+	public void setBtnDelete(MaterialButton btnDelete) {
 		this.btnDelete = btnDelete;
 	}
 

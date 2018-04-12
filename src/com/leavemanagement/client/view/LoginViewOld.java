@@ -1,6 +1,6 @@
 package com.leavemanagement.client.view;
 
-import com.google.gwt.user.client.ui.Button;
+import gwt.material.design.client.ui.MaterialButton;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
@@ -22,7 +22,7 @@ public class LoginViewOld extends Composite implements Display {
 	private MaterialColumn vp;
 	private TextBox txtUserName = new TextBox();
 	private PasswordTextBox txtPassword = new PasswordTextBox();
-	private Button btnSubmit = new Button("Submit");
+	private MaterialButton btnSubmit = new MaterialButton("Submit");
 	private Label lblError = new Label();
 
 	private void createForm2() {
@@ -71,11 +71,11 @@ public class LoginViewOld extends Composite implements Display {
 		this.txtUserName = txtUserName;
 	}
 
-	public Button getBtnSubmit() {
+	public MaterialButton getBtnSubmit() {
 		return btnSubmit;
 	}
 
-	public void setBtnSubmit(Button btnSubmit) {
+	public void setBtnSubmit(MaterialButton btnSubmit) {
 		this.btnSubmit = btnSubmit;
 	}
 	

@@ -34,7 +34,7 @@ a, a:visited, a:hover {
   zoom: 1;
 }
 
-.gwt-Button {
+.gwt-MaterialButton {
   margin: 0;
   padding: 3px 5px;
   text-decoration: none;
@@ -44,17 +44,17 @@ a, a:visited, a:hover {
   background: url("images/hborder.png") repeat-x 0px -27px;
   border: 1px outset #ccc;
 }
-.gwt-Button:active {
+.gwt-MaterialButton:active {
   border: 1px inset #ccc;
 }
-.gwt-Button:hover {
+.gwt-MaterialButton:hover {
   border-color: #9cf #69e #69e #7af;
 }
-.gwt-Button[disabled] {
+.gwt-MaterialButton[disabled] {
   cursor: default;
   color: #888;
 }
-.gwt-Button[disabled]:hover {
+.gwt-MaterialButton[disabled]:hover {
   border: 1px outset #ccc;
 }
 

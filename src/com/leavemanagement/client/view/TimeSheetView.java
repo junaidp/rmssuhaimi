@@ -3,35 +3,46 @@ package com.leavemanagement.client.view;
 import java.util.ArrayList;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
+import gwt.material.design.client.ui.MaterialButton;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import gwt.material.design.client.ui.MaterialRow;
+import gwt.material.design.client.ui.MaterialTextBox;
+
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
+
+import gwt.material.design.client.ui.MaterialButton;
 import gwt.material.design.client.ui.MaterialColumn;
+import gwt.material.design.client.ui.MaterialListBox;
+
 import com.leavemanagement.client.GreetingService;
 import com.leavemanagement.client.GreetingServiceAsync;
 import com.leavemanagement.shared.Job;
 import com.leavemanagement.shared.TimeSheet;
 import com.leavemanagement.shared.User;
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
 public class TimeSheetView extends MaterialColumn{
 	
 	private GreetingServiceAsync rpcService = GWT.create(GreetingService.class);
 	private User loggedInUser =null;
-	private ListBox listMonth = new ListBox();
+	private MaterialListBox listMonth = new MaterialListBox();
+
 	FlexTable flex = new FlexTable();
 	private int selectedMonth = 0;
-	private Button btnSave = new Button("Save");
-	private Button btnSubmit = new Button("Submit");
+	private MaterialButton btnSave = new MaterialButton("Save");
+	private MaterialButton btnSubmit = new MaterialButton("Submit");
 	
 	public TimeSheetView(User loggedInUser){
 		this.loggedInUser = loggedInUser;
@@ -40,24 +51,30 @@ public class TimeSheetView extends MaterialColumn{
 //		hpnl.add(lblJob);
 		hpnl.add(flex);
 		add(listMonth);
+		listMonth.getElement().getStyle().setHeight(60, Unit.PX);
 		add(hpnl);
 		MaterialRow hpnlButtons = new MaterialRow();
-		hpnlButtons.add(btnSave);
-		hpnlButtons.add(btnSubmit);
+		MaterialColumn colBtnSave = new MaterialColumn();
+		colBtnSave.add(btnSave);
+		hpnlButtons.add(colBtnSave);
+		MaterialColumn colBtnSubmit = new MaterialColumn();
+        colBtnSubmit.add(btnSubmit);
+		hpnlButtons.add(colBtnSubmit);
 		add(hpnlButtons);
-		listMonth.addItem("Select Month", "0");
-		listMonth.addItem("Jan", "1");
-		listMonth.addItem("Feb", "2");
-		listMonth.addItem("Mar", "3");
-		listMonth.addItem("Apr", "4");
-		listMonth.addItem("May", "5");
-		listMonth.addItem("Jun", "6");
-		listMonth.addItem("Jul", "7");
-		listMonth.addItem("Aug", "8");
-		listMonth.addItem("Sep", "9");
-		listMonth.addItem("Oct", "10");
-		listMonth.addItem("Nev", "11");
-		listMonth.addItem("Dec", "12");
+		listMonth.addItem("0", "Select Month");
+		listMonth.addItem("1", "Jan");
+		listMonth.addItem("2", "Feb");
+//		listMonth.addItem("Mar", "3");
+		listMonth.addItem("3","Mar");
+		listMonth.addItem("4","Apr");
+		listMonth.addItem("5", "May");
+		listMonth.addItem("6", "Jun");
+		listMonth.addItem( "7", "Jul");
+		listMonth.addItem("8","Aug");
+		listMonth.addItem("9", "Sep");
+		listMonth.addItem("10","Oct");
+		listMonth.addItem("11", "Nov");
+		listMonth.addItem("12", "Dec");
 		
 		btnSubmit.addClickHandler(new ClickHandler() {
 			
@@ -76,13 +93,23 @@ public class TimeSheetView extends MaterialColumn{
 
 			});
 		
-		listMonth.addChangeHandler(new ChangeHandler(){
-
+//		listMonth.addChangeHandler(new ChangeHandler(){
+//
+//			@Override
+//			public void onChange(ChangeEvent event) {
+//				selectedMonth = Integer.parseInt(listMonth.getValue(listMonth.getSelectedIndex()));
+//				fetchJobs();
+//			}});
+	
+		listMonth.addValueChangeHandler(new ValueChangeHandler<String>() {
+			
 			@Override
-			public void onChange(ChangeEvent event) {
+			public void onValueChange(ValueChangeEvent<String> event) {
 				selectedMonth = Integer.parseInt(listMonth.getValue(listMonth.getSelectedIndex()));
 				fetchJobs();
-			}});
+			}
+		});
+	
 	}
 	
 	public void fetchJobs(){
@@ -106,7 +133,7 @@ public class TimeSheetView extends MaterialColumn{
 					flex.setWidget(i+1, 0, lblName);
 					
 					for(int j=0; j<31;j++){
-						TextBox text = new TextBox();
+						MaterialTextBox text = new MaterialTextBox();
 						text.setWidth("30px");
 						flex.setWidget(i+1, j+1, text);
 						for(int m=0; m< job.getTimeSheets().size(); m++){

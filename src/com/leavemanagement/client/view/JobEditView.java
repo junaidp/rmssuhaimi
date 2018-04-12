@@ -7,7 +7,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
+import gwt.material.design.client.ui.MaterialButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import gwt.material.design.client.ui.MaterialColumn;
 import com.leavemanagement.client.GreetingService;
@@ -19,7 +19,7 @@ import com.leavemanagement.shared.User;
 
 public class JobEditView extends MaterialColumn{
 	private GreetingServiceAsync rpcService = GWT.create(GreetingService.class);
-	  private Button btnClose = new Button("Close");
+	  private MaterialButton btnClose = new MaterialButton("Close");
 	  JobCreationView jobCreationView;
 	 private MaterialColumn vpnlMain = new MaterialColumn();
 	 User loggedInUser;
@@ -255,11 +255,11 @@ public class JobEditView extends MaterialColumn{
 		
 	}
 
-	public Button getBtnClose() {
+	public MaterialButton getBtnClose() {
 		return btnClose;
 	}
 
-	public void setBtnClose(Button btnClose) {
+	public void setBtnClose(MaterialButton btnClose) {
 		this.btnClose = btnClose;
 	}
 

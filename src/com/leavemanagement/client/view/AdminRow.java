@@ -1,6 +1,10 @@
 package com.leavemanagement.client.view;
 
-import com.google.gwt.user.client.ui.Button;
+import javax.persistence.Column;
+
+import gwt.material.design.client.ui.MaterialButton;
+
+import gwt.material.design.client.ui.MaterialColumn;
 import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
@@ -12,8 +16,8 @@ public class AdminRow extends MaterialRow{
 	private Label lblFrom = new Label("");
 	private Label lblTo = new Label("");
 	private Label lblDays = new Label("");
-	private Button btnApprove = new Button("Approve");
-	private Button btnDecline = new Button("Decline");
+	private MaterialButton btnApprove = new MaterialButton("Approve");
+	private MaterialButton btnDecline = new MaterialButton("Decline");
 	private TextBox txtRemarks =  new TextBox();
 	private Label lblStatus = new Label("");
 	private Label lblRemarks = new Label();
@@ -22,25 +26,45 @@ public class AdminRow extends MaterialRow{
 		btnApprove.setStyleName("btnStyle");
 		btnDecline.setStyleName("btnStyle");
 		setStyleName("form-row");
-		lblName.setWidth("180px");
-		lblType.setWidth("180px");
-		lblFrom.setWidth("180px");
-		lblTo.setWidth("180px");
-		lblDays.setWidth("180px");
+		lblName.setWidth("120px");
+		lblType.setWidth("120px");
+		lblFrom.setWidth("140px");
+		lblTo.setWidth("140px");
+		lblDays.setWidth("120px");
 		
-		
-		hpnlButton.add(btnApprove);
-		hpnlButton.add(btnDecline);
-		hpnlButton.add(txtRemarks);
-		
-		add(lblName);
-		add(lblType);
-		add(lblFrom);
-		add(lblTo);
-		add(lblDays);
-		add(hpnlButton);
-		add(lblStatus);
-		add(lblRemarks);
+		MaterialColumn colBtnApprove = new MaterialColumn();
+		colBtnApprove.add(btnApprove);
+		hpnlButton.add(colBtnApprove);
+		MaterialColumn colBtnDecline = new MaterialColumn();
+		colBtnDecline.add(btnDecline);
+		hpnlButton.add(colBtnDecline);
+		MaterialColumn colTxtRemarks = new MaterialColumn();
+		colTxtRemarks.add(txtRemarks);
+		hpnlButton.add(colTxtRemarks);
+		MaterialColumn colLblName = new MaterialColumn();
+		colLblName.add(lblName);
+		add(colLblName);
+		MaterialColumn colLblType = new MaterialColumn();
+		colLblType.add(lblType);
+		add(colLblType);
+		MaterialColumn colLblFrom = new MaterialColumn();
+		colLblFrom.add(lblFrom);
+		add(colLblFrom);
+		MaterialColumn colLblTo = new MaterialColumn();
+		colLblTo.add(lblTo);
+		add(colLblTo);
+		MaterialColumn colLblDays = new MaterialColumn();
+		colLblDays.add(lblDays);
+		add(colLblDays);
+		MaterialColumn colHpn1Button = new MaterialColumn();
+		colHpn1Button.add(hpnlButton);
+		add(colHpn1Button);
+		MaterialColumn colLblStatus = new MaterialColumn();
+		colLblStatus.add(lblStatus);
+		add(colLblStatus);
+		MaterialColumn colLblRemarks = new MaterialColumn();
+		colLblRemarks.add(lblRemarks);
+		add(colLblRemarks);
 		
 		hpnlButton.setVisible(false);
 //		lblStatus.setVisible(false);
@@ -88,19 +112,19 @@ public class AdminRow extends MaterialRow{
 	}
 
 	
-	public Button getBtnApprove() {
+	public MaterialButton getBtnApprove() {
 		return btnApprove;
 	}
 
-	public void setBtnApprove(Button btnApprove) {
+	public void setBtnApprove(MaterialButton btnApprove) {
 		this.btnApprove = btnApprove;
 	}
 
-	public Button getBtnDecline() {
+	public MaterialButton getBtnDecline() {
 		return btnDecline;
 	}
 
-	public void setBtnDecline(Button btnDecline) {
+	public void setBtnDecline(MaterialButton btnDecline) {
 		this.btnDecline = btnDecline;
 	}
 

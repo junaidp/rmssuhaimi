@@ -1,40 +1,38 @@
 package com.leavemanagement.client.view;
 
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import gwt.material.design.client.ui.MaterialRow;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
+
+import gwt.material.design.client.ui.MaterialButton;
 import gwt.material.design.client.ui.MaterialColumn;
-import com.google.gwt.user.client.ui.Widget;
+import gwt.material.design.client.ui.MaterialListBox;
+
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.leavemanagement.client.presenter.AddUserPresenter.Display;
 
 public class AddUserView extends DecoratorPanel implements Display {
 	
-	private Button btnSend = new Button("Save");
+	private MaterialButton btnSend = new MaterialButton("Save");
 	TextBox txtUser = new TextBox();
 	PasswordTextBox txtPassword = new PasswordTextBox();
 	PasswordTextBox txtConfrimPassword = new PasswordTextBox();
 	TextBox txtEmail = new TextBox();
 	TextBox txtExamLeaves = new TextBox();
-	ListBox listUser = new ListBox();
+	MaterialListBox listUser = new MaterialListBox();
 	
-	ListBox listDesignation = new ListBox();
-	ListBox listReportingTo = new ListBox();
+	MaterialListBox listDesignation = new MaterialListBox();
+	MaterialListBox listReportingTo = new MaterialListBox();
 	DateBox joiningDate = new DateBox();
 	TextBox contactNumber = new TextBox();
 	TextBox chargeRate = new TextBox();
 	TextBox bankAccountNumber = new TextBox();
-	private Button btnRemove = new Button("delete user");
-	private Button btnUpdate = new Button("update");
+	private MaterialButton btnRemove = new MaterialButton("delete user");
+	private MaterialButton btnUpdate = new MaterialButton("update");
 	
 	
 	public AddUserView(){
@@ -104,6 +102,7 @@ public class AddUserView extends DecoratorPanel implements Display {
 		hpnButton.add(btnRemove);
 	vpnl.add(hpnButton);
 		layout();
+		//vpnl.setSpacing(4);
 		
 	}
 	
@@ -126,11 +125,11 @@ public class AddUserView extends DecoratorPanel implements Display {
 			 txtExamLeaves.setWidth("200px");
 	}
 
-	public Button getBtnSend() {
+	public MaterialButton getBtnSend() {
 		return btnSend;
 	}
 
-	public void setBtnSend(Button btnSend) {
+	public void setBtnSend(MaterialButton btnSend) {
 		this.btnSend = btnSend;
 	}
 
@@ -176,27 +175,27 @@ public class AddUserView extends DecoratorPanel implements Display {
 		this.txtExamLeaves = txtExamLeaves;
 	}
 
-	public ListBox getListUser() {
+	public MaterialListBox getListUser() {
 		return listUser;
 	}
 
-	public void setListUser(ListBox listUser) {
+	public void setListUser(MaterialListBox listUser) {
 		this.listUser = listUser;
 	}
 
-	public Button getBtnUpdate() {
+	public MaterialButton getBtnUpdate() {
 		return btnUpdate;
 	}
 
-	public void setBtnUpdate(Button btnUpdate) {
+	public void setBtnUpdate(MaterialButton btnUpdate) {
 		this.btnUpdate = btnUpdate;
 	}
 
-	public ListBox getListDesignation() {
+	public MaterialListBox getListDesignation() {
 		return listDesignation;
 	}
 
-	public void setListDesignation(ListBox listDesignation) {
+	public void setListDesignation(MaterialListBox listDesignation) {
 		this.listDesignation = listDesignation;
 	}
 
@@ -224,19 +223,19 @@ public class AddUserView extends DecoratorPanel implements Display {
 		this.bankAccountNumber = bankAccountNumber;
 	}
 
-	public ListBox getListReportingTo() {
+	public MaterialListBox getListReportingTo() {
 		return listReportingTo;
 	}
 
-	public void setListReportingTo(ListBox listReportingTo) {
+	public void setListReportingTo(MaterialListBox listReportingTo) {
 		this.listReportingTo = listReportingTo;
 	}
 
-	public Button getBtnRemove() {
+	public MaterialButton getBtnRemove() {
 		return btnRemove;
 	}
 
-	public void setBtnRemove(Button btnRemove) {
+	public void setBtnRemove(MaterialButton btnRemove) {
 		this.btnRemove = btnRemove;
 	}
 

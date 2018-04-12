@@ -13,7 +13,7 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
+import gwt.material.design.client.ui.MaterialButton;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
@@ -50,7 +50,7 @@ public class AdminPresenter implements Presenter
 		Widget asWidget();
 		Object getHtmlErrorMessage = null;
 		MaterialColumn getVpnlContainer();
-		Button getBtnBack();
+		MaterialButton getBtnBack();
 		Anchor getAddUser();
 		MaterialColumn getVpnlEMployeeLeavesRecord();
 		MaterialColumn getVpnlLeaveRecords();
@@ -189,11 +189,19 @@ public class AdminPresenter implements Presenter
 					lblAllowed.setText(leavesDTOForAllUsers.getLeavesDTO().get(i).getAllowed()+"");
 					}
 					hpnl.setStyleName("form-row");
-					hpnl.add(lblName);
-					hpnl.add(new Label(""));
-					hpnl.add(lblAvailed);
-					hpnl.add(lblAvailable);
-					hpnl.add(lblAllowed);
+				    MaterialColumn colLblName = new MaterialColumn();
+				    colLblName.add(lblName);
+					hpnl.add(colLblName);
+					//hpnl.add(new Label(""));
+					MaterialColumn colLblAvialed = new MaterialColumn();
+					colLblAvialed.add(lblAvailed);
+					hpnl.add(colLblAvialed);
+					MaterialColumn colLblAvailable = new MaterialColumn();
+					colLblAvailable.add(lblAvailable);
+					hpnl.add(colLblAvailable);
+					MaterialColumn colLblAllowed = new MaterialColumn();
+					colLblAllowed.add(lblAllowed);
+					hpnl.add(colLblAllowed);
 					
 					display.getVpnlEMployeeLeavesRecord().add(hpnl);
 					
@@ -223,11 +231,19 @@ public class AdminPresenter implements Presenter
 		lblLeavesAvailable.setStyleName("blueBold");
 		lblLeavesAllowed.setStyleName("blueBold");
 		lblLeavesAvailed.setStyleName("blueBold");
-		hpnlHeading.add(lblEmployeeNameHeading);
+		MaterialColumn colLblEmployeeNameHeading = new MaterialColumn();
+		colLblEmployeeNameHeading.add(lblLeaveNameHeading);
+		hpnlHeading.add(colLblEmployeeNameHeading);
 //		hpnlHeading.add(lblLeaveNameHeading);
-		hpnlHeading.add(lblLeavesAvailed);
-		hpnlHeading.add(lblLeavesAvailable);
-		hpnlHeading.add(lblLeavesAllowed);
+		MaterialColumn colLblLeavesAvailed = new MaterialColumn();
+		colLblLeavesAvailed.add(lblLeavesAvailed);
+		hpnlHeading.add(colLblLeavesAvailed);
+		MaterialColumn colLblLeavesAvailable = new MaterialColumn();
+		colLblLeavesAvailable.add(lblLeavesAvailable);
+        hpnlHeading.add(colLblLeavesAvailable);
+		MaterialColumn colLblLeavesAllowed = new MaterialColumn();
+		colLblLeavesAllowed.add(lblLeavesAllowed);
+		hpnlHeading.add(colLblLeavesAllowed);
 		lblEmployeeNameHeading.setWidth("200px");
 		lblLeaveNameHeading.setWidth("200px");
 		lblLeavesAvailable.setWidth("200px");
@@ -412,7 +428,7 @@ public class AdminPresenter implements Presenter
 		row.getLblStatus().setVisible(true);
 	}
 
-	private void approveRequest(LeaveRecord leaveRecord, final Button btnApprove) throws Exception {
+	private void approveRequest(LeaveRecord leaveRecord, final MaterialButton btnApprove) throws Exception {
 		final LoadingPopup loadingPopup = new LoadingPopup();
 		loadingPopup.display();
 		rpcService.approveDeclineRequest(leaveRecord, new AsyncCallback<String>(){
@@ -437,7 +453,7 @@ public class AdminPresenter implements Presenter
 			}});
 	}
 
-	private void declineRequest(LeaveRecord leaveRecord, final Button btnDecline) throws Exception {
+	private void declineRequest(LeaveRecord leaveRecord, final MaterialButton btnDecline) throws Exception {
 
 		final LoadingPopup loadingPopup = new LoadingPopup();
 		loadingPopup.display();

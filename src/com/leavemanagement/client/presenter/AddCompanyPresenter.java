@@ -1,27 +1,23 @@
 package com.leavemanagement.client.presenter;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Logger;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.datepicker.client.DateBox;
 import com.leavemanagement.client.GreetingServiceAsync;
 import com.leavemanagement.client.view.LoadingPopup;
 import com.leavemanagement.shared.Company;
 import com.leavemanagement.shared.Roles;
 import com.leavemanagement.shared.User;
+
+import gwt.material.design.client.ui.MaterialButton;
 
 public class AddCompanyPresenter implements Presenter 
 
@@ -37,7 +33,7 @@ public class AddCompanyPresenter implements Presenter
 	{
 		Widget asWidget();
 		Object getHtmlErrorMessage = null;
-		Button getBtnSend();
+		MaterialButton getBtnSend();
 		TextBox getTxtUser();
 		TextBox getTxtPassword();
 		TextBox getTxtConfrimPassword();

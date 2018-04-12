@@ -9,7 +9,7 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
+import gwt.material.design.client.ui.MaterialButton;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
@@ -32,7 +32,7 @@ public class ChangePasswordPresenter implements Presenter{
 	{
 		Widget asWidget();
 		Object getHtmlErrorMessage = null;
-		Button getBtnSubmit() ;
+		MaterialButton getBtnSubmit() ;
 		TextBox getConfrimPassword();
 		TextBox getNewPassword();
 		TextBox getOldPassword() ;

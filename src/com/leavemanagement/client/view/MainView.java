@@ -1,7 +1,7 @@
 package com.leavemanagement.client.view;
 
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
+import gwt.material.design.client.ui.MaterialButton;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -23,7 +23,7 @@ public class MainView extends MaterialColumn implements IsWidget,Display {
 	private DateBox to = new DateBox();
 	private Label lblNoOfDays = new Label("");
 	private TextArea reason = new TextArea();
-	private Button btnSubmit = new Button("Submit");
+	private MaterialButton btnSubmit = new MaterialButton("Submit");
 	private Anchor logOff = new Anchor("Log off");
 	private Label loggedInUserName = new Label();
 	private Anchor  leaveHistory = new Anchor("Leave History");
@@ -143,11 +143,11 @@ public class MainView extends MaterialColumn implements IsWidget,Display {
 		this.reason = reason;
 	}
 
-	public Button getBtnSubmit() {
+	public MaterialButton getBtnSubmit() {
 		return btnSubmit;
 	}
 
-	public void setBtnSubmit(Button btnSubmit) {
+	public void setBtnSubmit(MaterialButton btnSubmit) {
 		this.btnSubmit = btnSubmit;
 	}
 

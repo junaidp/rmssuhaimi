@@ -2,7 +2,7 @@ package com.leavemanagement.client.view;
 
 import java.util.ArrayList;
 
-import com.google.gwt.user.client.ui.Button;
+import gwt.material.design.client.ui.MaterialButton;
 import com.google.gwt.user.client.ui.FlexTable;
 import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.Image;

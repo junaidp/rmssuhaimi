@@ -7,7 +7,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
+import gwt.material.design.client.ui.MaterialButton;
 import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -20,8 +20,8 @@ public class AddRatingWidget extends MaterialRow {
 
 	Label txtAttribute = new Label();
 	ListBox lstAttribute = new ListBox();
-	Button btnSave = new Button("Save");
-	Button btnEdit = new Button("Edit");
+	MaterialButton btnSave = new MaterialButton("Save");
+	MaterialButton btnEdit = new MaterialButton("Edit");
 	ListBox listScore = new ListBox();
 	Label lblRating = new Label();
 	private int attributeIdRatingId=0;
@@ -151,11 +151,11 @@ public class AddRatingWidget extends MaterialRow {
 		this.lstAttribute = lstAttribute;
 	}
 
-	public Button getBtnSave() {
+	public MaterialButton getBtnSave() {
 		return btnSave;
 	}
 
-	public void setBtnSave(Button btnSave) {
+	public void setBtnSave(MaterialButton btnSave) {
 		this.btnSave = btnSave;
 	}
 
