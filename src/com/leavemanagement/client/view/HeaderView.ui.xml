@@ -1,0 +1,17 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:m="urn:import:gwt.material.design.client.ui">
+
+<m:MaterialNavBar>
+<m:MaterialNavBrand href="#Test" float="LEFT" text="Resource Management System"  />
+<m:MaterialNavSection float="RIGHT">
+<m:MaterialLink iconType="ACCOUNT_CIRCLE" iconPosition="LEFT" text="Add User" textColor="WHITE" waves="LIGHT" ui:field="addUser"/>
+<m:MaterialLink  iconPosition="LEFT" text="Change Password" textColor="WHITE" waves="LIGHT" ui:field="changePassword"/>
+<m:MaterialLink  iconPosition="LEFT" text="Add Company" textColor="WHITE" waves="LIGHT" ui:field="addCompany"/>
+<m:MaterialLink  iconPosition="LEFT" text="LOG OFF" textColor="WHITE" waves="LIGHT" ui:field="logOff"/>
+
+</m:MaterialNavSection>
+</m:MaterialNavBar>
+
+</ui:UiBinder> 

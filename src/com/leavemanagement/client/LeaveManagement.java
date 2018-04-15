@@ -14,6 +14,6 @@ public class LeaveManagement implements EntryPoint {
 		GreetingServiceAsync rpcService = GWT.create(GreetingService.class);
 	    HandlerManager eventBus = new HandlerManager(null);
 	    AppController appViewer = new AppController(rpcService, eventBus);
-	    appViewer.go(RootPanel.get("bodyContainer"));
+	    appViewer.go(RootPanel.get("bodyContainer"), RootPanel.get("headerContainer"));
 	}
 }

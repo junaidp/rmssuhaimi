@@ -1,22 +1,18 @@
 package com.leavemanagement.client.view;
 
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.HTML;
+
 import gwt.material.design.client.ui.MaterialButton;
-import com.google.gwt.user.client.ui.DecoratedTabPanel;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TabLayoutPanel;
-import com.google.gwt.user.client.ui.TabPanel;
-
-import gwt.material.design.client.ui.MaterialAnchorButton;
 import gwt.material.design.client.ui.MaterialColumn;
 import com.leavemanagement.client.presenter.AdminPresenter.Display;
+import com.leavemanagement.client.view.widget.MaterialTab;
 import com.leavemanagement.shared.User;
 
 
@@ -55,10 +51,10 @@ public class AdminView extends MaterialColumn implements IsWidget,Display {
 		hpnlHeader.add(lblHeader);
 		hpnlHeader.add(hpnlWelcome);
 		
-		add(hpnlHeader);
+		//add(hpnlHeader);
 		MaterialColumn vpnlLeave  = new MaterialColumn();
 		vpnlLeave.setWidth("100%");
-		add(vpnlLeave);
+		//add(vpnlLeave);
 		MaterialRow rowAddUser = new MaterialRow();
 		rowAddUser.add(addUser);
 		vpnlLeave.add(rowAddUser);
@@ -68,6 +64,7 @@ public class AdminView extends MaterialColumn implements IsWidget,Display {
 		MaterialRow rowAddCompany = new MaterialRow();
         rowAddCompany.add(addCompany);
 		vpnlLeave.add(rowAddCompany);
+		/*
 		TabPanel tabPanel = new TabPanel();
 		tabPanel.add(vpnlLeaveRecords ,    "Pending Leave Requests");
 		tabPanel.add(vpnlContainer, "Leaves History");
@@ -79,10 +76,18 @@ public class AdminView extends MaterialColumn implements IsWidget,Display {
 		if(loggedInUser.getReportingTo()==5){
 		tabPanel.add(new TimeSheetReportView(loggedInUser), "Time Report");
 		}
+		*/
 		
-		
-		add(tabPanel);
-		tabPanel.selectTab(0);
+		MaterialTab tab = new MaterialTab();
+		add(new HTML("&nbsp"));
+		add(tab);
+				
+		tab.getTab1().add(new HTML("&nbsp"));
+		tab.getTab1().add(vpnlLeaveRecords);
+		tab.getTab2().add(new HTML("&nbsp"));
+		tab.getTab2().add(vpnlContainer);
+		tab.getTab3().add(new HTML("&nbsp"));
+		tab.getTab3().add(vpnlEMployeeLeavesRecord);
 		
 		logOff.addClickHandler(new ClickHandler(){
 
