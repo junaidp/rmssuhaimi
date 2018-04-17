@@ -1,5 +1,6 @@
 package com.leavemanagement.client.view;
 
+import gwt.material.design.client.ui.MaterialColumn;
 import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.Label;
 
@@ -9,10 +10,16 @@ public class UserRepotWidget extends MaterialRow{
 	private Label userName = new Label();
 	
 	public UserRepotWidget(){
-		add(userName);
-		add(actualHours);
-		add(actualTimeCost);
-		userName.setWidth("100px");
+		MaterialColumn colUserName = new MaterialColumn();
+		colUserName.add(userName);
+		add(colUserName);
+		MaterialColumn colActualHour = new MaterialColumn();
+        colActualHour.add(actualHours);
+		add(colActualHour);
+		MaterialColumn colActualTime = new MaterialColumn();
+        colActualTime.add(actualTimeCost);
+		add(colActualTime);
+		userName.setWidth("90px");
 		actualHours.setWidth("100px");
 		actualTimeCost.setWidth("100px");
 	}

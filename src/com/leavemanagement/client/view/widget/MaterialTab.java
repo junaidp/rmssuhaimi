@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
 import gwt.material.design.client.ui.MaterialColumn;
+import gwt.material.design.client.ui.MaterialTabItem;
 
 public class MaterialTab extends Composite {
 
@@ -27,6 +28,26 @@ public class MaterialTab extends Composite {
 	@UiField
 	MaterialColumn tab3;
 
+	@UiField
+	MaterialColumn tab4;
+
+	@UiField
+	MaterialColumn tab5;
+
+	@UiField
+	MaterialColumn tab6;
+
+	@UiField
+	MaterialColumn tab7;
+
+	@UiField
+	MaterialColumn tab8;
+	
+	@UiField
+	MaterialTabItem tabTimeReport;
+	
+	
+	
 	public MaterialColumn getTab1() {
 		return tab1;
 	}
@@ -37,6 +58,30 @@ public class MaterialTab extends Composite {
 
 	public MaterialColumn getTab3() {
 		return tab3;
+	}
+
+	public MaterialColumn getTab4() {
+		return tab4;
+	}
+
+	public MaterialColumn getTab5() {
+		return tab5;
+	}
+
+	public MaterialColumn getTab6() {
+		return tab6;
+	}
+
+	public MaterialColumn getTab7() {
+		return tab7;
+	}
+
+	public MaterialColumn getTab8() {
+		return tab8;
+	}
+
+	public MaterialTabItem getTabTimeReport() {
+		return tabTimeReport;
 	}
 
 

@@ -160,7 +160,7 @@ public class JobEditView extends MaterialColumn{
 			
 			final AssignedToWidget assignToWidget = new AssignedToWidget(employeesList);
 			for(int j=0; j<employeesList.size(); j++){
-				assignToWidget.getListAssign().addItem(employeesList.get(j).getName(), employeesList.get(j).getUserId()+"");
+				assignToWidget.getListAssign().addItem(employeesList.get(j).getUserId()+"", employeesList.get(j).getName());
 			}
 			
 			for(int k=0; k<assignToWidget.getListAssign().getItemCount(); k++ ){

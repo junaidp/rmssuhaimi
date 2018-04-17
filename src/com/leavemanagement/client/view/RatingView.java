@@ -3,21 +3,19 @@ package com.leavemanagement.client.view;
 import java.util.ArrayList;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-
-
-import gwt.material.design.addins.client.tree.MaterialTree;
-import gwt.material.design.addins.client.tree.MaterialTreeItem;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
 import gwt.material.design.client.ui.MaterialColumn;
+import gwt.material.design.client.ui.MaterialListBox;
+
 import com.leavemanagement.client.GreetingService;
 import com.leavemanagement.client.GreetingServiceAsync;
 import com.leavemanagement.shared.AttributeRating;
@@ -34,7 +32,6 @@ public class RatingView extends MaterialColumn{
 	private int totalRatingValue = 0;
 	
 	public RatingView(User loggedInUser){
-		container.getElement().getStyle().setHeight(400, Unit.PX);
 		this.loggedInUser = loggedInUser;
 		Label lblAttributes = new Label("Ratings");
 		container.add(lblAttributes);
@@ -79,25 +76,25 @@ public class RatingView extends MaterialColumn{
 	
 	private void populateJobsList(ArrayList<JobUsersDTO> jobUsersDTO) {
 		container.clear();
-		MaterialTree tree = new MaterialTree();
+		Tree tree = new Tree();
 	
 		container.add(tree);
 		for(int i=0; i<jobUsersDTO.size(); i++ ){
 			final Job job =jobUsersDTO.get(i).getJob();
 //			final TreeItem jobTree = new TreeItem(job.getJobName());
-			final MaterialTreeItem jobTree = new MaterialTreeItem();
+			final TreeItem jobTree = new TreeItem();
 			jobTree.setText(job.getJobName());
 			//////////////////////////
 			
-			final ListBox listUsers = new ListBox();
-			listUsers.addItem("Select User");
+			final MaterialListBox listUsers = new MaterialListBox();
+			listUsers.addItem("0","Select User");
 			listUsers.setWidth("200px");
 			for(int j=0; j< jobUsersDTO.get(i).getUsers().size(); j++){
-				listUsers.addItem( jobUsersDTO.get(i).getUsers().get(j).getName(), jobUsersDTO.get(i).getUsers().get(j).getUserId()+"");
+				listUsers.addItem(jobUsersDTO.get(i).getUsers().get(j).getUserId()+"",  jobUsersDTO.get(i).getUsers().get(j).getName());
 			}
 //			hpnl.add(jobTree.as);
-			tree.add(jobTree);
-			tree.add(listUsers);
+			tree.addItem(jobTree);
+			tree.addItem(listUsers);
 			
 			//////////////////////////
 			
@@ -105,8 +102,10 @@ public class RatingView extends MaterialColumn{
 			MaterialColumn vpnlMain = new MaterialColumn();
 			final Label lblTotal = new Label(".");
 			final MaterialColumn vpnl = new MaterialColumn();
-			jobTree.add(vpnlMain);
-			vpnlMain.add(lblTotal);
+			jobTree.addItem(vpnlMain);
+			MaterialColumn colTotal = new MaterialColumn();
+			colTotal.add(lblTotal);
+			vpnlMain.add(colTotal);
 			vpnlMain.add(vpnl);
 			
 			if(loggedInUser.getRoleId().getRoleId() == 5){
@@ -115,16 +114,25 @@ public class RatingView extends MaterialColumn{
 			
 			updateJobAttribute(job, listUsers, vpnl, lblTotal);
 			
-			listUsers.addChangeHandler(new ChangeHandler(){
-
+			listUsers.addValueChangeHandler(new ValueChangeHandler<String>() {
+				
 				@Override
-				public void onChange(ChangeEvent event) {
+				public void onValueChange(ValueChangeEvent<String> event) {
 					fetchJobUserRating(job.getJobId(),listUsers, vpnl, lblTotal);
-					
-					
 				}
+			
+		
+//			
+//			listUsers.addChangeHandler(new ChangeHandler(){
+//
+//				@Override
+//				public void onChange(ChangeEvent event) {
+//					fetchJobUserRating(job.getJobId(),listUsers, vpnl, lblTotal);
+//					
+//					
+//				}
 
-				private void fetchJobUserRating(final int jobId, final ListBox listUsers,
+				private void fetchJobUserRating(final int jobId, final MaterialListBox listUsers,
 						final MaterialColumn vpnl, final Label lblTotal) {
 					int userId = Integer.parseInt(listUsers.getValue(listUsers.getSelectedIndex()));
 					rpcService.fetchjobUserRating(userId, jobId, new AsyncCallback<ArrayList<AttributeRating>>() {
@@ -164,22 +172,35 @@ public class RatingView extends MaterialColumn{
 		
 	}
 	
-	private void updateJobAttribute(Job job,ListBox listUsers,
+	private void updateJobAttribute(Job job,MaterialListBox listUsers,
 			final MaterialColumn vpnl, final Label lblTotal) {
 		for(int j=0; j< job.getJobAttributes().size(); j++){
 			final AddRatingWidget addRatingWidget = new AddRatingWidget(listUsers);
 			
-			addRatingWidget.getListScore().addChangeHandler(new ChangeHandler(){
-
+//			addRatingWidget.getListScore().addChangeHandler(new ChangeHandler(){
+//
+//				@Override
+//				public void onChange(ChangeEvent event) {
+//					calculateTotalRatinglevels(vpnl, lblTotal);
+//					if(totalRatingValue>100){
+//						addRatingWidget.getBtnSave().setEnabled(false);
+//					}else{
+//						addRatingWidget.getBtnSave().setEnabled(true);
+//					}
+//				}});
+			
+			addRatingWidget.getListScore().addValueChangeHandler(new ValueChangeHandler<String>() {
+				
 				@Override
-				public void onChange(ChangeEvent event) {
+				public void onValueChange(ValueChangeEvent<String> event) {
 					calculateTotalRatinglevels(vpnl, lblTotal);
 					if(totalRatingValue>100){
 						addRatingWidget.getBtnSave().setEnabled(false);
 					}else{
 						addRatingWidget.getBtnSave().setEnabled(true);
 					}
-				}});
+				}
+			});
 			
 			
 			addRatingWidget.setAttributeId(job.getJobAttributes().get(j).getJobAttributeId());
@@ -221,7 +242,7 @@ public class RatingView extends MaterialColumn{
 	}
 	
 
-	private void updateJobUserAttribute(ListBox listUsers,
+	private void updateJobUserAttribute(MaterialListBox listUsers,
 			final MaterialColumn vpnl,ArrayList<AttributeRating> attributRatings, int jobId, final Label lblTotal) {
 		for(int m=0; m<vpnl.getWidgetCount(); m++){
 			
@@ -233,12 +254,20 @@ public class RatingView extends MaterialColumn{
 			for(int m=0; m<vpnl.getWidgetCount(); m++){
 				
 				addRatingWidget = (AddRatingWidget) vpnl.getWidget(m);
-				addRatingWidget.getListScore().addChangeHandler(new ChangeHandler(){
-
+//				addRatingWidget.getListScore().addChangeHandler(new ChangeHandler(){
+//
+//					@Override
+//					public void onChange(ChangeEvent event) {
+//						calculateTotalRatinglevels(vpnl, lblTotal);
+//					}});
+				
+				addRatingWidget.getListScore().addValueChangeHandler(new ValueChangeHandler<String>() {
+					
 					@Override
-					public void onChange(ChangeEvent event) {
+					public void onValueChange(ValueChangeEvent<String> event) {
 						calculateTotalRatinglevels(vpnl, lblTotal);
-					}});
+					}
+				});
 //				addRatingWidget.refreshFields();
 				if(addRatingWidget.getAttributeId() == attributRatings.get(j).getAttributeId()){
 //					addRatingWidget = addRatingWidgetOld;

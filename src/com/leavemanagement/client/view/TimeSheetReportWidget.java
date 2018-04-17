@@ -24,9 +24,15 @@ public class TimeSheetReportWidget extends MaterialColumn{
 		Label lblUserName = new Label("UserName");
 		Label lblHours = new Label("Hours");
 		Label lblTimeCost = new Label("Time Cost");
-		hpnlHeadings.add(lblUserName);
-		hpnlHeadings.add(lblHours);
-		hpnlHeadings.add(lblTimeCost);
+		MaterialColumn colLblUserName = new MaterialColumn();
+		colLblUserName.add(lblUserName);
+		hpnlHeadings.add(colLblUserName);
+		MaterialColumn colLblHours = new MaterialColumn();
+        colLblHours.add(lblHours);
+		hpnlHeadings.add(colLblHours);
+		MaterialColumn colLblTimeCost = new MaterialColumn();
+        colLblTimeCost.add(lblTimeCost);
+		hpnlHeadings.add(colLblTimeCost);
 		lblUserName.setWidth("100px");
 		lblHours.setWidth("100px");
 		lblTimeCost.setWidth("100px");
@@ -51,31 +57,45 @@ public class TimeSheetReportWidget extends MaterialColumn{
 			
 			vpnlContainer.add(userReportWidget);
 		}
+		
 		Label lblTotal = new Label("Total");
 		Label lblFee = new Label("Fee");
 		lblTotal.setStyleName("bold");
-		Label lblRecoveryRate = new Label("RcoveryRate");
+		Label lblRecoveryRate = new Label("RecoveryRate");
 		lblRecoveryRate.setStyleName("bold");
 		lblFee.setStyleName("bold");
-		lblTotal.setWidth("90px");
-		lblRecoveryRate.setWidth("90px");
-		
-		hpnl.add(lblTotal);
-		hpnl.add(totalHours);
-		hpnl.add(new Label(totaltimeCost+""));
+		lblTotal.setWidth("100px");
+		lblRecoveryRate.setWidth("100px");
+		MaterialColumn colLblTotal = new MaterialColumn();
+		colLblTotal.add(lblTotal);
+		hpnl.add(colLblTotal);
+		MaterialColumn colTotalHours = new MaterialColumn();
+		colTotalHours.add(totalHours);
+		hpnl.add(colTotalHours);
+		MaterialColumn colLTotaltimecost = new MaterialColumn();
+		colLTotaltimecost.add( new Label(totaltimeCost+""));
+		hpnl.add(colLTotaltimecost);
 		
 		MaterialRow hpnlFee = new MaterialRow();
-		hpnlFee.add(lblFee);
+		MaterialColumn colLblFee = new MaterialColumn();
+		colLblFee.add(lblFee);
+		hpnlFee.add(colLblFee);
 		lblFee.setStyleName("bold");
-		hpnlFee.add(fee);
-		lblFee.setWidth("90px");
+		MaterialColumn colFee = new MaterialColumn();	
+		colFee.add(fee);
+		hpnlFee.add(colFee);
+		
+		lblFee.setWidth("100px");
 		
 		MaterialRow hpnlRecoveryRate = new MaterialRow();
-		hpnlRecoveryRate.add(lblRecoveryRate);
+		MaterialColumn colLblRecoveryRate = new MaterialColumn();
+		colLblRecoveryRate.add(lblRecoveryRate);
+		hpnlRecoveryRate.add(colLblRecoveryRate);
 		lblRecoveryRate.setStyleName("bold");
-		hpnlRecoveryRate.add(recoveryRate);
-		hpnlRecoveryRate.setWidth("90px");
-		
+		MaterialColumn colRecoveryRate = new MaterialColumn();
+		colRecoveryRate.add(recoveryRate);
+		hpnlRecoveryRate.add(colRecoveryRate);
+		 
 		add(vpnlContainer);
 		add(hpnl);
 		add(hpnlFee);

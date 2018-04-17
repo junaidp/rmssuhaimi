@@ -88,6 +88,22 @@ public class AdminView extends MaterialColumn implements IsWidget,Display {
 		tab.getTab2().add(vpnlContainer);
 		tab.getTab3().add(new HTML("&nbsp"));
 		tab.getTab3().add(vpnlEMployeeLeavesRecord);
+		tab.getTab4().add(new HTML("&nbsp"));
+		tab.getTab4().add(jobCreationView);
+		tab.getTab5().add(new HTML("&nbsp"));
+		tab.getTab5().add(new AttributesView(loggedInUser));
+		tab.getTab6().add(new HTML("&nbsp"));
+		tab.getTab6().add(new RatingView(loggedInUser));
+		tab.getTab7().add(new HTML("&nbsp"));
+		tab.getTab7().add(new TimeSheetView(loggedInUser));
+		tab.getTab8().add(new HTML("&nbsp"));
+		tab.getTab8().add(new TimeSheetReportView(loggedInUser));
+		
+		if(loggedInUser.getReportingTo()==5){
+			tab.getTabTimeReport().setVisible(true);
+			}else{
+				tab.getTabTimeReport().setVisible(false);
+			}
 		
 		logOff.addClickHandler(new ClickHandler(){
 

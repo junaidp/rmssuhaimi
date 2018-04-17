@@ -1,14 +1,15 @@
 package com.leavemanagement.client.view;
 
 import gwt.material.design.client.ui.MaterialButton;
+import gwt.material.design.client.ui.MaterialColumn;
+import gwt.material.design.client.ui.MaterialListBox;
 import gwt.material.design.client.ui.MaterialRow;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 
 public class AddAttributeWidget extends MaterialRow {
 
 	TextBox txtAttribute = new TextBox();
-	ListBox lstAttribute = new ListBox();
+	MaterialListBox lstAttribute = new MaterialListBox();
 	MaterialButton btnSave = new MaterialButton("Save");
 	MaterialButton btnDelete = new MaterialButton("Delete");
 	private int jobId=0;
@@ -23,13 +24,23 @@ public class AddAttributeWidget extends MaterialRow {
 		btnSave.setWidth("100px");
 		btnDelete.setWidth("100px");
 		
-		add(txtAttribute);
-		add(lstAttribute);
-		add(btnSave);
-		add(btnDelete);
+		MaterialColumn coltxtAttribute = new MaterialColumn();
+		MaterialColumn collstAttribute = new MaterialColumn();
+		MaterialColumn colbtnSave = new MaterialColumn();
+		MaterialColumn colbtnDelete = new MaterialColumn();
 		
-		txtAttribute.setHeight("20px");
-		lstAttribute.setHeight("30px");
+		coltxtAttribute.add(txtAttribute);
+		collstAttribute.add(lstAttribute);
+		colbtnSave.add(btnSave);
+		colbtnDelete.add(btnDelete);
+		
+		add(coltxtAttribute);
+		add(collstAttribute);
+		add(colbtnSave);
+		add(colbtnDelete);
+		
+		//txtAttribute.setHeight("20px");
+		//lstAttribute.setHeight("30px");
 		btnSave.setHeight("30px");
 		btnDelete.setHeight("30px");
 
@@ -44,11 +55,11 @@ public class AddAttributeWidget extends MaterialRow {
 		this.txtAttribute = txtAttribute;
 	}
 
-	public ListBox getLstAttribute() {
+	public MaterialListBox getLstAttribute() {
 		return lstAttribute;
 	}
 
-	public void setLstAttribute(ListBox lstAttribute) {
+	public void setLstAttribute(MaterialListBox lstAttribute) {
 		this.lstAttribute = lstAttribute;
 	}
 

@@ -3,18 +3,15 @@ package com.leavemanagement.client.view;
 import java.util.ArrayList;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
-
 import gwt.material.design.addins.client.tree.MaterialTree;
 import gwt.material.design.addins.client.tree.MaterialTreeItem;
 import gwt.material.design.client.ui.MaterialColumn;
@@ -159,14 +156,23 @@ public class AttributesView extends MaterialColumn{
 
 						});
 					
-					addAttributeNewWidget.getLstAttribute().addChangeHandler(new ChangeHandler() {
+//					addAttributeNewWidget.getLstAttribute().addChangeHandler(new ChangeHandler() {
+//						
+//						@Override
+//						public void onChange(ChangeEvent event) {
+//							calculateTotalAttributelevels(vpnl, lblTotalAttributesLeve);
+//						}
+//
+//						
+//					});
+					
+					addAttributeNewWidget.getLstAttribute().addValueChangeHandler(new ValueChangeHandler<String>() {
 						
 						@Override
-						public void onChange(ChangeEvent event) {
+						public void onValueChange(ValueChangeEvent<String> event) {
 							calculateTotalAttributelevels(vpnl, lblTotalAttributesLeve);
+							
 						}
-
-						
 					});
 					
 					addAttributeNewWidget.getBtnDelete().addClickHandler(new ClickHandler(){

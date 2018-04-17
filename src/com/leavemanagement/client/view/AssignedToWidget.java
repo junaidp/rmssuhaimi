@@ -2,18 +2,17 @@ package com.leavemanagement.client.view;
 
 import java.util.ArrayList;
 
-import gwt.material.design.client.ui.MaterialButton;
+import gwt.material.design.client.ui.MaterialListBox;
+
 import com.google.gwt.user.client.ui.FlexTable;
-import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.leavemanagement.shared.User;
 
 public class AssignedToWidget extends FlexTable {
 	Image btnRemove = new Image("deleteIcon.png");
-	 ListBox listAssign = new ListBox();
+	 MaterialListBox listAssign = new MaterialListBox();
 	 TextBox txtDays = new TextBox();
 	 private int jobEmployeeId= 0;
 	public AssignedToWidget(ArrayList<User> employeesList){
@@ -28,16 +27,16 @@ public class AssignedToWidget extends FlexTable {
 		setWidget(1, 2, btnRemove);
 		listAssign.clear();
 		for(int i=0; i< employeesList.size(); i++){
-			listAssign.addItem(employeesList.get(i).getName(), employeesList.get(i).getUserId()+"");
+			listAssign.addItem(employeesList.get(i).getUserId()+"", employeesList.get(i).getName());
 			
 		}
 		
 	}
 	
-	public ListBox getListAssign() {
+	public MaterialListBox getListAssign() {
 		return listAssign;
 	}
-	public void setListAssign(ListBox listAssign) {
+	public void setListAssign(MaterialListBox listAssign) {
 		this.listAssign = listAssign;
 	}
 	public TextBox getTxtDays() {

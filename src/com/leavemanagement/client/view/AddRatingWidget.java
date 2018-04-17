@@ -1,17 +1,17 @@
 package com.leavemanagement.client.view;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gwt.material.design.client.ui.MaterialButton;
+import gwt.material.design.client.ui.MaterialColumn;
+import gwt.material.design.client.ui.MaterialListBox;
 import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
 import com.leavemanagement.client.GreetingService;
 import com.leavemanagement.client.GreetingServiceAsync;
 import com.leavemanagement.shared.AttributeRating;
@@ -19,10 +19,10 @@ import com.leavemanagement.shared.AttributeRating;
 public class AddRatingWidget extends MaterialRow {
 
 	Label txtAttribute = new Label();
-	ListBox lstAttribute = new ListBox();
+	MaterialListBox lstAttribute = new MaterialListBox();
 	MaterialButton btnSave = new MaterialButton("Save");
 	MaterialButton btnEdit = new MaterialButton("Edit");
-	ListBox listScore = new ListBox();
+	MaterialListBox listScore = new MaterialListBox();
 	Label lblRating = new Label();
 	private int attributeIdRatingId=0;
 	
@@ -30,12 +30,12 @@ public class AddRatingWidget extends MaterialRow {
 	private int attributeId = 0;
 	private GreetingServiceAsync rpcService = GWT.create(GreetingService.class);
 
-	public AddRatingWidget(final ListBox listUsers) {
-		lstAttribute.addItem("10%", "0");
-		lstAttribute.addItem("20%", "1");
-		lstAttribute.addItem("30%", "2");
-		lstAttribute.addItem("40%", "3");
-		lstAttribute.addItem("50%", "4");
+	public AddRatingWidget(final MaterialListBox listUsers) {
+		lstAttribute.addItem("0", "10%");
+		lstAttribute.addItem("1", "20%");
+		lstAttribute.addItem("2", "30%");
+		lstAttribute.addItem("3", "40%");
+		lstAttribute.addItem("4", "50%");
 		lstAttribute.setEnabled(false);
 		listScore.addItem("0");
 		listScore.addItem("1");
@@ -46,18 +46,32 @@ public class AddRatingWidget extends MaterialRow {
 		btnSave.setWidth("100px");
 		btnEdit.setWidth("100px");
 		
-		add(txtAttribute);
-		add(lstAttribute);
-		add(listScore);
-		add(lblRating);
+		MaterialColumn coltextAttribute = new MaterialColumn();
+		MaterialColumn collstAttribute = new MaterialColumn();
+		MaterialColumn collistScore = new MaterialColumn();
+		MaterialColumn collblRating = new MaterialColumn();
+		MaterialColumn colBtnSave = new MaterialColumn();
+		MaterialColumn colBtnEdit = new MaterialColumn();
+		
+		coltextAttribute.add(txtAttribute);
+		collstAttribute.add(lstAttribute);
+		collistScore.add(listScore);
+		collblRating.add(lblRating);
+		colBtnSave.add(btnSave);
+		colBtnEdit.add(btnEdit);
+		
+		add(coltextAttribute);
+		add(collstAttribute);
+		add(collistScore);
+		add(collblRating);
 		txtAttribute.setWidth("300px");
 		lblRating.setWidth("100px");
-		add(btnSave);
-		add(btnEdit);
+		add(colBtnSave);
+		add(colBtnEdit);
 		lblRating.setStyleName("blue");
 		
-		txtAttribute.setHeight("20px");
-		lstAttribute.setHeight("30px");
+	//	txtAttribute.setHeight("20px");
+	//	lstAttribute.setHeight("30px");
 		btnSave.setHeight("30px");
 		
 
@@ -109,23 +123,40 @@ public class AddRatingWidget extends MaterialRow {
 	
 
 	private void calculate() {
-		listScore.addChangeHandler(new ChangeHandler(){
-
-			@Override
-			public void onChange(ChangeEvent event) {
-				calcultateAndupdate();
-			}
-
-			});
+//		listScore.addChangeHandler(new ChangeHandler(){
+//
+//			@Override
+//			public void onChange(ChangeEvent event) {
+//				calcultateAndupdate();
+//			}
+//
+//			});
 		
-		lstAttribute.addChangeHandler(new ChangeHandler(){
-
+		listScore.addValueChangeHandler(new ValueChangeHandler<String>() {
+			
 			@Override
-			public void onChange(ChangeEvent event) {
+			public void onValueChange(ValueChangeEvent<String> event) {
 				calcultateAndupdate();
 			}
-
-			});
+		});
+		
+//		lstAttribute.addChangeHandler(new ChangeHandler(){
+//
+//			@Override
+//			public void onChange(ChangeEvent event) {
+//				calcultateAndupdate();
+//			}
+//
+//			});
+		
+		listScore.addValueChangeHandler(new ValueChangeHandler<String>() {
+			
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				calcultateAndupdate();
+				
+			}
+		});
 	}
 	
 	private void calcultateAndupdate() {
@@ -143,11 +174,11 @@ public class AddRatingWidget extends MaterialRow {
 
 
 
-	public ListBox getLstAttribute() {
+	public MaterialListBox getLstAttribute() {
 		return lstAttribute;
 	}
 
-	public void setLstAttribute(ListBox lstAttribute) {
+	public void setLstAttribute(MaterialListBox lstAttribute) {
 		this.lstAttribute = lstAttribute;
 	}
 
@@ -202,13 +233,13 @@ public class AddRatingWidget extends MaterialRow {
 
 
 
-	public ListBox getListScore() {
+	public MaterialListBox getListScore() {
 		return listScore;
 	}
 
 
 
-	public void setListScore(ListBox listScore) {
+	public void setListScore(MaterialListBox listScore) {
 		this.listScore = listScore;
 	}
 

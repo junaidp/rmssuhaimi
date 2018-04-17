@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
@@ -14,20 +13,21 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
+
+import gwt.material.design.addins.client.richeditor.MaterialRichEditor;
 import gwt.material.design.client.ui.MaterialButton;
 import com.google.gwt.user.client.ui.HasWidgets;
 import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextArea;
 import gwt.material.design.client.ui.MaterialColumn;
+import gwt.material.design.client.ui.MaterialListBox;
+
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.leavemanagement.client.GreetingServiceAsync;
 import com.leavemanagement.client.event.AdminEvent;
 import com.leavemanagement.client.event.ChangePasswordEvent;
 import com.leavemanagement.client.event.LeaveHistoryEvent;
-import com.leavemanagement.client.event.MainEvent;
 import com.leavemanagement.client.view.LoadingPopup;
 import com.leavemanagement.shared.LeaveRecord;
 import com.leavemanagement.shared.LeaveTypes;
@@ -50,11 +50,11 @@ public class MainPresenter implements Presenter
 		Widget asWidget();
 		Object getHtmlErrorMessage = null;
 		 MaterialColumn getVpnlAvailableLeaves();
-		 ListBox getListLeaves() ;
+		 MaterialListBox getListLeaves() ;
 		 DateBox getFrom();
 		 DateBox getTo();
 		 Label getLblNoOfDays();
-		 TextArea getReason();
+		 MaterialRichEditor getReason();
 		 MaterialButton getBtnSubmit();
 		 Anchor getLogOff() ;
 		 Label getLoggedInUserName();
@@ -172,15 +172,22 @@ public class MainPresenter implements Presenter
 				Label lblName = new Label();
 				lblName.setWidth("200px");
 				lblName.setText(result.get(i).getLeaveType().getLeaveTypeName());
-				hpnl.add(lblName);
-				hpnl.add(new Label(""));
-				Label lblAvailed = new Label(result.get(i).getLeavesAvailed()+"");
+				
+				MaterialColumn colLblName = new MaterialColumn();
+				colLblName.add(lblName);
+				hpnl.add(colLblName);
+			     Label a = new Label("");
+			     MaterialColumn colA = new MaterialColumn();
+			     colA.add(a);
+				hpnl.add(colA);
+//				Label lblAvailed = new Label(result.get(i).getLeavesAvailed()+"");
 				Label lblRemaining = new Label(result.get(i).getLeavesAvaible()+"");
 				if(result.get(i).getLeaveType().getLeaveTypeId()==5){
 					lblRemaining.setText("");
 				}
-				
-				hpnl.add(lblRemaining);
+				MaterialColumn colLblRemaining = new MaterialColumn();
+				colLblRemaining.add(lblRemaining);
+				hpnl.add(colLblRemaining);
 				display.getVpnlAvailableLeaves().add(hpnl);
 				
 				}
@@ -221,7 +228,7 @@ public class MainPresenter implements Presenter
 			@Override
 			public void onSuccess(ArrayList<LeaveTypes> result) {
 				for(int i=0; i< result.size(); i++){
-				display.getListLeaves().addItem(result.get(i).getLeaveTypeName(), result.get(i).getLeaveTypeId()+"");
+				display.getListLeaves().addItem( result.get(i).getLeaveTypeId()+"",result.get(i).getLeaveTypeName());
 				}
 				if(loadingPopup!=null){
 					loadingPopup.remove();

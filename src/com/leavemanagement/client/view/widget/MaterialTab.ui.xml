@@ -20,6 +20,28 @@
 <m:MaterialTabItem waves="YELLOW" grid="s4">
 <m:MaterialLink text="Employees Leave Record" href="#tab3" textColor="WHITE"/>
 </m:MaterialTabItem>
+
+<m:MaterialTabItem waves="YELLOW" grid="s4">
+<m:MaterialLink text="Job Creation" href="#tab4" textColor="WHITE"/>
+</m:MaterialTabItem>
+
+<m:MaterialTabItem waves="YELLOW" grid="s4">
+<m:MaterialLink text="Attributes" href="#tab5" textColor="WHITE"/>
+</m:MaterialTabItem>
+
+<m:MaterialTabItem waves="YELLOW" grid="s4">
+<m:MaterialLink text="Rating" href="#tab6" textColor="WHITE"/>
+</m:MaterialTabItem>
+
+<m:MaterialTabItem waves="YELLOW" grid="s4">
+<m:MaterialLink text="Time Sheet" href="#tab7" textColor="WHITE"/>
+</m:MaterialTabItem>
+
+<m:MaterialTabItem waves="YELLOW" grid="s4" visible="false" ui:field="tabTimeReport">
+<m:MaterialLink text="Time Report" href="#tab8" textColor="WHITE"/>
+</m:MaterialTabItem>
+
+
 </m:MaterialTab>
 
 </m:MaterialColumn>
@@ -31,6 +53,24 @@
 
 <m:MaterialColumn m:id="tab3" grid="s12" ui:field="tab3">
 </m:MaterialColumn>
+
+<m:MaterialColumn m:id="tab4" grid="s12" ui:field="tab4">
+</m:MaterialColumn>
+
+<m:MaterialColumn m:id="tab5" grid="s12" ui:field="tab5">
+</m:MaterialColumn>
+
+<m:MaterialColumn m:id="tab6" grid="s12" ui:field="tab6">
+</m:MaterialColumn>
+
+<m:MaterialColumn m:id="tab7" grid="s12" ui:field="tab7">
+</m:MaterialColumn>
+
+<m:MaterialColumn m:id="tab8" grid="s12" ui:field="tab8">
+</m:MaterialColumn>
+
+
+
 
 </m:MaterialRow>
 </g:HTMLPanel>

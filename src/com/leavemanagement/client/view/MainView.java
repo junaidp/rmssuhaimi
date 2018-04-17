@@ -1,14 +1,17 @@
 package com.leavemanagement.client.view;
 
+import com.google.gwt.dom.client.Style.BorderStyle;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.Anchor;
+
+import gwt.material.design.addins.client.richeditor.MaterialRichEditor;
 import gwt.material.design.client.ui.MaterialButton;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextArea;
 import gwt.material.design.client.ui.MaterialColumn;
+import gwt.material.design.client.ui.MaterialListBox;
+
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.leavemanagement.client.presenter.MainPresenter.Display;
 
@@ -18,11 +21,11 @@ public class MainView extends MaterialColumn implements IsWidget,Display {
 	
 	private MaterialColumn vp;
 	private MaterialColumn vpnlAvailableLeaves = new MaterialColumn();
-	private ListBox listLeaves= new ListBox();
+	private MaterialListBox listLeaves= new MaterialListBox();
 	private DateBox from = new DateBox();
 	private DateBox to = new DateBox();
 	private Label lblNoOfDays = new Label("");
-	private TextArea reason = new TextArea();
+	private MaterialRichEditor reason = new MaterialRichEditor();
 	private MaterialButton btnSubmit = new MaterialButton("Submit");
 	private Anchor logOff = new Anchor("Log off");
 	private Label loggedInUserName = new Label();
@@ -31,13 +34,16 @@ public class MainView extends MaterialColumn implements IsWidget,Display {
 	private Anchor adminView = new Anchor("Admin");
 	
 	public MainView(){
-		btnSubmit.setStyleName("btnStyle");
-		setWidth("100%");
+		 
+		
 		MaterialRow hpnlWelcome = new MaterialRow();
 		hpnlWelcome.setWidth("100%");
-		MaterialRow hpnlSpace = new MaterialRow();
-		hpnlSpace.setWidth("80%");
+       	MaterialRow hpnlSpace = new MaterialRow();
+	    hpnlSpace.setWidth("80%");
 		hpnlWelcome.add(hpnlSpace);
+		loggedInUserName.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);
+		loggedInUserName.getElement().getStyle().setBorderWidth(4, Unit.PX);
+
 		loggedInUserName.setStyleName("blue");
 		hpnlWelcome.add(loggedInUserName);
 		MaterialRow hpnlHeader = new MaterialRow();
@@ -46,7 +52,7 @@ public class MainView extends MaterialColumn implements IsWidget,Display {
 		Label lblHeader = new Label("Leave Management System");
 		lblHeader.setStyleName("headerSignin");
 		hpnlWelcome.setStyleName("headerSignin");
-		hpnlHeader.add(lblHeader);
+		//hpnlHeader.add(lblHeader);
 		hpnlHeader.add(hpnlWelcome);
 		Label lblAvailableLeaves = new Label("Available Leaves");
 		MaterialColumn vpnlLeave  = new MaterialColumn();
@@ -66,12 +72,19 @@ public class MainView extends MaterialColumn implements IsWidget,Display {
 		Label lblRequest = new Label("Leave Request");
 		lblRequest.setStyleName("blue");
 		lblAvailableLeaves.setStyleName("blue");
+		lblAvailableLeaves.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);
+		lblAvailableLeaves.getElement().getStyle().setBorderWidth(4, Unit.PX);
+
+		lblRequest.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);
+		lblRequest.getElement().getStyle().setBorderWidth(4, Unit.PX);
+
 		add(lblRequest);
 		add(listLeaves);
 		MaterialRow hpnlDates = new MaterialRow();
 		MaterialColumn vpnlFrom = new MaterialColumn();
 		MaterialColumn vpnlTo = new MaterialColumn();
-		vpnlFrom.add(new Label("From"));
+		Label From = new Label("From");
+		vpnlFrom.add(From);
 		vpnlFrom.add(from);
 		vpnlTo.add(new Label("To"));
 		vpnlTo.add(to);
@@ -79,10 +92,16 @@ public class MainView extends MaterialColumn implements IsWidget,Display {
 		hpnlDates.add(vpnlTo);
 		add(hpnlDates);
 		add(lblNoOfDays);
+		
 		Label lblReason = new Label("Reason");
+		lblReason.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);
+		lblReason.getElement().getStyle().setBorderWidth(4, Unit.PX);
+
 		lblReason.setStyleName("blue");
-		add(lblReason);
+		 add(lblReason);
 		add(reason);
+		 
+		
 		add(btnSubmit);
 		reason.setSize("400px", "150px");
 		
@@ -103,11 +122,11 @@ public class MainView extends MaterialColumn implements IsWidget,Display {
 		this.vpnlAvailableLeaves = vpnlAvailableLeaves;
 	}
 
-	public ListBox getListLeaves() {
+	public MaterialListBox getListLeaves() {
 		return listLeaves;
 	}
 
-	public void setListLeaves(ListBox listLeaves) {
+	public void setListLeaves(MaterialListBox listLeaves) {
 		this.listLeaves = listLeaves;
 	}
 
@@ -135,11 +154,11 @@ public class MainView extends MaterialColumn implements IsWidget,Display {
 		this.lblNoOfDays = lblNoOfDays;
 	}
 
-	public TextArea getReason() {
+	public MaterialRichEditor getReason() {
 		return reason;
 	}
 
-	public void setReason(TextArea reason) {
+	public void setReason(MaterialRichEditor reason) {
 		this.reason = reason;
 	}
 

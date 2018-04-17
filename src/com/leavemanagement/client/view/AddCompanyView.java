@@ -1,20 +1,14 @@
 package com.leavemanagement.client.view;
 
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Anchor;
 import gwt.material.design.client.ui.MaterialButton;
 import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import gwt.material.design.client.ui.MaterialRow;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import gwt.material.design.client.ui.MaterialColumn;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.datepicker.client.DateBox;
 import com.leavemanagement.client.presenter.AddCompanyPresenter.Display;
 
 public class AddCompanyView extends DecoratorPanel implements Display {
