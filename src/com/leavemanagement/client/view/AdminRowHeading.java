@@ -1,19 +1,22 @@
 package com.leavemanagement.client.view;
 
+import com.google.gwt.dom.client.Style.FontWeight;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.Label;
 
 import gwt.material.design.client.ui.MaterialColumn;
+import gwt.material.design.client.ui.MaterialLabel;
 import gwt.material.design.client.ui.MaterialRow;
 
 public class AdminRowHeading extends MaterialRow{
 	
 	public AdminRowHeading(){
-	Label lblName = new Label("Name");
-	Label lblType = new Label("Type");
-	Label lblFrom = new Label("From");
-	Label lblTo = new Label("To");
-	Label lblDays = new Label("Days");
-	Label lblDecision = new Label("Decision");
+	MaterialLabel lblName = new MaterialLabel("Name");
+	MaterialLabel lblType = new MaterialLabel("Type");
+	MaterialLabel lblFrom = new MaterialLabel("From");
+	MaterialLabel lblTo = new MaterialLabel("To");
+	MaterialLabel lblDays = new MaterialLabel("Days");
+	MaterialLabel lblDecision = new MaterialLabel("Decision");
 	
 	
 	lblName.setWidth("120px");
@@ -23,12 +26,20 @@ public class AdminRowHeading extends MaterialRow{
 	lblDays.setWidth("120px");
 	lblDecision.setWidth("120px");
 	
-	lblName.setStyleName("blue");
-	lblType.setStyleName("blue");
-	lblFrom.setStyleName("blue");
-	lblTo.setStyleName("blue");
-	lblDays.setStyleName("blue");
-	lblDecision.setStyleName("blue");
+	
+	lblName.addStyleName("blueBold");
+	lblType.addStyleName("blueBold");
+	lblFrom.addStyleName("blueBold");
+	lblTo.addStyleName("blueBold");
+	lblDays.addStyleName("blueBold");
+	lblDecision.addStyleName("blueBold");
+	lblType.setFontSize(1.2, Unit.EM);
+	lblName.setFontSize(1.2, Unit.EM);
+	lblDays.setFontSize(1.2, Unit.EM);
+	lblDecision.setFontSize(1.2, Unit.EM);
+	lblFrom.setFontSize(1.2, Unit.EM);
+	lblTo.setFontSize(1.2, Unit.EM);
+	
 	
 	MaterialColumn colLblName = new MaterialColumn();
 	colLblName.add(lblName);

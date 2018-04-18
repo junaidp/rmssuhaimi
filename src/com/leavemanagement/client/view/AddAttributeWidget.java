@@ -41,8 +41,7 @@ public class AddAttributeWidget extends MaterialRow {
 		
 		//txtAttribute.setHeight("20px");
 		//lstAttribute.setHeight("30px");
-		btnSave.setHeight("30px");
-		btnDelete.setHeight("30px");
+		
 
 
 	}

@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import sun.security.action.GetLongAction;
 
 import com.google.gwt.user.client.History;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -15,7 +16,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import gwt.material.design.client.ui.MaterialButton;
 import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.Label;
+ 
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -34,6 +35,7 @@ import com.leavemanagement.shared.LeavesDTOForAllUsers;
 import com.leavemanagement.shared.User;
 
 import gwt.material.design.client.ui.MaterialColumn;
+import gwt.material.design.client.ui.MaterialLabel;
 import gwt.material.design.client.ui.MaterialRow;
 
 public class AdminPresenter implements Presenter 
@@ -165,18 +167,18 @@ public class AdminPresenter implements Presenter
 				
 				for(int j=0; j< result.size(); j++){
 					LeavesDTOForAllUsers leavesDTOForAllUsers =result.get(j);
-					Label lblEmployeeName = new Label();
+					MaterialLabel lblEmployeeName = new MaterialLabel();
 					lblEmployeeName.setText(leavesDTOForAllUsers.getUser().getName());
 					lblEmployeeName.setWidth("100%");
 					lblEmployeeName.setStyleName("headerSigninSmall");
 					display.getVpnlEMployeeLeavesRecord().add(lblEmployeeName);
 					for(int i=0; i< leavesDTOForAllUsers.getLeavesDTO().size(); i++){
 					MaterialRow hpnl = new MaterialRow();
-					Label lblAllowed = new Label();
-					Label lblAvailable = new Label(leavesDTOForAllUsers.getLeavesDTO().get(i).getLeavesAvaible()+"");
-					Label lblAvailed = new Label(leavesDTOForAllUsers.getLeavesDTO().get(i).getLeavesAvailed()+"");
+					MaterialLabel lblAllowed = new MaterialLabel();
+					MaterialLabel lblAvailable = new MaterialLabel(leavesDTOForAllUsers.getLeavesDTO().get(i).getLeavesAvaible()+"");
+					MaterialLabel lblAvailed = new MaterialLabel(leavesDTOForAllUsers.getLeavesDTO().get(i).getLeavesAvailed()+"");
 					
-					Label lblName = new Label();
+					MaterialLabel lblName = new MaterialLabel();
 					
 					lblName.setWidth("200px");
 					lblAvailable.setWidth("200px");
@@ -192,7 +194,7 @@ public class AdminPresenter implements Presenter
 				    MaterialColumn colLblName = new MaterialColumn();
 				    colLblName.add(lblName);
 					hpnl.add(colLblName);
-					//hpnl.add(new Label(""));
+					//hpnl.add(new MaterialLabel(""));
 					MaterialColumn colLblAvialed = new MaterialColumn();
 					colLblAvialed.add(lblAvailed);
 					hpnl.add(colLblAvialed);
@@ -221,16 +223,20 @@ public class AdminPresenter implements Presenter
 	
 	private MaterialRow EmployeeLeavesHeading() {
 		MaterialRow hpnlHeading = new MaterialRow();
-		Label lblEmployeeNameHeading = new Label("Employee");
-		Label lblLeaveNameHeading = new Label("Leave Type");
-		Label lblLeavesAvailable = new Label("Available");
-		Label lblLeavesAllowed = new Label("Allowed");
-		Label lblLeavesAvailed = new Label("Availed");
+		MaterialLabel lblEmployeeNameHeading = new MaterialLabel("Employee");
+		MaterialLabel lblLeaveNameHeading = new MaterialLabel("Leave Type");
+		MaterialLabel lblLeavesAvailable = new MaterialLabel("Available");
+		MaterialLabel lblLeavesAllowed = new MaterialLabel("Allowed");
+		MaterialLabel lblLeavesAvailed = new MaterialLabel("Availed");
 		lblEmployeeNameHeading.setStyleName("blueBold");
 		lblLeaveNameHeading.setStyleName("blueBold");
 		lblLeavesAvailable.setStyleName("blueBold");
 		lblLeavesAllowed.setStyleName("blueBold");
 		lblLeavesAvailed.setStyleName("blueBold");
+		lblLeavesAllowed.setFontSize(1.2, Unit.EM);
+		lblLeaveNameHeading.setFontSize(1.2, Unit.EM);
+		lblLeavesAvailable.setFontSize(1.2, Unit.EM);
+		lblLeavesAvailed.setFontSize(1.2, Unit.EM);
 		MaterialColumn colLblEmployeeNameHeading = new MaterialColumn();
 		colLblEmployeeNameHeading.add(lblLeaveNameHeading);
 		hpnlHeading.add(colLblEmployeeNameHeading);

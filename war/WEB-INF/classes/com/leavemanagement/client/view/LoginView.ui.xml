@@ -5,17 +5,35 @@
 	.important {
 		font-weight: bold;
 	}
+	.column{
+	 
+	margin-left: 25%;
+	
+}
+.header{
+	margin-left: -1%;
+	padding-left:45%;
+}
+.button {
+	margin-left: 77%;
+	margin-top:1%;
+}
+.row
+{
+	margin-top:10%;
+}
 	</ui:style>
-	<g:HTMLPanel>
+
+	<g:HTMLPanel  >
 		<div class="header">
 			<!-- <g:Label text="APPLICATION NAME " styleName="heading" /> -->
 		</div>
 
 		<div class="loginArea" ui:field="loginArea">
-			<m:MaterialRow height="150px">
+			<m:MaterialRow height="150px"  addStyleNames="{style.row}"  >
 				<g:Label />
-				<m:MaterialColumn styleName="border" width="500px">
-					<g:HTMLPanel styleName="headerSignin" height="30px"
+				<m:MaterialColumn styleName="border" width="500px" addStyleNames="{style.column}" >
+					<g:HTMLPanel styleName="headerSignin" height="30px"  addStyleNames="{style.header}"
 						width="500px">
 						Sign in
 					</g:HTMLPanel>
@@ -38,7 +56,7 @@
 
 					<m:MaterialColumn styleName="fieldsStyle">
 						<g:Label ui:field=" lblPassword " width="50px" text="Password">
-							password
+							passwords
 						</g:Label>
 						<m:MaterialRow>
 							<g:PasswordTextBox ui:field="txtPassword"
@@ -47,8 +65,8 @@
 						</m:MaterialRow>
 					</m:MaterialColumn>
 					<m:MaterialRow>
-						<m:MaterialRow width="100px"></m:MaterialRow>
-						<m:MaterialButton ui:field="btnSubmit" text="Sign in">
+						<m:MaterialRow width="500px"></m:MaterialRow>
+						<m:MaterialButton ui:field="btnSubmit" text="Sign in " addStyleNames="{style.button}">
 							
 						</m:MaterialButton>
 						

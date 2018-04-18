@@ -1,6 +1,6 @@
-<project name="leaveBuilder" default="make_war" basedir=".">
+<project name="leavenewBuilder" default="make_war" basedir=".">
     <description>
-        Build the leave  War file
+        Build the leavenew  War file
     </description>
 
 
@@ -9,7 +9,7 @@
     <property name="BUILD.dir" location="..\build"/> 
     <property name="DIST.dir" location="..\dist"/> 
     <property name="JAR.dir" location="D:\development\JARS"/> 
-    <property name="MASTER.DIST.dir" location="D:\softwares\apache-tomcat-7.0.52\webapps"/> 
+    <property name="MASTER.DIST.dir" location="D:\downloads\apache-tomcat-7.0.67\webapps"/> 
 
     <!-- =============================================================================================================  -->
     <target name="make_war" >
@@ -17,8 +17,8 @@
         <antcall target="clean" />
         <antcall target="make_dirs" />
         <antcall target="copy_files" />
-        <jar destfile="${DIST.dir}/leave.war" basedir="${BUILD.dir}"/>
-   	    <copy file="${DIST.dir}/leave.war" tofile="${MASTER.DIST.dir}/leave.war"/>
+        <jar destfile="${DIST.dir}/leavenew.war" basedir="${BUILD.dir}"/>
+   	    <copy file="${DIST.dir}/leavenew.war" tofile="${MASTER.DIST.dir}/leavenew.war"/>
     </target>
 
     <!-- =============================================================================================================  -->

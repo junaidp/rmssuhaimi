@@ -1,2 +1,0 @@
-serviceClass: com.leavemanagement.client.GreetingService
-path: 97FA1D1AB181CD3AA140178578E3CB14.gwt.rpc
