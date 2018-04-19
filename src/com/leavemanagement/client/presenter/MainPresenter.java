@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.Label;
 import gwt.material.design.client.ui.MaterialColumn;
+import gwt.material.design.client.ui.MaterialLabel;
 import gwt.material.design.client.ui.MaterialListBox;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -53,11 +54,11 @@ public class MainPresenter implements Presenter
 		 MaterialListBox getListLeaves() ;
 		 DateBox getFrom();
 		 DateBox getTo();
-		 Label getLblNoOfDays();
+		 MaterialLabel getLblNoOfDays();
 		 MaterialRichEditor getReason();
 		 MaterialButton getBtnSubmit();
 		 Anchor getLogOff() ;
-		 Label getLoggedInUserName();
+		 MaterialLabel getLoggedInUserName();
 		 Anchor getLeaveHistory();
 		 Anchor getChangePassword();
 		 Anchor getAdminView();
@@ -169,6 +170,7 @@ public class MainPresenter implements Presenter
 				leavesDTO = result;
 				for(int i=0; i< result.size(); i++){
 				MaterialRow hpnl = new MaterialRow();
+				
 				Label lblName = new Label();
 				lblName.setWidth("200px");
 				lblName.setText(result.get(i).getLeaveType().getLeaveTypeName());

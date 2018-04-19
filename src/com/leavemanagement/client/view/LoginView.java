@@ -10,9 +10,7 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-import gwt.material.design.client.ui.MaterialButton;
-
-public class LoginView extends Composite implements com.leavemanagement.client.presenter.LoginPresenter.Display {
+public class LoginView extends Composite {
 
 	private static LoginUiBinder uiBinder = GWT
 			.create(LoginUiBinder.class);
@@ -58,11 +56,7 @@ public class LoginView extends Composite implements com.leavemanagement.client.p
 
 
 
-	@Override
-	public Label getLblError() {
-		// TODO Auto-generated method stub
-		return lblError;
-	}
+	
 
 
 }

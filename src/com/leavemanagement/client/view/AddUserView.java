@@ -6,7 +6,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
-import com.google.gwt.user.client.ui.TextBox;
+import gwt.material.design.client.ui.MaterialTextBox;
 
 import gwt.material.design.client.ui.MaterialButton;
 import gwt.material.design.client.ui.MaterialColumn;
@@ -18,19 +18,19 @@ import com.leavemanagement.client.presenter.AddUserPresenter.Display;
 public class AddUserView extends DecoratorPanel implements Display {
 	
 	private MaterialButton btnSend = new MaterialButton("Save");
-	TextBox txtUser = new TextBox();
+	MaterialTextBox txtUser = new MaterialTextBox();
 	PasswordTextBox txtPassword = new PasswordTextBox();
 	PasswordTextBox txtConfrimPassword = new PasswordTextBox();
-	TextBox txtEmail = new TextBox();
-	TextBox txtExamLeaves = new TextBox();
+	MaterialTextBox txtEmail = new MaterialTextBox();
+	MaterialTextBox txtExamLeaves = new MaterialTextBox();
 	MaterialListBox listUser = new MaterialListBox();
 	
 	MaterialListBox listDesignation = new MaterialListBox();
 	MaterialListBox listReportingTo = new MaterialListBox();
 	DateBox joiningDate = new DateBox();
-	TextBox contactNumber = new TextBox();
-	TextBox chargeRate = new TextBox();
-	TextBox bankAccountNumber = new TextBox();
+	MaterialTextBox contactNumber = new MaterialTextBox();
+	MaterialTextBox chargeRate = new MaterialTextBox();
+	MaterialTextBox bankAccountNumber = new MaterialTextBox();
 	private MaterialButton btnRemove = new MaterialButton("delete user");
 	private MaterialButton btnUpdate = new MaterialButton("update");
 	
@@ -39,10 +39,7 @@ public class AddUserView extends DecoratorPanel implements Display {
 		MaterialColumn vpnl = new MaterialColumn();
 		add(vpnl);
 		chargeRate.setEnabled(false);
-		btnSend.setStyleName("btnStyle");
-		btnUpdate.setStyleName("btnStyle");
-		btnRemove.setStyleName("btnStyle");
-		Label lblHeading = new Label("Add a new user");
+	Label lblHeading = new Label("Add a new user");
 		lblHeading.setStyleName("headerSignin");
 		lblHeading.setWidth(Window.getClientWidth()-100+"px");
 		listUser.addItem("Select User");
@@ -95,11 +92,17 @@ public class AddUserView extends DecoratorPanel implements Display {
 		vpnl.add(flex);
 		MaterialRow hpnButton = new MaterialRow();
 		MaterialRow hpnSpace = new MaterialRow();
-		hpnSpace.setWidth("160px");
-		hpnButton.add(hpnSpace);
-		hpnButton.add(btnSend);
-		hpnButton.add(btnUpdate);
-		hpnButton.add(btnRemove);
+		
+		MaterialColumn mcSend = new MaterialColumn();
+		MaterialColumn mcUPDATE = new MaterialColumn();
+		MaterialColumn mcRemore = new MaterialColumn();
+		mcSend.add(btnSend);
+		
+		mcUPDATE.add(btnUpdate);
+		mcRemore.add(btnRemove);
+		hpnButton.add(mcSend);
+		hpnButton.add(mcUPDATE);
+		hpnButton.add(mcRemore);
 	vpnl.add(hpnButton);
 		layout();
 		//vpnl.setSpacing(4);
@@ -119,9 +122,7 @@ public class AddUserView extends DecoratorPanel implements Display {
 			 contactNumber.setWidth("200px");
 			 chargeRate.setWidth("200px");
 			 bankAccountNumber.setWidth("200px");
-			 btnUpdate.setWidth("80px");
-			 btnRemove.setWidth("80px");
-			 btnSend.setWidth("80px");
+			
 			 txtExamLeaves.setWidth("200px");
 	}
 
@@ -133,25 +134,25 @@ public class AddUserView extends DecoratorPanel implements Display {
 		this.btnSend = btnSend;
 	}
 
-	public TextBox getTxtUser() {
+	public MaterialTextBox getTxtUser() {
 		return txtUser;
 	}
 
-	public void setTxtUser(TextBox txtUser) {
+	public void setTxtUser(MaterialTextBox txtUser) {
 		this.txtUser = txtUser;
 	}
 
-	public TextBox getTxtPassword() {
+	public PasswordTextBox getTxtPassword() {
 		return txtPassword;
 	}
 
 	
 
-	public TextBox getTxtEmail() {
+	public MaterialTextBox getTxtEmail() {
 		return txtEmail;
 	}
 
-	public void setTxtEmail(TextBox txtEmail) {
+	public void setTxtEmail(MaterialTextBox txtEmail) {
 		this.txtEmail = txtEmail;
 	}
 
@@ -167,11 +168,11 @@ public class AddUserView extends DecoratorPanel implements Display {
 		this.txtPassword = txtPassword;
 	}
 
-	public TextBox getTxtExamLeaves() {
+	public MaterialTextBox getTxtExamLeaves() {
 		return txtExamLeaves;
 	}
 
-	public void setTxtExamLeaves(TextBox txtExamLeaves) {
+	public void setTxtExamLeaves(MaterialTextBox txtExamLeaves) {
 		this.txtExamLeaves = txtExamLeaves;
 	}
 
@@ -207,19 +208,19 @@ public class AddUserView extends DecoratorPanel implements Display {
 		this.joiningDate = joiningDate;
 	}
 
-	public TextBox getContactNumber() {
+	public MaterialTextBox getContactNumber() {
 		return contactNumber;
 	}
 
-	public void setContactNumber(TextBox contactNumber) {
+	public void setContactNumber(MaterialTextBox contactNumber) {
 		this.contactNumber = contactNumber;
 	}
 
-	public TextBox getBankAccountNumber() {
+	public MaterialTextBox getBankAccountNumber() {
 		return bankAccountNumber;
 	}
 
-	public void setBankAccountNumber(TextBox bankAccountNumber) {
+	public void setBankAccountNumber(MaterialTextBox bankAccountNumber) {
 		this.bankAccountNumber = bankAccountNumber;
 	}
 
@@ -239,11 +240,11 @@ public class AddUserView extends DecoratorPanel implements Display {
 		this.btnRemove = btnRemove;
 	}
 
-	public TextBox getChargeRate() {
+	public MaterialTextBox getChargeRate() {
 		return chargeRate;
 	}
 
-	public void setChargeRate(TextBox chargeRate) {
+	public void setChargeRate(MaterialTextBox chargeRate) {
 		this.chargeRate = chargeRate;
 	}
 

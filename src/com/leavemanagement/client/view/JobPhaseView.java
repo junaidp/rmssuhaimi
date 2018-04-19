@@ -5,13 +5,13 @@ import java.util.Date;
 import gwt.material.design.client.ui.MaterialButton;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
+import gwt.material.design.client.ui.MaterialTextBox;
 import gwt.material.design.client.ui.MaterialColumn;
 import com.google.gwt.user.datepicker.client.DateBox;
 
 public class JobPhaseView extends MaterialColumn {
 	
-	private TextBox txtPhase = new TextBox();
+	private MaterialTextBox txtPhase = new MaterialTextBox();
 	private DateBox startDate = new DateBox();
 	private DateBox submissionDate = new DateBox();
 	private DateBox deliveryDate = new DateBox();
@@ -50,11 +50,11 @@ public class JobPhaseView extends MaterialColumn {
 		
 	}
 
-	public TextBox getTxtPhase() {
+	public MaterialTextBox getTxtPhase() {
 		return txtPhase;
 	}
 
-	public void setTxtPhase(TextBox txtPhase) {
+	public void setTxtPhase(MaterialTextBox txtPhase) {
 		this.txtPhase = txtPhase;
 	}
 

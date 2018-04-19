@@ -35,7 +35,6 @@ public class AdminView extends MaterialColumn implements IsWidget,Display {
 	public AdminView(User loggedInUser){
 		jobCreationView =new JobCreationView(null, loggedInUser);
 		addCompany.setVisible(false);
-		btnBack.addStyleName("btnStyle");
 		MaterialRow hpnlWelcome = new MaterialRow();
 		hpnlWelcome.setWidth("100%");
 		MaterialRow hpnlSpace = new MaterialRow();

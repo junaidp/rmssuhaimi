@@ -1,6 +1,7 @@
 package com.leavemanagement.client.view;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -70,8 +71,8 @@ public class AddRatingWidget extends MaterialRow {
 		add(colBtnEdit);
 		lblRating.setStyleName("blue");
 		
-	//	txtAttribute.setHeight("20px");
-	//	lstAttribute.setHeight("30px");
+		btnSave.getElement().getStyle().setMarginTop(25, Unit.PX);
+		btnEdit.getElement().getStyle().setMarginTop(25, Unit.PX);
 		btnSave.setHeight("30px");
 		
 

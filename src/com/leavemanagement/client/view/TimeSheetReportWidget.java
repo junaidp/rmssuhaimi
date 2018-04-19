@@ -4,18 +4,23 @@ import java.util.ArrayList;
 
 import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.Label;
+
+import gwt.material.design.client.ui.MaterialCard;
+import gwt.material.design.client.ui.MaterialCardContent;
+import gwt.material.design.client.ui.MaterialCardTitle;
 import gwt.material.design.client.ui.MaterialColumn;
 import com.leavemanagement.shared.UserReportDTO;
 
-public class TimeSheetReportWidget extends MaterialColumn{
+public class TimeSheetReportWidget extends MaterialCard{
 	
-	Label lblHeading = new Label();
+	MaterialCardTitle lblHeading = new MaterialCardTitle();
 	private MaterialColumn vpnlContainer = new MaterialColumn();
 	private MaterialRow hpnl = new MaterialRow();
 	private Label totalHours = new Label();
 	private Label recoveryRate = new Label();
 	private Label timeCost = new Label();
 	private Label fee = new Label();
+	MaterialCardContent con = new MaterialCardContent();
 	private float totaltimeCost=0;
 	public TimeSheetReportWidget(ArrayList<UserReportDTO> usersList){
 		
@@ -39,8 +44,10 @@ public class TimeSheetReportWidget extends MaterialColumn{
 		lblUserName.setStyleName("bold");
 		lblHours.setStyleName("bold");
 		lblTimeCost.setStyleName("bold");
-		add(hpnlHeadings);
-		lblHeading.setStyleName("blue");
+		
+		con.add(hpnlHeadings);
+		
+		lblHeading.addStyleName("blueBold");
 		totalHours.setWidth("100px");
 		recoveryRate.setWidth("100px");
 		fee.setWidth("100px");
@@ -95,11 +102,14 @@ public class TimeSheetReportWidget extends MaterialColumn{
 		MaterialColumn colRecoveryRate = new MaterialColumn();
 		colRecoveryRate.add(recoveryRate);
 		hpnlRecoveryRate.add(colRecoveryRate);
-		 
-		add(vpnlContainer);
-		add(hpnl);
-		add(hpnlFee);
-		add(hpnlRecoveryRate);
+		
+		MaterialColumn mc = new MaterialColumn();
+		mc.add(vpnlContainer);
+		mc.add(hpnl);
+		con.add(mc);
+		con.add(hpnlFee);
+		con.add(hpnlRecoveryRate);
+		add(con);
 	}
 	public Label getTotalHours() {
 		return totalHours;

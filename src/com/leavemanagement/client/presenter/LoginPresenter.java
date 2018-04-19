@@ -23,6 +23,12 @@ import com.leavemanagement.client.event.MainEvent;
 import com.leavemanagement.client.view.LoadingPopup;
 import com.leavemanagement.shared.User;
 
+import gwt.material.design.client.constants.ProgressType;
+import gwt.material.design.client.ui.MaterialLoader;
+import gwt.material.design.client.ui.MaterialPreLoader;
+import gwt.material.design.client.ui.MaterialProgress;
+import gwt.material.design.client.ui.MaterialTextBox;
+
 public class LoginPresenter implements Presenter 
 
 {
@@ -36,8 +42,8 @@ public class LoginPresenter implements Presenter
 		Widget asWidget();
 		Object getHtmlErrorMessage = null;
 		
-		PasswordTextBox getTxtPassword();
-		TextBox getTxtUserName();
+		MaterialTextBox getTxtPassword();
+		MaterialTextBox getTxtUserName();
 		HasClickHandlers getBtnSubmit();
 //		MaterialListBox getListYears();
 		Label getLblError();
@@ -87,17 +93,17 @@ public class LoginPresenter implements Presenter
 
 	public void signIn(String userName,String password)
 	{
-		final LoadingPopup loadingPopup = new LoadingPopup();
-		loadingPopup.display();
+		MaterialLoader.loading(true);
+		MaterialLoader.progress(true);
+		
 		rpcService.signIn(userName,password, new AsyncCallback<User>()
 				
 
 				{
 			public void onFailure(Throwable ex) {
 				Window.alert(ex.getStackTrace().toString());
-				if(loadingPopup!=null){
-					loadingPopup.remove();
-				}
+				MaterialLoader.loading(false);
+				MaterialLoader.progress(false);
 			}
 
 			public void onSuccess(User user) {
@@ -118,9 +124,8 @@ public class LoginPresenter implements Presenter
 					display.getLblError().setText("username / password invalid");
 				}
 				
-				if(loadingPopup!=null){
-					loadingPopup.remove();
-				}
+				MaterialLoader.loading(false);
+				MaterialLoader.progress(false);
 			}
 				});
 

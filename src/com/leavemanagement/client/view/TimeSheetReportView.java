@@ -6,6 +6,7 @@ import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
@@ -146,7 +147,11 @@ public class TimeSheetReportView extends MaterialColumn{
 					TimeSheetReportWidget timeSheetReportWidget = new TimeSheetReportWidget(result.get(i).getUsersList());
 					timeSheetReportWidget.lblHeading.setText(result.get(i).getJobName()+" ("+result.get(i).getJobType()+") ");
 					timeSheetReportWidget.getTotalHours().setText(result.get(i).getTotal()+"");
-					timeSheetReportWidget.getRecoveryRate().setText(result.get(i).getActualRecoveryRate()+"");
+					
+					String recoveryRat = NumberFormat.getFormat(".00").format(result.get(i).getActualRecoveryRate());
+					timeSheetReportWidget.getRecoveryRate().setText(recoveryRat);
+					
+					//timeSheetReportWidget.getRecoveryRate().setText(result.get(i).getActualRecoveryRate()+"");
 					timeSheetReportWidget.getFee().setText(result.get(i).getFee()+"");
 					timeSheetReportWidget.getTimeCost().setText(result.get(i).getTimeCost()+"");
 					vpnlResult.add(timeSheetReportWidget);

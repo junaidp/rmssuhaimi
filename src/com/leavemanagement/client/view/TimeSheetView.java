@@ -17,8 +17,6 @@ import gwt.material.design.client.ui.MaterialRow;
 import gwt.material.design.client.ui.MaterialTextBox;
 
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
-
 import gwt.material.design.client.ui.MaterialColumn;
 import gwt.material.design.client.ui.MaterialListBox;
 
@@ -64,7 +62,7 @@ public class TimeSheetView extends MaterialColumn{
 		listMonth.addItem("4","Apr");
 		listMonth.addItem("5", "May");
 		listMonth.addItem("6", "Jun");
-		listMonth.addItem( "7", "Jul");
+		listMonth.addItem("7", "Jul");
 		listMonth.addItem("8","Aug");
 		listMonth.addItem("9", "Sep");
 		listMonth.addItem("10","Oct");
@@ -111,7 +109,7 @@ public class TimeSheetView extends MaterialColumn{
 		flex.setWidget(0, 0, new Label("job"));
 		for(int k=0; k<31;k++){
 			Label heading = new Label(k+1+"");
-			heading.setStyleName("bluebg");
+			heading.addStyleName("blueBold");
 			flex.setWidget(0, k+1, heading);
 			flex.getFlexCellFormatter().setHorizontalAlignment(0, k+1, HasHorizontalAlignment.ALIGN_CENTER);
 			
@@ -160,7 +158,7 @@ public class TimeSheetView extends MaterialColumn{
 		ArrayList<TimeSheet> timeSheetList = new ArrayList<TimeSheet>();
 		for(int i=0; i< flex.getRowCount()-1; i++){
 			for(int j=0;j<31; j++){
-				TextBox text = (TextBox) flex.getWidget(i+1, j+1);
+				MaterialTextBox text = (MaterialTextBox) flex.getWidget(i+1, j+1);
 				text.setWidth("30px");
 				if(text.getText()!=null && !text.getText().equals("")){
 					TimeSheet timeSheet = new TimeSheet(); 
@@ -192,7 +190,7 @@ public class TimeSheetView extends MaterialColumn{
 		ArrayList<TimeSheet> timeSheetList = new ArrayList<TimeSheet>();
 		for(int i=0; i< flex.getRowCount()-1; i++){
 			for(int j=0;j<31; j++){
-				TextBox text = (TextBox) flex.getWidget(i+1, j+1);
+				MaterialTextBox text = (MaterialTextBox) flex.getWidget(i+1, j+1);
 				text.setWidth("30px");
 				if(text.getText()!=null && !text.getText().equals("")){
 					TimeSheet timeSheet = new TimeSheet(); 

@@ -7,13 +7,13 @@ import gwt.material.design.client.ui.MaterialListBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
+import gwt.material.design.client.ui.MaterialTextBox;
 import com.leavemanagement.shared.User;
 
 public class AssignedToWidget extends FlexTable {
 	Image btnRemove = new Image("deleteIcon.png");
 	 MaterialListBox listAssign = new MaterialListBox();
-	 TextBox txtDays = new TextBox();
+	 MaterialTextBox txtDays = new MaterialTextBox();
 	 private int jobEmployeeId= 0;
 	public AssignedToWidget(ArrayList<User> employeesList){
 		Label lbl = new Label("Assign to ");
@@ -39,10 +39,10 @@ public class AssignedToWidget extends FlexTable {
 	public void setListAssign(MaterialListBox listAssign) {
 		this.listAssign = listAssign;
 	}
-	public TextBox getTxtDays() {
+	public MaterialTextBox getTxtDays() {
 		return txtDays;
 	}
-	public void setTxtDays(TextBox txtDays) {
+	public void setTxtDays(MaterialTextBox txtDays) {
 		this.txtDays = txtDays;
 	}
 	public int getJobEmployeeId() {

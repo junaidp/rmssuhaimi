@@ -7,18 +7,18 @@ import com.google.gwt.user.client.ui.FlexTable;
 import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
-import com.google.gwt.user.client.ui.TextBox;
+import gwt.material.design.client.ui.MaterialTextBox;
 import gwt.material.design.client.ui.MaterialColumn;
 import com.leavemanagement.client.presenter.AddCompanyPresenter.Display;
 
 public class AddCompanyView extends DecoratorPanel implements Display {
 	
 	private MaterialButton btnSend = new MaterialButton("Save");
-	TextBox txtUser = new TextBox();
+	MaterialTextBox txtUser = new MaterialTextBox();
 	PasswordTextBox txtPassword = new PasswordTextBox();
 	PasswordTextBox txtConfrimPassword = new PasswordTextBox();
-	TextBox txtEmail = new TextBox();
-	TextBox txtCompanyName = new TextBox();
+	MaterialTextBox txtEmail = new MaterialTextBox();
+	MaterialTextBox txtCompanyName = new MaterialTextBox();
 	
 	
 	private MaterialButton btnUpdate = new MaterialButton("update");
@@ -27,10 +27,8 @@ public class AddCompanyView extends DecoratorPanel implements Display {
 	public AddCompanyView(){
 		MaterialColumn vpnl = new MaterialColumn();
 		add(vpnl);
-		btnSend.setStyleName("btnStyle");
-		btnUpdate.setStyleName("btnStyle");
 		Label lblHeading = new Label("Add a new Company");
-		lblHeading.setStyleName("headerSignin");
+		lblHeading.addStyleName("blueBold");
 		lblHeading.setWidth(Window.getClientWidth()-100+"px");
 		MaterialRow hp = new MaterialRow();
 		hp.setWidth("100%");
@@ -85,25 +83,25 @@ public class AddCompanyView extends DecoratorPanel implements Display {
 		this.btnSend = btnSend;
 	}
 
-	public TextBox getTxtUser() {
+	public MaterialTextBox getTxtUser() {
 		return txtUser;
 	}
 
-	public void setTxtUser(TextBox txtUser) {
+	public void setTxtUser(MaterialTextBox txtUser) {
 		this.txtUser = txtUser;
 	}
 
-	public TextBox getTxtPassword() {
+	public PasswordTextBox getTxtPassword() {
 		return txtPassword;
 	}
 
 	
 
-	public TextBox getTxtEmail() {
+	public MaterialTextBox getTxtEmail() {
 		return txtEmail;
 	}
 
-	public void setTxtEmail(TextBox txtEmail) {
+	public void setTxtEmail(MaterialTextBox txtEmail) {
 		this.txtEmail = txtEmail;
 	}
 
@@ -119,11 +117,11 @@ public class AddCompanyView extends DecoratorPanel implements Display {
 		this.txtPassword = txtPassword;
 	}
 
-	public TextBox getTxtCompanyName() {
+	public MaterialTextBox getTxtCompanyName() {
 		return txtCompanyName;
 	}
 
-	public void setTxtCompanyName(TextBox txtCompanyName) {
+	public void setTxtCompanyName(MaterialTextBox txtCompanyName) {
 		this.txtCompanyName = txtCompanyName;
 	}
 

@@ -9,7 +9,9 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.PasswordTextBox;
+
+import gwt.material.design.client.ui.MaterialTextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.leavemanagement.client.GreetingServiceAsync;
 import com.leavemanagement.client.view.LoadingPopup;
@@ -34,11 +36,11 @@ public class AddCompanyPresenter implements Presenter
 		Widget asWidget();
 		Object getHtmlErrorMessage = null;
 		MaterialButton getBtnSend();
-		TextBox getTxtUser();
-		TextBox getTxtPassword();
-		TextBox getTxtConfrimPassword();
-		TextBox getTxtEmail();
-		TextBox getTxtCompanyName();
+		MaterialTextBox getTxtUser();
+		PasswordTextBox getTxtPassword();
+		PasswordTextBox getTxtConfrimPassword();
+		MaterialTextBox getTxtEmail();
+		MaterialTextBox getTxtCompanyName();
 		
 	}  
 

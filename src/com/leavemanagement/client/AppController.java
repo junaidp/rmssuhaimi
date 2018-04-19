@@ -6,7 +6,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.leavemanagement.client.event.AdminEvent;
 import com.leavemanagement.client.event.AdminEventHandler;
 import com.leavemanagement.client.event.ChangePasswordEvent;
@@ -29,12 +28,10 @@ import com.leavemanagement.client.view.AddUserView;
 import com.leavemanagement.client.view.AdminView;
 import com.leavemanagement.client.view.ChangePasswordView;
 import com.leavemanagement.client.view.LeaveHistoryView;
-import com.leavemanagement.client.view.LoginView;
-import com.leavemanagement.client.view.LoginViewOld;
+import com.leavemanagement.client.view.LoginMaterial;
 import com.leavemanagement.client.view.MainView;
 import com.leavemanagement.shared.User;
 import com.leavemanagement.client.view.HeaderView;
-import gwt.material.design.client.ui.MaterialColumn;
 
 public class AppController implements Presenter, ValueChangeHandler<String> {
 	private final HandlerManager eventBus;
@@ -131,7 +128,7 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 			presenter = null;
 
 			if (token.equals("login")) {
-				presenter = new LoginPresenter(rpcService, eventBus, new LoginView());
+				presenter = new LoginPresenter(rpcService, eventBus, new LoginMaterial());
 				if (presenter != null) {
 					this.container = mainContainer;
 					presenter.go(container);

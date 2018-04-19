@@ -9,6 +9,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gwt.material.design.client.base.validator.ValidationChangedEvent;
@@ -18,7 +19,7 @@ import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.StackPanel;
-import com.google.gwt.user.client.ui.TextBox;
+import gwt.material.design.client.ui.MaterialTextBox;
 import gwt.material.design.client.ui.MaterialColumn;
 import gwt.material.design.client.ui.MaterialListBox;
 
@@ -41,16 +42,16 @@ public class JobCreationView extends MaterialColumn {
 	private MaterialListBox listDomain = new MaterialListBox();
 	private MaterialListBox listSubLineofService = new MaterialListBox();
 	private MaterialListBox listLocation = new MaterialListBox();
-	private TextBox txtJobName = new TextBox();
+	private MaterialTextBox txtJobName = new MaterialTextBox();
 	private MaterialListBox listCountry = new MaterialListBox();
 	private MaterialListBox listSupervisor = new MaterialListBox();
 	private MaterialListBox listPrincipalConsultant = new MaterialListBox();
-	private TextBox txtClient = new TextBox();
-	private TextBox txtClientFee = new TextBox();
+	private MaterialTextBox txtClient = new MaterialTextBox();
+	private MaterialTextBox txtClientFee = new MaterialTextBox();
 	private MaterialButton btnSubmit = new MaterialButton("Submit/Update");
 	private MaterialButton btnPhase = new MaterialButton("Add Phase");
-	private TextBox textSupervisorHours = new TextBox();
-	private TextBox textPrinicialConsultantHours = new TextBox();
+	private MaterialTextBox textSupervisorHours = new MaterialTextBox();
+	private MaterialTextBox textPrinicialConsultantHours = new MaterialTextBox();
 	private ArrayList<Phases> phases = new ArrayList<Phases>();
 	JobsListView jobsListView ;
 //	private MaterialListBox listEmployee1 = new MaterialListBox();
@@ -220,6 +221,7 @@ public class JobCreationView extends MaterialColumn {
 				if(recoveryRat.length()>4){
 					 recoveryRat = recoveryRat.substring(0,4);
 				}
+				
 				costWidget.getRecoveryRate().setText("Recovery Rate: " + recoveryRat);
 				}catch(Exception ex){
 					Window.alert("Enter valid numeric value in Supervisor , princiap Consultant Hours and Client Fee Field");
@@ -582,11 +584,11 @@ listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
 		this.listLocation = listLocation;
 	}
 
-	public TextBox getTxtJobName() {
+	public MaterialTextBox getTxtJobName() {
 		return txtJobName;
 	}
 
-	public void setTxtJobName(TextBox txtJobName) {
+	public void setTxtJobName(MaterialTextBox txtJobName) {
 		this.txtJobName = txtJobName;
 	}
 
@@ -598,11 +600,11 @@ listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
 		this.listCountry = listCountry;
 	}
 
-	public TextBox getTxtClient() {
+	public MaterialTextBox getTxtClient() {
 		return txtClient;
 	}
 
-	public void setTxtClient(TextBox txtClient) {
+	public void setTxtClient(MaterialTextBox txtClient) {
 		this.txtClient = txtClient;
 	}
 
@@ -654,27 +656,27 @@ listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
 		this.vpnlEmployees = vpnlEmployees;
 	}
 
-	public TextBox getTxtClientFee() {
+	public MaterialTextBox getTxtClientFee() {
 		return txtClientFee;
 	}
 
-	public void setTxtClientFee(TextBox txtClientFee) {
+	public void setTxtClientFee(MaterialTextBox txtClientFee) {
 		this.txtClientFee = txtClientFee;
 	}
 
-	public TextBox getTextSupervisorHours() {
+	public MaterialTextBox getTextSupervisorHours() {
 		return textSupervisorHours;
 	}
 
-	public void setTextSupervisorHours(TextBox textSupervisorHours) {
+	public void setTextSupervisorHours(MaterialTextBox textSupervisorHours) {
 		this.textSupervisorHours = textSupervisorHours;
 	}
 
-	public TextBox getTextPrinicialConsultantHours() {
+	public MaterialTextBox getTextPrinicialConsultantHours() {
 		return textPrinicialConsultantHours;
 	}
 
-	public void setTextPrinicialConsultantHours(TextBox textPrinicialConsultantHours) {
+	public void setTextPrinicialConsultantHours(MaterialTextBox textPrinicialConsultantHours) {
 		this.textPrinicialConsultantHours = textPrinicialConsultantHours;
 	}
 

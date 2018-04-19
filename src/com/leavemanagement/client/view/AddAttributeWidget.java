@@ -1,14 +1,16 @@
 package com.leavemanagement.client.view;
 
+import com.google.gwt.dom.client.Style.Unit;
+
 import gwt.material.design.client.ui.MaterialButton;
 import gwt.material.design.client.ui.MaterialColumn;
 import gwt.material.design.client.ui.MaterialListBox;
 import gwt.material.design.client.ui.MaterialRow;
-import com.google.gwt.user.client.ui.TextBox;
+import gwt.material.design.client.ui.MaterialTextBox;
 
 public class AddAttributeWidget extends MaterialRow {
 
-	TextBox txtAttribute = new TextBox();
+	MaterialTextBox txtAttribute = new MaterialTextBox();
 	MaterialListBox lstAttribute = new MaterialListBox();
 	MaterialButton btnSave = new MaterialButton("Save");
 	MaterialButton btnDelete = new MaterialButton("Delete");
@@ -34,6 +36,9 @@ public class AddAttributeWidget extends MaterialRow {
 		colbtnSave.add(btnSave);
 		colbtnDelete.add(btnDelete);
 		
+		btnSave.getElement().getStyle().setMarginTop(25, Unit.PX);
+		btnDelete.getElement().getStyle().setMarginTop(25, Unit.PX);
+		
 		add(coltxtAttribute);
 		add(collstAttribute);
 		add(colbtnSave);
@@ -46,11 +51,11 @@ public class AddAttributeWidget extends MaterialRow {
 
 	}
 
-	public TextBox getTxtAttribute() {
+	public MaterialTextBox getTxtAttribute() {
 		return txtAttribute;
 	}
 
-	public void setTxtAttribute(TextBox txtAttribute) {
+	public void setTxtAttribute(MaterialTextBox txtAttribute) {
 		this.txtAttribute = txtAttribute;
 	}
 

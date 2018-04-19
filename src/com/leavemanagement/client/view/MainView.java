@@ -10,6 +10,7 @@ import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import gwt.material.design.client.ui.MaterialColumn;
+import gwt.material.design.client.ui.MaterialLabel;
 import gwt.material.design.client.ui.MaterialListBox;
 
 import com.google.gwt.user.datepicker.client.DateBox;
@@ -24,11 +25,11 @@ public class MainView extends MaterialColumn implements IsWidget,Display {
 	private MaterialListBox listLeaves= new MaterialListBox();
 	private DateBox from = new DateBox();
 	private DateBox to = new DateBox();
-	private Label lblNoOfDays = new Label("");
+	private MaterialLabel lblNoOfDays = new MaterialLabel("");
 	private MaterialRichEditor reason = new MaterialRichEditor();
 	private MaterialButton btnSubmit = new MaterialButton("Submit");
 	private Anchor logOff = new Anchor("Log off");
-	private Label loggedInUserName = new Label();
+	private MaterialLabel loggedInUserName = new MaterialLabel();
 	private Anchor  leaveHistory = new Anchor("Leave History");
 	private Anchor changePassword = new Anchor("Change Password");
 	private Anchor adminView = new Anchor("Admin");
@@ -41,20 +42,22 @@ public class MainView extends MaterialColumn implements IsWidget,Display {
        	MaterialRow hpnlSpace = new MaterialRow();
 	    hpnlSpace.setWidth("80%");
 		hpnlWelcome.add(hpnlSpace);
-		loggedInUserName.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);
-		loggedInUserName.getElement().getStyle().setBorderWidth(4, Unit.PX);
-
-		loggedInUserName.setStyleName("blue");
+	
+		loggedInUserName.setFontSize(1.2, Unit.EM);
+		
+		
+		loggedInUserName.addStyleName("blueBold");
 		hpnlWelcome.add(loggedInUserName);
 		MaterialRow hpnlHeader = new MaterialRow();
 		hpnlHeader.setWidth("100%");
 		setWidth("100%");
-		Label lblHeader = new Label("Leave Management System");
-		lblHeader.setStyleName("headerSignin");
-		hpnlWelcome.setStyleName("headerSignin");
+		MaterialLabel lblHeader = new MaterialLabel("Leave Management System");
+		lblHeader.addStyleName("headerSignin");
+		hpnlWelcome.addStyleName("headerSignin");
 		//hpnlHeader.add(lblHeader);
 		hpnlHeader.add(hpnlWelcome);
-		Label lblAvailableLeaves = new Label("Available Leaves");
+		MaterialLabel lblAvailableLeaves = new MaterialLabel("Available Leaves");
+		lblAvailableLeaves.setFontSize(1.2, Unit.EM);
 		MaterialColumn vpnlLeave  = new MaterialColumn();
 		vpnlLeave.setWidth("100%");
 //		MaterialRow hpnlSpaceLeave = new MaterialRow();
@@ -69,39 +72,36 @@ public class MainView extends MaterialColumn implements IsWidget,Display {
 		add(lblAvailableLeaves);
 		add(vpnlAvailableLeaves);
 		
-		Label lblRequest = new Label("Leave Request");
-		lblRequest.setStyleName("blue");
-		lblAvailableLeaves.setStyleName("blue");
-		lblAvailableLeaves.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);
-		lblAvailableLeaves.getElement().getStyle().setBorderWidth(4, Unit.PX);
+		MaterialLabel lblRequest = new MaterialLabel("Leave Request");
+		
+		lblRequest.addStyleName("blueBold");
+		lblAvailableLeaves.addStyleName("blueBold");
+		lblRequest.setFontSize(1.2, Unit.EM);
+		
 
-		lblRequest.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);
-		lblRequest.getElement().getStyle().setBorderWidth(4, Unit.PX);
 
 		add(lblRequest);
 		add(listLeaves);
 		MaterialRow hpnlDates = new MaterialRow();
 		MaterialColumn vpnlFrom = new MaterialColumn();
 		MaterialColumn vpnlTo = new MaterialColumn();
-		Label From = new Label("From");
+		MaterialLabel From = new MaterialLabel("From");
 		vpnlFrom.add(From);
 		vpnlFrom.add(from);
-		vpnlTo.add(new Label("To"));
+		vpnlTo.add(new MaterialLabel("To"));
 		vpnlTo.add(to);
 		hpnlDates.add(vpnlFrom);
 		hpnlDates.add(vpnlTo);
 		add(hpnlDates);
 		add(lblNoOfDays);
 		
-		Label lblReason = new Label("Reason");
-		lblReason.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);
-		lblReason.getElement().getStyle().setBorderWidth(4, Unit.PX);
-
-		lblReason.setStyleName("blue");
+		MaterialLabel lblReason = new MaterialLabel("Reason");
+		lblReason.setFontSize(1.2, Unit.EM);
+		lblReason.addStyleName("blueBold");
 		 add(lblReason);
 		add(reason);
 		 
-		
+		btnSubmit.getElement().getStyle().setMarginLeft(875, Unit.PX);
 		add(btnSubmit);
 		reason.setSize("400px", "150px");
 		
@@ -146,11 +146,11 @@ public class MainView extends MaterialColumn implements IsWidget,Display {
 		this.to = to;
 	}
 
-	public Label getLblNoOfDays() {
+	public MaterialLabel getLblNoOfDays() {
 		return lblNoOfDays;
 	}
 
-	public void setLblNoOfDays(Label lblNoOfDays) {
+	public void setLblNoOfDays(MaterialLabel lblNoOfDays) {
 		this.lblNoOfDays = lblNoOfDays;
 	}
 
@@ -178,11 +178,11 @@ public class MainView extends MaterialColumn implements IsWidget,Display {
 		this.logOff = logOff;
 	}
 
-	public Label getLoggedInUserName() {
+	public MaterialLabel getLoggedInUserName() {
 		return loggedInUserName;
 	}
 
-	public void setLoggedInUserName(Label loggedInUserName) {
+	public void setLoggedInUserName(MaterialLabel loggedInUserName) {
 		this.loggedInUserName = loggedInUserName;
 	}
 

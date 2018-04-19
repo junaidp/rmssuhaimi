@@ -7,7 +7,7 @@ import gwt.material.design.client.ui.MaterialButton;
 import gwt.material.design.client.ui.MaterialColumn;
 import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
+import gwt.material.design.client.ui.MaterialTextBox;
 
 public class AdminRow extends MaterialRow{
 	
@@ -18,13 +18,11 @@ public class AdminRow extends MaterialRow{
 	private Label lblDays = new Label("");
 	private MaterialButton btnApprove = new MaterialButton("Approve");
 	private MaterialButton btnDecline = new MaterialButton("Decline");
-	private TextBox txtRemarks =  new TextBox();
+	private MaterialTextBox txtRemarks =  new MaterialTextBox();
 	private Label lblStatus = new Label("");
 	private Label lblRemarks = new Label();
 	MaterialRow hpnlButton = new MaterialRow();
 	public AdminRow(){
-		btnApprove.setStyleName("btnStyle");
-		btnDecline.setStyleName("btnStyle");
 		setStyleName("form-row");
 		lblName.setWidth("120px");
 		lblType.setWidth("120px");
@@ -128,11 +126,11 @@ public class AdminRow extends MaterialRow{
 		this.btnDecline = btnDecline;
 	}
 
-	public TextBox getTxtRemarks() {
+	public MaterialTextBox getTxtRemarks() {
 		return txtRemarks;
 	}
 
-	public void setTxtRemarks(TextBox txtRemarks) {
+	public void setTxtRemarks(MaterialTextBox txtRemarks) {
 		this.txtRemarks = txtRemarks;
 	}
 

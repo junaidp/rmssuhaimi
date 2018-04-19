@@ -16,7 +16,9 @@ import gwt.material.design.client.ui.MaterialButton;
 import gwt.material.design.client.ui.MaterialListBox;
 
 import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.PasswordTextBox;
+
+import gwt.material.design.client.ui.MaterialTextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.leavemanagement.client.GreetingServiceAsync;
@@ -41,16 +43,16 @@ public class AddUserPresenter implements Presenter
 		Object getHtmlErrorMessage = null;
 		MaterialButton getBtnSend();
 		MaterialButton getBtnRemove();
-		TextBox getTxtUser();
-		TextBox getTxtPassword();
-		TextBox getTxtConfrimPassword();
-		TextBox getTxtEmail();
-		TextBox getTxtExamLeaves();
+		MaterialTextBox getTxtUser();
+		PasswordTextBox getTxtPassword();
+		PasswordTextBox getTxtConfrimPassword();
+		MaterialTextBox getTxtEmail();
+		MaterialTextBox getTxtExamLeaves();
 		MaterialListBox getListUser();
 		MaterialButton getBtnUpdate();
-		TextBox getContactNumber();
-		TextBox getChargeRate();
-		TextBox getBankAccountNumber();
+		MaterialTextBox getContactNumber();
+		MaterialTextBox getChargeRate();
+		MaterialTextBox getBankAccountNumber();
 		DateBox getJoiningDate();
 		MaterialListBox getListDesignation();
 		MaterialListBox getListReportingTo();

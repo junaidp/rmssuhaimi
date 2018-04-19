@@ -9,7 +9,7 @@ import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
-import com.google.gwt.user.client.ui.TextBox;
+import gwt.material.design.client.ui.MaterialTextBox;
 import gwt.material.design.client.ui.MaterialColumn;
 import com.leavemanagement.client.presenter.ChangePasswordPresenter.Display;
 
@@ -21,7 +21,6 @@ public class ChangePasswordView extends DecoratorPanel implements IsWidget,Displ
 	MaterialButton btnSubmit = new MaterialButton("Submit");
 
 	public ChangePasswordView(){
-		btnSubmit.setStyleName("btnStyle");
 		Label lblHeading = new Label("Change Password");
 //		lblHeading.setStyleName("blueBackground");
 		lblHeading.setStyleName("headerSignin");
@@ -51,7 +50,7 @@ public class ChangePasswordView extends DecoratorPanel implements IsWidget,Displ
 		
 	}
 
-	public TextBox getOldPassword() {
+	public PasswordTextBox getOldPassword() {
 		return oldPassword;
 	}
 
@@ -59,7 +58,7 @@ public class ChangePasswordView extends DecoratorPanel implements IsWidget,Displ
 		this.oldPassword = oldPassword;
 	}
 
-	public TextBox getNewPassword() {
+	public PasswordTextBox getNewPassword() {
 		return newPassword;
 	}
 
@@ -67,7 +66,7 @@ public class ChangePasswordView extends DecoratorPanel implements IsWidget,Displ
 		this.newPassword = newPassword;
 	}
 
-	public TextBox getConfrimPassword() {
+	public PasswordTextBox getConfrimPassword() {
 		return confrimPassword;
 	}
 

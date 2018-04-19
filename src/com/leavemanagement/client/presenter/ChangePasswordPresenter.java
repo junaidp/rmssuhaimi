@@ -4,19 +4,15 @@ import java.util.logging.Logger;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gwt.material.design.client.ui.MaterialButton;
 import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.leavemanagement.client.GreetingServiceAsync;
-import com.leavemanagement.client.presenter.LoginPresenter.Display;
 import com.leavemanagement.client.view.LoadingPopup;
 import com.leavemanagement.shared.User;
 
@@ -33,9 +29,9 @@ public class ChangePasswordPresenter implements Presenter{
 		Widget asWidget();
 		Object getHtmlErrorMessage = null;
 		MaterialButton getBtnSubmit() ;
-		TextBox getConfrimPassword();
-		TextBox getNewPassword();
-		TextBox getOldPassword() ;
+		PasswordTextBox getConfrimPassword();
+		PasswordTextBox getNewPassword();
+		PasswordTextBox getOldPassword() ;
 		
 		
 	}  

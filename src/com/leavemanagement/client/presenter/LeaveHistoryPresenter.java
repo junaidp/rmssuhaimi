@@ -21,7 +21,7 @@ import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.TextBox;
+import gwt.material.design.client.ui.MaterialTextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.leavemanagement.client.GreetingServiceAsync;
 import com.leavemanagement.client.event.MainEvent;
