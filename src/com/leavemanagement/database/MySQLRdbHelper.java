@@ -114,7 +114,7 @@ public class MySQLRdbHelper {
 			for(Iterator it=rsList.iterator();it.hasNext();	)
 			{
 				users = (User)it.next();
-				System.out.println(users.getPassword());
+				System.out.println(users.getName() +" Signed In on"+ new Date());
 			}
 
 		}catch(Exception ex){
@@ -1086,10 +1086,7 @@ public class MySQLRdbHelper {
 
 				jobs.add(job);
 			}
-//				jobs.remove(8);
-//				jobs.remove(7);
-//				jobs.remove(6);
-//				jobs.remove(5);
+				
 				
 				return jobs;
 		}catch(Exception ex){

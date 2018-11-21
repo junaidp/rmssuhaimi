@@ -18,7 +18,7 @@ import com.leavemanagement.client.presenter.LeaveHistoryPresenter.Display;
 public class LeaveHistoryView extends MaterialColumn implements IsWidget,Display {
 	
 	private MaterialColumn vpnlContainer = new MaterialColumn();
-	private Anchor logOff = new Anchor("Log off");
+	//private Anchor logOff = new Anchor("Log off");
 	private MaterialButton btnBack = new MaterialButton("Back");
 	
 	public LeaveHistoryView(){
@@ -32,26 +32,26 @@ public class LeaveHistoryView extends MaterialColumn implements IsWidget,Display
 		hpnlWelcome.setWidth("100%");
 		MaterialRow hpnlSpace = new MaterialRow();
 		hpnlSpace.setWidth("80%");
-		hpnlWelcome.add(hpnlSpace);
-		hpnlWelcome.add(logOff);
+		//hpnlWelcome.add(hpnlSpace);
+		//hpnlWelcome.add(logOff);
 		MaterialRow hpnlHeader = new MaterialRow();
 		hpnlHeader.setWidth("100%");
 		setWidth("100%");
-		Label lblHeader = new Label("Leave Management System");
-		lblHeader.setStyleName("headerSignin");
-		hpnlHeader.setStyleName("headerSignin");
-		hpnlHeader.add(lblHeader);
+//		Label lblHeader = new Label("Leave Management System");
+//		lblHeader.setStyleName("headerSignin");
+//		hpnlHeader.setStyleName("headerSignin");
+		//hpnlHeader.add(lblHeader);
 		hpnlHeader.add(hpnlWelcome);
 		
 		add(hpnlHeader);
 		add(vpnlContainer);
 		
-		logOff.addClickHandler(new ClickHandler(){
-
-			@Override
-			public void onClick(ClickEvent event) {
-				History.newItem("login");
-			}});
+//		logOff.addClickHandler(new ClickHandler(){
+//
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				History.newItem("login");
+//			}});
 	}
 
 

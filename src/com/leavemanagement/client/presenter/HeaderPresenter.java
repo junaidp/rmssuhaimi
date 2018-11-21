@@ -7,7 +7,9 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 import com.leavemanagement.client.GreetingServiceAsync;
+import com.leavemanagement.client.event.AdminEvent;
 import com.leavemanagement.client.event.ChangePasswordEvent;
+import com.leavemanagement.client.event.LeaveHistoryEvent;
 import com.leavemanagement.shared.User;
 
 import gwt.material.design.client.ui.MaterialLink;
@@ -28,6 +30,9 @@ public class HeaderPresenter implements Presenter
 		MaterialLink getchangePassword();
 		MaterialLink getaddCompany();
 		MaterialLink getlogOff();
+		MaterialLink getleaveHistory();
+		MaterialLink getadmin();
+		
 
 
 	}
@@ -76,6 +81,34 @@ public class HeaderPresenter implements Presenter
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
 				History.newItem("addCompany");
+
+			}
+		});
+		display.getlogOff().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				
+				History.newItem("login");
+
+				
+			}
+		});
+		display.getadmin().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				eventBus.fireEvent(new AdminEvent(LoggedInUser));
+				
+			}
+		});
+		display.getleaveHistory().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				eventBus.fireEvent(new LeaveHistoryEvent(LoggedInUser));
 
 			}
 		});

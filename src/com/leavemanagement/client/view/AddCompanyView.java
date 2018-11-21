@@ -7,11 +7,13 @@ import com.google.gwt.user.client.ui.FlexTable;
 import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
+
 import gwt.material.design.client.ui.MaterialTextBox;
 import gwt.material.design.client.ui.MaterialColumn;
 import com.leavemanagement.client.presenter.AddCompanyPresenter.Display;
 
-public class AddCompanyView extends DecoratorPanel implements Display {
+public class AddCompanyView extends VerticalPanel implements Display {
 	
 	private MaterialButton btnSend = new MaterialButton("Save");
 	MaterialTextBox txtUser = new MaterialTextBox();

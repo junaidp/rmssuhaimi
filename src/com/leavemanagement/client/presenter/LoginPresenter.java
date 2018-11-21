@@ -93,7 +93,6 @@ public class LoginPresenter implements Presenter
 
 	public void signIn(String userName,String password)
 	{
-		MaterialLoader.loading(true);
 		MaterialLoader.progress(true);
 		
 		rpcService.signIn(userName,password, new AsyncCallback<User>()
@@ -102,7 +101,6 @@ public class LoginPresenter implements Presenter
 				{
 			public void onFailure(Throwable ex) {
 				Window.alert(ex.getStackTrace().toString());
-				MaterialLoader.loading(false);
 				MaterialLoader.progress(false);
 			}
 
@@ -124,7 +122,6 @@ public class LoginPresenter implements Presenter
 					display.getLblError().setText("username / password invalid");
 				}
 				
-				MaterialLoader.loading(false);
 				MaterialLoader.progress(false);
 			}
 				});

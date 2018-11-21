@@ -82,7 +82,7 @@ public class JobEditView extends MaterialColumn{
 				});
 			
 		}
-		vpnlMain.add(btnClose);
+	//	vpnlMain.add(btnClose);
 	}
 
 	

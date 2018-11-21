@@ -2,18 +2,15 @@ package com.leavemanagement.client.view;
 
 import com.google.gwt.user.client.Window;
 import gwt.material.design.client.ui.MaterialButton;
-import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
-import gwt.material.design.client.ui.MaterialTextBox;
 import gwt.material.design.client.ui.MaterialColumn;
 import com.leavemanagement.client.presenter.ChangePasswordPresenter.Display;
 
-public class ChangePasswordView extends DecoratorPanel implements IsWidget,Display {
+public class ChangePasswordView extends MaterialColumn implements IsWidget,Display {
 
 	PasswordTextBox oldPassword = new PasswordTextBox();
 	PasswordTextBox newPassword = new PasswordTextBox();

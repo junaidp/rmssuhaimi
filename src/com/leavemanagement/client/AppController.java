@@ -42,6 +42,7 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 	//private MaterialColumn centerPanel;
 	private HasWidgets mainContainer,  headerContainer;
 	Presenter presenter = null;  
+	private HeaderView headerView;
 	//private VerticalPanel PcenterPanel;
 
 	private int jobId;
@@ -138,13 +139,18 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 			}
 
 			if (token.equals("main")) {
+				if(headerView == null)
+				headerView = new HeaderView();
+				headerView.userView();
+				presenter = new HeaderPresenter(rpcService, eventBus, headerView , loggedInUser);
+				presenter.go(headerContainer);
+				
 				presenter = new MainPresenter(rpcService, eventBus, new MainView(), loggedInUser);
 				if (presenter != null) {
 					this.container = mainContainer;
 					presenter.go(container);
 				}
-				presenter = new HeaderPresenter(rpcService, eventBus, new HeaderView(), loggedInUser);
-				presenter.go(headerContainer);
+			
 
 			}
 
@@ -154,8 +160,11 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 					this.container = mainContainer;
 					presenter.go(container);
 				}
-				presenter = new HeaderPresenter(rpcService, eventBus, new HeaderView(), loggedInUser);
-				presenter.go(headerContainer);
+				if(headerView == null)
+					headerView = new HeaderView();
+					headerView.adminView();
+					presenter = new HeaderPresenter(rpcService, eventBus, headerView , loggedInUser);
+					presenter.go(headerContainer);
 			}
 
 			if (token.equals("leaveHistory")) {

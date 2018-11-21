@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Logger;
 
+import org.apache.poi.hssf.util.HSSFColor.BLUE_GREY;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -16,6 +18,10 @@ import com.google.gwt.user.client.ui.Anchor;
 
 import gwt.material.design.addins.client.richeditor.MaterialRichEditor;
 import gwt.material.design.client.ui.MaterialButton;
+import gwt.material.design.client.ui.MaterialCard;
+import gwt.material.design.client.ui.MaterialCardContent;
+import gwt.material.design.client.ui.MaterialCardTitle;
+
 import com.google.gwt.user.client.ui.HasWidgets;
 import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.Label;
@@ -168,7 +174,16 @@ public class MainPresenter implements Presenter
 			@Override
 			public void onSuccess(ArrayList<LeavesDTO> result) {
 				leavesDTO = result;
+				MaterialCard mc = new MaterialCard();
+				MaterialCardTitle lblHeading = new MaterialCardTitle();
+				lblHeading.setText("Available Leaves");
+				MaterialCardContent con = new MaterialCardContent();
+				mc.add(lblHeading);
+	
+				
+				 
 				for(int i=0; i< result.size(); i++){
+					
 				MaterialRow hpnl = new MaterialRow();
 				
 				Label lblName = new Label();
@@ -177,6 +192,7 @@ public class MainPresenter implements Presenter
 				
 				MaterialColumn colLblName = new MaterialColumn();
 				colLblName.add(lblName);
+				
 				hpnl.add(colLblName);
 			     Label a = new Label("");
 			     MaterialColumn colA = new MaterialColumn();
@@ -190,7 +206,9 @@ public class MainPresenter implements Presenter
 				MaterialColumn colLblRemaining = new MaterialColumn();
 				colLblRemaining.add(lblRemaining);
 				hpnl.add(colLblRemaining);
-				display.getVpnlAvailableLeaves().add(hpnl);
+				con.add(hpnl);
+				mc.add(con);
+				display.getVpnlAvailableLeaves().add(mc);
 				
 				}
 				if(loadingPopup!=null){

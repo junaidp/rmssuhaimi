@@ -16,6 +16,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
+import gwt.material.design.addins.client.window.MaterialWindow;
 import gwt.material.design.client.ui.MaterialColumn;
 import com.leavemanagement.client.GreetingService;
 import com.leavemanagement.client.GreetingServiceAsync;
@@ -129,14 +130,15 @@ public class JobsListView extends MaterialColumn {
 			}
 		};
 //		table.addColumn(jobSubLineofService,"Subline of Service");
-		
-		deleteJob = new Column<Job, String>(new ButtonCell()) {
+		 ButtonCell btnDel = new ButtonCell() ;
+		 
+		deleteJob = new Column<Job, String>(btnDel) {
 			@Override
 			public String getValue(Job object) {
 				return "Delete";
 			}
 		};
-		
+		deleteJob.setCellStyleNames("btnStyleDelete");
 
 		closeJob = new Column<Job, String>(new ButtonCell()) {
 			@Override
@@ -144,13 +146,19 @@ public class JobsListView extends MaterialColumn {
 				return "Close";
 			}
 		};
+		
+		closeJob.setCellStyleNames("btnStyle");
 				
 		jobStartDate = new Column<Job, String>(new TextCell()) {
 			@Override
 			public String getValue(Job job) {
 				 DateTimeFormat fmt = DateTimeFormat.getFormat(" MMMM dd, yyyy");
 				    // prints Monday, December 17, 2007 in the default locale
+				 if(job.getJobPhases().size() > 0){
 				    return fmt.format(job.getJobPhases().get(0).getStartDate());
+				 }else{
+					 return "No phase Added";
+				 }
 //				return job.getJobPhases().get(0).getStartDate().toString().substring(0,11);
 				
 			}
@@ -161,8 +169,11 @@ public class JobsListView extends MaterialColumn {
 			public String getValue(Job job) {
 				int last = job.getJobPhases().size();
 				 DateTimeFormat fmt = DateTimeFormat.getFormat(" MMMM dd, yyyy");
+				 if(job.getJobPhases().size() > 0){
 				 return fmt.format(job.getJobPhases().get(last-1).getDeliveryDate());
-				
+				 }else{
+					 return "No phase Added";
+				 }
 				
 			}
 		};
@@ -182,13 +193,18 @@ public class JobsListView extends MaterialColumn {
 			@Override
 			public void update(int index, Job object, String value) {
 				JobEditView jobEditView = new JobEditView(object, loggedInUser);
-				final PopupsView popup = new PopupsView(jobEditView);
+				//final PopupsView popup = new PopupsView(jobEditView);
+				final MaterialWindow creationWindow = new MaterialWindow();
+				creationWindow.add(jobEditView);
+				creationWindow.setMaximize(true);
+				creationWindow.setTitle("Update Job");
+				creationWindow.open();
 				jobEditView.getBtnClose().addClickHandler(new ClickHandler(){
 
 					@Override
 					public void onClick(ClickEvent event) {
-						popup.getPopup().removeFromParent();
-						
+					//popup.getPopup().removeFromParent();
+						creationWindow.close();
 					}});
 			}
 			

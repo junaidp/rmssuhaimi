@@ -14,13 +14,14 @@ import com.leavemanagement.shared.UserReportDTO;
 public class TimeSheetReportWidget extends MaterialCard{
 	
 	MaterialCardTitle lblHeading = new MaterialCardTitle();
+	MaterialCardContent con = new MaterialCardContent();
 	private MaterialColumn vpnlContainer = new MaterialColumn();
 	private MaterialRow hpnl = new MaterialRow();
 	private Label totalHours = new Label();
 	private Label recoveryRate = new Label();
 	private Label timeCost = new Label();
 	private Label fee = new Label();
-	MaterialCardContent con = new MaterialCardContent();
+	
 	private float totaltimeCost=0;
 	public TimeSheetReportWidget(ArrayList<UserReportDTO> usersList){
 		

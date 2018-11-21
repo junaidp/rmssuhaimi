@@ -15,7 +15,7 @@ import gwt.material.design.client.ui.MaterialListBox;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.leavemanagement.client.presenter.AddUserPresenter.Display;
 
-public class AddUserView extends DecoratorPanel implements Display {
+public class AddUserView extends MaterialColumn implements Display {
 	
 	private MaterialButton btnSend = new MaterialButton("Save");
 	MaterialTextBox txtUser = new MaterialTextBox();

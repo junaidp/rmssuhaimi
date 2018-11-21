@@ -3,16 +3,14 @@ package com.leavemanagement.client.view;
 import java.util.ArrayList;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import gwt.material.design.client.base.validator.ValidationChangedEvent;
+
+import gwt.material.design.addins.client.window.MaterialWindow;
 import gwt.material.design.client.ui.MaterialButton;
 import com.google.gwt.user.client.ui.FlexTable;
 import gwt.material.design.client.ui.MaterialRow;
@@ -23,7 +21,6 @@ import gwt.material.design.client.ui.MaterialTextBox;
 import gwt.material.design.client.ui.MaterialColumn;
 import gwt.material.design.client.ui.MaterialListBox;
 
-import com.google.gwt.user.client.ui.Widget;
 import com.leavemanagement.client.GreetingService;
 import com.leavemanagement.client.GreetingServiceAsync;
 import com.leavemanagement.shared.Countries;
@@ -37,7 +34,7 @@ import com.leavemanagement.shared.SubLineofService;
 import com.leavemanagement.shared.User;
 
 public class JobCreationView extends MaterialColumn {
-	
+
 	private MaterialListBox listLineOfService = new MaterialListBox();
 	private MaterialListBox listDomain = new MaterialListBox();
 	private MaterialListBox listSubLineofService = new MaterialListBox();
@@ -54,15 +51,15 @@ public class JobCreationView extends MaterialColumn {
 	private MaterialTextBox textPrinicialConsultantHours = new MaterialTextBox();
 	private ArrayList<Phases> phases = new ArrayList<Phases>();
 	JobsListView jobsListView ;
-//	private MaterialListBox listEmployee1 = new MaterialListBox();
+	//	private MaterialListBox listEmployee1 = new MaterialListBox();
 	private Job selectedJob;
 	GreetingServiceAsync rpcService = GWT.create(GreetingService.class);
 	private Label lblCountryName = new Label("Country Name");
 	private MaterialColumn vpnlEmployees = new MaterialColumn();
 	private ArrayList<User> employeesList;
 	private CostWidget costWidget = new CostWidget();
-	
-	
+
+
 	public JobCreationView(Job job, User loggedInUser){
 		jobsListView= new JobsListView(loggedInUser);
 		this.selectedJob = job;
@@ -77,12 +74,12 @@ public class JobCreationView extends MaterialColumn {
 		Label lblLocation = new Label("Location");
 		Label lblSupervisors = new Label("Supervisor");
 		Label lblPrinicipalConsultant = new Label("Principal consultant");
-		
+
 		Label lblClientName = new Label("Client Name");
 		Label lblEmployee = new Label("Assign to");
 		Image btnAddEmployee = new Image("add.png");
 		btnAddEmployee.addStyleName("hover");
-		
+
 		btnAddEmployee.setTitle("Add Employee");
 		flex.setWidget(1, 0, lblLineOfService);
 		flex.setWidget(1, 1, listLineOfService);
@@ -101,19 +98,19 @@ public class JobCreationView extends MaterialColumn {
 		flex.setWidget(7, 2, btnPhase);
 		flex.setWidget(8, 0, lblClientFee);
 		flex.setWidget(8, 1, txtClientFee);
-//		flex.setWidget(9, 0, lblEmployee);
-//		flex.setWidget(9, 1, listEmployee1);
+		//		flex.setWidget(9, 0, lblEmployee);
+		//		flex.setWidget(9, 1, listEmployee1);
 		flex.setWidget(8, 2, btnAddEmployee);
 		flex.setWidget(10, 1, vpnlEmployees);
-		
-		
-		
-		
+
+
+
+
 		btnAddEmployee.addClickHandler(new ClickHandler(){
 
 			@Override
 			public void onClick(ClickEvent event) {
-				
+
 				final AssignedToWidget assignedToWidget = new AssignedToWidget(employeesList);
 				vpnlEmployees.add(assignedToWidget);
 				assignedToWidget.getBtnRemove().addClickHandler(new ClickHandler(){
@@ -121,12 +118,12 @@ public class JobCreationView extends MaterialColumn {
 					@Override
 					public void onClick(ClickEvent event) {
 						vpnlEmployees.remove(assignedToWidget);
-						
+
 					}});
-				
+
 			}});
 		///end
-		
+
 		flex.setWidget(11, 0, lblSupervisors);
 		flex.setWidget(11, 1, listSupervisor);
 		flex.setWidget(11, 2, new Label("Hours: "));
@@ -135,11 +132,11 @@ public class JobCreationView extends MaterialColumn {
 		flex.setWidget(12, 1, listPrincipalConsultant);
 		flex.setWidget(12, 2, new Label("Hours: "));
 		flex.setWidget(12, 3, textPrinicialConsultantHours);
-		
+
 		textSupervisorHours.setText("0");
 		textPrinicialConsultantHours.setText("0");
 		txtClientFee.setText("0");
-	
+
 		flex.setWidget(13, 1, btnSubmit);
 		textPrinicialConsultantHours.setWidth("30px");
 		textSupervisorHours.setWidth("30px");
@@ -163,31 +160,30 @@ public class JobCreationView extends MaterialColumn {
 		listCountry.setWidth("200px");
 		txtClient.setWidth("200px");
 		txtClientFee.setWidth("200px");
-		
+
 		lblCountryName.setVisible(false);
 		listCountry.setVisible(false);
-		
+
 		MaterialRow hpnl = new MaterialRow();
 		hpnl.add(flex);
 		MaterialColumn vpnlJobCreation = new MaterialColumn();
-		
+
 		hpnl.add(costWidget);
-		
-//		add(hpnl);
-			vpnlJobCreation.add(hpnl);
+
+		//		add(hpnl);
+		vpnlJobCreation.add(hpnl);
 		fetchEmployees();
-	
-//		add(jobsListView);
+
+		//		add(jobsListView);
+
+		StackPanel panel = new StackPanel();
+		if(loggedInUser.getRoleId().getRoleId()==5){
+			panel.add(vpnlJobCreation, "Job Creation");
+		}
+		panel.add(jobsListView, "Jobs List");
 		
-		 StackPanel panel = new StackPanel();
-		 if(loggedInUser.getRoleId().getRoleId()==5){
-		    panel.add(vpnlJobCreation, "Job Creation");
-		 }
-		    panel.add(jobsListView, "Jobs List");
-		    add(panel);
-		
-		//setSpacing(5);
-		
+		add(panel);
+
 		costWidget.getImgRefresh().addClickHandler(new ClickHandler(){
 
 			@Override
@@ -197,39 +193,39 @@ public class JobCreationView extends MaterialColumn {
 					AssignedToWidget assignedToWidget =(AssignedToWidget) vpnlEmployees.getWidget(i);
 					for(int j=0;j<employeesList.size(); j++){
 						if(employeesList.get(j).getUserId() == Integer.parseInt(assignedToWidget.getListAssign().getValue(assignedToWidget.getListAssign().getSelectedIndex()))){
-						   float employeeCost  =	employeesList.get(j).getRoleId().getChargeRate() * Integer.parseInt(assignedToWidget.getTxtDays().getText());
-						   totalCost = totalCost+employeeCost;
-						   break;
+							float employeeCost  =	employeesList.get(j).getRoleId().getChargeRate() * Integer.parseInt(assignedToWidget.getTxtDays().getText());
+							totalCost = totalCost+employeeCost;
+							break;
 						}
-						
+
 					}
 				}
 				try{
 					float supervisorChargeRate =0;
 					for(int j=0;j<employeesList.size(); j++){
 						if(employeesList.get(j).getUserId() == Integer.parseInt(listSupervisor.getValue(listSupervisor.getSelectedIndex()))){
-						    supervisorChargeRate  =	employeesList.get(j).getRoleId().getChargeRate() ;
+							supervisorChargeRate  =	employeesList.get(j).getRoleId().getChargeRate() ;
 						}}
-				float SupervisorCost = Integer.parseInt(textSupervisorHours.getText()) * supervisorChargeRate;
-				totalCost = totalCost + SupervisorCost;
-				totalCost = totalCost+Integer.parseInt(textPrinicialConsultantHours.getText()) * 7500;
-				
-				costWidget.getCost().setText("Time Cost: "+ totalCost);
-				float recRate = Integer.parseInt(txtClientFee.getText())/totalCost;
-				String recoveryRat ="";
-				recoveryRat = recRate+"";
-				if(recoveryRat.length()>4){
-					 recoveryRat = recoveryRat.substring(0,4);
-				}
-				
-				costWidget.getRecoveryRate().setText("Recovery Rate: " + recoveryRat);
+					float SupervisorCost = Integer.parseInt(textSupervisorHours.getText()) * supervisorChargeRate;
+					totalCost = totalCost + SupervisorCost;
+					totalCost = totalCost+Integer.parseInt(textPrinicialConsultantHours.getText()) * 7500;
+
+					costWidget.getCost().setText("Time Cost: "+ totalCost);
+					float recRate = Integer.parseInt(txtClientFee.getText())/totalCost;
+					String recoveryRat ="";
+					recoveryRat = recRate+"";
+					if(recoveryRat.length()>4){
+						recoveryRat = recoveryRat.substring(0,4);
+					}
+
+					costWidget.getRecoveryRate().setText("Recovery Rate: " + recoveryRat);
 				}catch(Exception ex){
 					Window.alert("Enter valid numeric value in Supervisor , princiap Consultant Hours and Client Fee Field");
 					return;
 				}
-				}});
-listLocation.addValueChangeHandler(new ValueChangeHandler<String>() {
-			
+			}});
+		listLocation.addValueChangeHandler(new ValueChangeHandler<String>() {
+
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				if(listLocation.getSelectedIndex()==1){
@@ -241,49 +237,49 @@ listLocation.addValueChangeHandler(new ValueChangeHandler<String>() {
 				}
 			}
 		});
-listLineOfService.addValueChangeHandler(new ValueChangeHandler<String>() {
-	
-	@Override
-	public void onValueChange(ValueChangeEvent<String> event) {
-		fetchDomains();
-	}
-});
-listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
-	
-	@Override
-	public void onValueChange(ValueChangeEvent<String> event) {
-		fetchSubLineofServices();
-	}
-});
-//
-//			@Override
-//			public void onChange(ChangeEvent event) {
-//				if(listLocation.getSelectedIndex()==1){
-//					lblCountryName.setVisible(true);
-//					listCountry.setVisible(true);
-//				}else{
-//					lblCountryName.setVisible(false);
-//					listCountry.setVisible(false);
-//				}
-//			}});
-//		
-//		listLineOfService.addChangeHandler(new ChangeHandler() {
-//			
-//			@Override
-//			public void onChange(ChangeEvent event) {
-//				fetchDomains();
-//			}
-//		});
-//		
-//		listDomain.addChangeHandler(new ChangeHandler() {
-//			
-//			@Override
-//			public void onChange(ChangeEvent event) {
-//				fetchSubLineofServices();
-//			}
-//		});
-		
-		
+		listLineOfService.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				fetchDomains();
+			}
+		});
+		listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				fetchSubLineofServices();
+			}
+		});
+		//
+		//			@Override
+		//			public void onChange(ChangeEvent event) {
+		//				if(listLocation.getSelectedIndex()==1){
+		//					lblCountryName.setVisible(true);
+		//					listCountry.setVisible(true);
+		//				}else{
+		//					lblCountryName.setVisible(false);
+		//					listCountry.setVisible(false);
+		//				}
+		//			}});
+		//		
+		//		listLineOfService.addChangeHandler(new ChangeHandler() {
+		//			
+		//			@Override
+		//			public void onChange(ChangeEvent event) {
+		//				fetchDomains();
+		//			}
+		//		});
+		//		
+		//		listDomain.addChangeHandler(new ChangeHandler() {
+		//			
+		//			@Override
+		//			public void onChange(ChangeEvent event) {
+		//				fetchSubLineofServices();
+		//			}
+		//		});
+
+
 		btnSubmit.addClickHandler(new ClickHandler(){
 
 			@Override
@@ -291,9 +287,9 @@ listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
 				if(selectedJob==null && phases.size()<1){
 					Window.alert("Please add at least 1 phase for this job");
 				}else{
-					 Job job = null;
+					Job job = null;
 					if(selectedJob==null){
-					job = new Job();
+						job = new Job();
 					}else{
 						job = selectedJob;
 					}
@@ -315,28 +311,28 @@ listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
 					job.setClient(txtClient.getText());
 					job.setSupervisorHours(Integer.parseInt(textSupervisorHours.getText()));
 					job.setPrincipalConsultantHours(Integer.parseInt(textPrinicialConsultantHours.getText()));
-					
+
 					try{
-					job.setClientFee(Integer.parseInt(txtClientFee.getText()));
+						job.setClientFee(Integer.parseInt(txtClientFee.getText()));
 					}catch(Exception ex){
 						Window.alert("Please enter valid numeric value in Client Fee");
 						return;
 					}
 					User user = new User();
-//					user.setUserId(Integer.parseInt(listEmployee1.getValue(listEmployee1.getSelectedIndex())));
-//					job.setUserId(user);
-					
+					//					user.setUserId(Integer.parseInt(listEmployee1.getValue(listEmployee1.getSelectedIndex())));
+					//					job.setUserId(user);
+
 					User supervisor = new User();
 					supervisor.setUserId(Integer.parseInt(listSupervisor.getValue(listSupervisor.getSelectedIndex())));
 					job.setSupervisorId(supervisor);
-					
+
 					User principalConsultant = new User();
 					principalConsultant.setUserId(Integer.parseInt(listPrincipalConsultant.getValue(listPrincipalConsultant.getSelectedIndex())));
 					job.setPrincipalConsultantId(principalConsultant);
-					
+
 					ArrayList<JobEmployees> jobEmployeesList = new ArrayList<JobEmployees>();
-					
-						for(int i=0; i< vpnlEmployees.getWidgetCount(); i++){
+
+					for(int i=0; i< vpnlEmployees.getWidgetCount(); i++){
 						AssignedToWidget assignedToWidget =(AssignedToWidget) vpnlEmployees.getWidget(i);
 						///////
 						JobEmployees jobEmployees = new JobEmployees();
@@ -344,10 +340,10 @@ listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
 						employee.setUserId(Integer.parseInt(assignedToWidget.getListAssign().getValue(assignedToWidget.getListAssign().getSelectedIndex())));
 						employee.setName(assignedToWidget.getListAssign().getItemText(assignedToWidget.getListAssign().getSelectedIndex()));
 						jobEmployees.setEmployeeId(employee);
-						
+
 						jobEmployees.setJobEmployeeId(assignedToWidget.getJobEmployeeId());
 						try{
-						jobEmployees.setNoOfDays(Integer.parseInt(assignedToWidget.getTxtDays().getText()));
+							jobEmployees.setNoOfDays(Integer.parseInt(assignedToWidget.getTxtDays().getText()));
 						}catch(Exception ex){
 							Window.alert("Please enter numeric value for No of Days");
 							return;
@@ -358,7 +354,7 @@ listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
 							Window.alert("Please Assign the job to atleast 1 employee");
 							return;
 						}
-					///////
+						///////
 						JobEmployees jobSupervisor = new JobEmployees();
 						jobSupervisor.setEmployeeId(supervisor);
 						try{
@@ -367,8 +363,8 @@ listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
 							Window.alert("Please enter numeric value for No of Days");
 							return;
 						}
-						
-						
+
+
 						JobEmployees jobPrinicipalConsultant = new JobEmployees();
 						jobPrinicipalConsultant.setEmployeeId(principalConsultant);
 						try{
@@ -382,12 +378,12 @@ listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
 						//
 						job.setJobEmployeesList(jobEmployeesList);
 					}
-						
-						final LoadingPopup loadingPopup = new LoadingPopup();
-						loadingPopup.display();
-					
+
+					final LoadingPopup loadingPopup = new LoadingPopup();
+					loadingPopup.display();
+
 					rpcService.saveJob(job, new AsyncCallback<String>() {
-						
+
 						@Override
 						public void onSuccess(String result) {
 							Window.alert("Job created");
@@ -396,7 +392,7 @@ listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
 								loadingPopup.remove();
 							}
 						}
-						
+
 						@Override
 						public void onFailure(Throwable caught) {
 							Window.alert("Fail saveJob"+ caught.getLocalizedMessage());
@@ -407,20 +403,24 @@ listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
 					});
 				}
 			}});
-		
+
 		btnPhase.addClickHandler(new ClickHandler(){
 
 			@Override
 			public void onClick(ClickEvent event) {
 				final JobPhaseView jobPhaseView = new JobPhaseView();
-				final PopupsView popup = new PopupsView(jobPhaseView);
+				final MaterialWindow phaseWindow = new MaterialWindow();
+				phaseWindow.add(jobPhaseView);
+				phaseWindow.open();
+				phaseWindow.setTitle("Create Phase");
+				//final PopupsView popup = new PopupsView(jobPhaseView);
 				jobPhaseView.getBtnCancel().addClickHandler(new ClickHandler(){
 
 					@Override
 					public void onClick(ClickEvent event) {
-						popup.getPopup().removeFromParent();
+						phaseWindow.close();
 					}});
-				
+
 				jobPhaseView.getBtnSubmit().addClickHandler(new ClickHandler(){
 
 					@Override
@@ -431,12 +431,13 @@ listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
 						phase.setDeliveryDate(jobPhaseView.getDeliveryDate().getValue());
 						phase.setSubmissionDate(jobPhaseView.getSubmissionDate().getValue());
 						phases.add(phase);
-						popup.getPopup().removeFromParent();
+						phaseWindow.close();
+						phaseWindow.close();
 					}});
-				
+
 			}});
 	}
-	
+
 	private void fetchDomains(){
 		int lineofServiceId = Integer.parseInt(listLineOfService.getValue(listLineOfService.getSelectedIndex()));
 		rpcService.fetchDomains(lineofServiceId, new AsyncCallback<ArrayList<Domains>>(){
@@ -455,17 +456,17 @@ listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
 				fetchSubLineofServices();
 			}});
 	}
-	
+
 	private void fetchSubLineofServices(){
 		int domainId = Integer.parseInt(listDomain.getValue(listDomain.getSelectedIndex()));
-		
+
 		rpcService.fetchSublineofServices(domainId, new AsyncCallback<ArrayList<SubLineofService>>(){
 
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
 
-				
+
 			}
 
 			@Override
@@ -476,7 +477,7 @@ listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
 				}
 			}});
 	}
-	
+
 	private void fetchEmployees() {
 		rpcService.fetchAllUsers(new AsyncCallback<ArrayList<User>>() {
 
@@ -488,8 +489,8 @@ listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onSuccess(ArrayList<User> result) {
 				employeesList = result;
-				
-		/////////Add Employee
+
+				/////////Add Employee
 				final AssignedToWidget assignedToWidget = new AssignedToWidget(employeesList);
 				vpnlEmployees.add(assignedToWidget);
 				assignedToWidget.getBtnRemove().addClickHandler(new ClickHandler(){
@@ -497,20 +498,20 @@ listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
 					@Override
 					public void onClick(ClickEvent event) {
 						vpnlEmployees.remove(assignedToWidget);
-						
+
 					}});
-				
+
 				for(int i=0; i< result.size(); i++){
-//					listEmployee1.addItem(result.get(i).getName(), result.get(i).getUserId()+"");
+					//					listEmployee1.addItem(result.get(i).getName(), result.get(i).getUserId()+"");
 					listSupervisor.addItem( result.get(i).getUserId()+"",result.get(i).getName());
 					if(result.get(i).getRoleId().getRoleId() == 5){
 						listPrincipalConsultant.addItem( result.get(i).getUserId()+"",result.get(i).getName());
-							
+
 					}
 				}
 			}
 		});
-		
+
 	}
 
 	public void setJobAttributes( JobAttributesDTO jobAttributesDTO){
@@ -518,7 +519,7 @@ listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
 		ArrayList<SubLineofService> sublineofServices = new ArrayList<SubLineofService>();
 		ArrayList<Domains> domains = new ArrayList<Domains>();
 		ArrayList<Countries> countries = new ArrayList<Countries>();
-		
+
 		countries = jobAttributesDTO.getCountries();
 		lineofServices = jobAttributesDTO.getLineofService();
 		sublineofServices = jobAttributesDTO.getSubLineofService();
@@ -528,7 +529,7 @@ listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
 		listLineOfService.clear();
 		listSubLineofService.clear();
 		listDomain.clear();
-		
+
 		for(int i=0; i< countries.size(); i++){
 			listCountry.addItem( countries.get(i).getCountryId()+"",countries.get(i).getName());
 		}
@@ -541,7 +542,7 @@ listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
 		for(int i=0; i< domains.size(); i++){
 			listDomain.addItem( domains.get(i).getDomainId()+"",domains.get(i).getName());
 		}
-		
+
 	}
 
 	public MaterialButton getBtnSubmit() {

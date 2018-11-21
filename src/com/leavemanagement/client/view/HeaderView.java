@@ -28,15 +28,34 @@ public class HeaderView extends Composite implements Display {
 	MaterialLink addCompany;
 	@UiField
 	MaterialLink logOff;
+	@UiField
+	MaterialLink leaveHistory;
+	@UiField
+	MaterialLink admin;
 	 
 	public HeaderView() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
+public void adminView(){
 
+	changePassword.setVisible(true);
+	leaveHistory.setVisible(false);
+	admin.setVisible(false);
+	logOff.setVisible(true);
+	addCompany.setVisible(true);
+	addUser.setVisible(true);
+}
+public void userView(){
+	changePassword.setVisible(true);
+	leaveHistory.setVisible(true);
+	admin.setVisible(true);
+	logOff.setVisible(true);
+	addCompany.setVisible(false);
+	addUser.setVisible(false);
+}
 	@Override
 	public MaterialLink getaddUser() {
-		// TODO Auto-generated method stub
-return addUser;
+		return addUser;
 }
 
 	@Override
@@ -51,8 +70,23 @@ return addUser;
 
 	@Override
 	public MaterialLink getlogOff() {
-		// TODO Auto-generated method stub
-    return logOff;
+	  return logOff;
+	}
+
+	public MaterialLink getleaveHistory() {
+		return leaveHistory;
+	}
+
+	public void setLeaveHistory(MaterialLink leaveHistory) {
+		this.leaveHistory = leaveHistory;
+	}
+
+	public MaterialLink getadmin() {
+		return admin;
+	}
+
+	public void setAdmin(MaterialLink admin) {
+		this.admin = admin;
 	}
 
  

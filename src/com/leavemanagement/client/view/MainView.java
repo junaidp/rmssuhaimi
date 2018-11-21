@@ -36,7 +36,7 @@ public class MainView extends MaterialColumn implements IsWidget,Display {
 	
 	public MainView(){
 		 
-		
+		this.getElement().getStyle().setPaddingLeft(10, Unit.PX);
 		MaterialRow hpnlWelcome = new MaterialRow();
 		hpnlWelcome.setWidth("100%");
        	MaterialRow hpnlSpace = new MaterialRow();
@@ -63,13 +63,13 @@ public class MainView extends MaterialColumn implements IsWidget,Display {
 //		MaterialRow hpnlSpaceLeave = new MaterialRow();
 //		hpnlSpaceLeave.setWidth("800px");
 //		hpnlLeave.add(hpnlSpaceLeave);
-		vpnlLeave.add(changePassword);
-		vpnlLeave.add(leaveHistory);
-		vpnlLeave.add(adminView);
-		vpnlLeave.add(logOff);
+		//vpnlLeave.add(changePassword);
+		//vpnlLeave.add(leaveHistory);
+		//vpnlLeave.add(adminView);
+		//vpnlLeave.add(logOff);
 		add(hpnlHeader);
 		add(vpnlLeave);
-		add(lblAvailableLeaves);
+		
 		add(vpnlAvailableLeaves);
 		
 		MaterialLabel lblRequest = new MaterialLabel("Leave Request");
