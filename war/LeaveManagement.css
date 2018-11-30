@@ -145,19 +145,32 @@ display: inline-block;
   color:white;
  
  padding:3px;
- border-top: 1px solid #ccc;
- border-right: 1px solid #ccc;
- border-bottom: 1px solid #bbb;
- border-left: 1px solid #ccc;
- line-height: 1px;
+  line-height: 0px;
  text-align: center;
- background-color: #003366 ;
+ background-color: #64b5f6 ;
  cursor: pointer;
  border-radius:4px;
  width: 80px;
  height: 28px;
  
 }
+
+.btnStyleDelete{
+    
+   font:arial; 
+  color:white;
+ 
+ padding:3px;
+  line-height: 0px;
+ text-align: center;
+ background-color: #cc352a ;
+ cursor: pointer;
+ border-radius:4px;
+ width: 80px;
+ height: 28px;
+ 
+}
+
 .linkStyle{
     
    font:arial; 
