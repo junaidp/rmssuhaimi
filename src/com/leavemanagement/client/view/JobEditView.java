@@ -35,10 +35,10 @@ public class JobEditView extends MaterialColumn{
 		
 		jobCreationView = new JobCreationView(selectedJob, loggedInUser);
 		jobCreationView.getTxtJobName().setText(selectedJob.getJobName());
-		jobCreationView.getTxtClient().setText(selectedJob.getClient());
-		jobCreationView.getTxtClientFee().setText(selectedJob.getClientFee()+"");
-		jobCreationView.getTextPrinicialConsultantHours().setText(selectedJob.getPrincipalConsultantHours()+"");
-		jobCreationView.getTextSupervisorHours().setText(selectedJob.getSupervisorHours()+"");
+//		jobCreationView.getTxtClient().setText(selectedJob.getClient());
+//		jobCreationView.getTxtClientFee().setText(selectedJob.getClientFee()+"");
+//		jobCreationView.getTextPrinicialConsultantHours().setText(selectedJob.getPrincipalConsultantHours()+"");
+//		jobCreationView.getTextSupervisorHours().setText(selectedJob.getSupervisorHours()+"");
 		jobCreationView.getJobsListView().setVisible(false);
 		vpnlMain.add(jobCreationView);
 		fetchEmployees(selectedJob);
@@ -46,42 +46,42 @@ public class JobEditView extends MaterialColumn{
 		
 		
 
-		
-		for(int i=0; i< selectedJob.getJobPhases().size(); i++){
-			final Phases phase = selectedJob.getJobPhases().get(i);
-			final JobPhaseView jobPhaseView = new JobPhaseView();
-			vpnlMain.add(jobPhaseView);
-			jobPhaseView.getBtnDelete().setVisible(true);
-			jobPhaseView.getBtnCancel().setVisible(false);
-			
-			jobPhaseView.getTxtPhase().setText(phase.getPhaseName());
-			jobPhaseView.getStartDate().setValue(phase.getStartDate());
-			jobPhaseView.getSubmissionDate().setValue(phase.getSubmissionDate());
-			jobPhaseView.getDeliveryDate().setValue(phase.getDeliveryDate());
-			
-			jobPhaseView.getBtnSubmit().addClickHandler(new ClickHandler(){
-
-				@Override
-				public void onClick(ClickEvent event) {
-					phase.setDeliveryDate(jobPhaseView.getDeliveryDate().getValue());
-					phase.setPhaseName(jobPhaseView.getTxtPhase().getText());
-					phase.setStartDate(jobPhaseView.getStartDate().getValue());
-					phase.setSubmissionDate(jobPhaseView.getSubmissionDate().getValue());
-					updatePhase(phase);
-				}
-
-			});
-			
-			jobPhaseView.getBtnDelete().addClickHandler(new ClickHandler() {
-				
-				@Override
-				public void onClick(ClickEvent event) {
-					deletePhase(phase, jobPhaseView);
-				}
-
-				});
-			
-		}
+//		
+//		for(int i=0; i< selectedJob.getJobPhases().size(); i++){
+//			final Phases phase = selectedJob.getJobPhases().get(i);
+//			final JobPhaseView jobPhaseView = new JobPhaseView();
+//			vpnlMain.add(jobPhaseView);
+//			jobPhaseView.getBtnDelete().setVisible(true);
+//			jobPhaseView.getBtnCancel().setVisible(false);
+//			
+//			jobPhaseView.getTxtPhase().setText(phase.getPhaseName());
+//			jobPhaseView.getStartDate().setValue(phase.getStartDate());
+//			jobPhaseView.getSubmissionDate().setValue(phase.getSubmissionDate());
+//			jobPhaseView.getDeliveryDate().setValue(phase.getDeliveryDate());
+//			
+//			jobPhaseView.getBtnSubmit().addClickHandler(new ClickHandler(){
+//
+//				@Override
+//				public void onClick(ClickEvent event) {
+//					phase.setDeliveryDate(jobPhaseView.getDeliveryDate().getValue());
+//					phase.setPhaseName(jobPhaseView.getTxtPhase().getText());
+//					phase.setStartDate(jobPhaseView.getStartDate().getValue());
+//					phase.setSubmissionDate(jobPhaseView.getSubmissionDate().getValue());
+//					updatePhase(phase);
+//				}
+//
+//			});
+//			
+//			jobPhaseView.getBtnDelete().addClickHandler(new ClickHandler() {
+//				
+//				@Override
+//				public void onClick(ClickEvent event) {
+//					deletePhase(phase, jobPhaseView);
+//				}
+//
+//				});
+//			
+//		}
 	//	vpnlMain.add(btnClose);
 	}
 
@@ -121,12 +121,12 @@ public class JobEditView extends MaterialColumn{
 				break;
 			}
 		}
-		for(int i=0; i<jobCreationView.getListSubLineofService().getItemCount(); i++ ){
-			if(jobCreationView.getListSubLineofService().getValue(i).equals(selectedJob.getSubLineofServiceId().getSubLineofServiceId()+"")){
-				jobCreationView.getListSubLineofService().setSelectedIndex(i);
-				break;
-			}
-		}
+//		for(int i=0; i<jobCreationView.getListSubLineofService().getItemCount(); i++ ){
+//			if(jobCreationView.getListSubLineofService().getValue(i).equals(selectedJob.getSubLineofServiceId().getSubLineofServiceId()+"")){
+//				jobCreationView.getListSubLineofService().setSelectedIndex(i);
+//				break;
+//			}
+//		}
 		
 //		for(int i=0; i<jobCreationView.getListEmployees().getItemCount(); i++ ){
 //			if(jobCreationView.getListEmployees().getValue(i).equals(selectedJob.employee1().getUserId()+"")){
@@ -135,22 +135,22 @@ public class JobEditView extends MaterialColumn{
 //			}
 //		}
 		
-		setAssignedToList(selectedJob);
+//		setAssignedToList(selectedJob);
 		
 		
-		for(int i=0; i<jobCreationView.getListSupervisor().getItemCount(); i++ ){
-			if(jobCreationView.getListSupervisor().getValue(i).equals(selectedJob.getSupervisorId().getUserId()+"")){
-				jobCreationView.getListSupervisor().setSelectedIndex(i);
-				break;
-			}
-		}
-		
-		for(int i=0; i<jobCreationView.getListPrincipalConsultant().getItemCount(); i++ ){
-			if(jobCreationView.getListPrincipalConsultant().getValue(i).equals(selectedJob.getPrincipalConsultantId().getUserId()+"")){
-				jobCreationView.getListPrincipalConsultant().setSelectedIndex(i);
-				break;
-			}
-		}
+//		for(int i=0; i<jobCreationView.getListSupervisor().getItemCount(); i++ ){
+//			if(jobCreationView.getListSupervisor().getValue(i).equals(selectedJob.getSupervisorId().getUserId()+"")){
+//				jobCreationView.getListSupervisor().setSelectedIndex(i);
+//				break;
+//			}
+//		}
+//		
+//		for(int i=0; i<jobCreationView.getListPrincipalConsultant().getItemCount(); i++ ){
+//			if(jobCreationView.getListPrincipalConsultant().getValue(i).equals(selectedJob.getPrincipalConsultantId().getUserId()+"")){
+//				jobCreationView.getListPrincipalConsultant().setSelectedIndex(i);
+//				break;
+//			}
+//		}
 	}
 
 

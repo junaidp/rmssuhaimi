@@ -6,14 +6,12 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -22,46 +20,7 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import org.w3c.dom.Attr;
-
 import com.leavemanagement.client.view.JobCreationView;
 import com.leavemanagement.shared.AttributeRating;
 import com.leavemanagement.shared.Company;
@@ -69,6 +28,7 @@ import com.leavemanagement.shared.Countries;
 import com.leavemanagement.shared.Domains;
 import com.leavemanagement.shared.HibernateDetachUtility;
 import com.leavemanagement.shared.Job;
+import com.leavemanagement.shared.JobActivityEntity;
 import com.leavemanagement.shared.JobAttributes;
 import com.leavemanagement.shared.JobAttributesDTO;
 import com.leavemanagement.shared.JobEmployees;
@@ -934,14 +894,15 @@ public class MySQLRdbHelper {
 		Session session = null;
 		Transaction tr = null;
 		try{
+			
 			session = sessionFactory.openSession();
 			tr = session.beginTransaction();
 			job.setStatus("Active");
 			session.saveOrUpdate(job);
-			saveEmployeeJob(job.getJobEmployeesList(),job.getSupervisorId().getUserId(), job.getPrincipalConsultantId().getUserId(), job.getJobId(), session);
-			
+			setJobActivities(job.getJobActivityEntity(), session, job.getJobId());
+		//	saveEmployeeJob(job.getJobEmployeesList(),job.getSupervisorId().getUserId(), job.getPrincipalConsultantId().getUserId(), job.getJobId(), session);
 			session.flush();
-			addPhase(job, session);
+		//	addPhase(job, session);
 			tr.commit();
 			
 			for(int i=0; i< job.getJobEmployeesList().size(); i++){
@@ -949,10 +910,10 @@ public class MySQLRdbHelper {
 				String body= "Dear "+ job.getJobEmployeesList().get(i).getEmployeeId().getName()+" : "+ "A new job has been created named (" + job.getJobName() +") and assigned to you";
 				sendEmail(body, email, "", "Job Created");
 			}
-			String email = fetchUsersEmail(job.getSupervisorId().getUserId(), session);
-			String body= "Dear "+ job.getSupervisorId().getName()+" : "+ "A new job has been created named (" + job.getJobName() +") and assigned to you";
-			
-			sendEmail(body, email, "", "Job Created");///////??
+//			String email = fetchUsersEmail(job.getSupervisorId().getUserId(), session);
+//			String body= "Dear "+ job.getSupervisorId().getName()+" : "+ "A new job has been created named (" + job.getJobName() +") and assigned to you";
+//			
+//			sendEmail(body, email, "", "Job Created");///////??
 				
 			
 			
@@ -969,6 +930,32 @@ public class MySQLRdbHelper {
 		}
 		
 	}
+
+	private void setJobActivities(ArrayList<JobActivityEntity> jobActivityList, Session session, int jobId) {
+		try{
+			for(int i=0; i< jobActivityList.size(); i++){
+				
+				JobActivityEntity  jobActivity = jobActivityList.get(i);
+				Job j = new Job();
+				j.setJobId(jobId);
+				
+				jobActivity.setDesignation(jobActivityList.get(i).getDesignation());
+				jobActivity.setPlanning(jobActivityList.get(i).getPlanning());
+				jobActivity.setExecution(jobActivityList.get(i).getExecution());
+				jobActivity.setFollowup(jobActivityList.get(i).getFollowup());
+				jobActivity.setReporting(jobActivityList.get(i).getReporting());
+				jobActivity.setJobId(j);
+					session.saveOrUpdate(jobActivity);
+					session.flush();
+			}
+			
+			}catch(Exception ex){
+				System.out.println(ex);
+			}
+			
+		}
+		
+	
 
 	private void saveEmployeeJob(ArrayList<JobEmployees> jobEmployeesList,  int supervisorId, int principalConsultantId, int jobId,Session session) {
 		try{
@@ -1003,24 +990,24 @@ public class MySQLRdbHelper {
 		
 	}
 
-	private void addPhase(Job job, Session session)throws Exception {
-		try{
-			for(int i=0; i< job.getJobPhases().size(); i++){
-				Phases phase = job.getJobPhases().get(i);
-				phase.setJobId(job);
-				session.saveOrUpdate(phase);
-				session.flush();
-			}
-		}catch(Exception ex){
-			logger.warn(String.format("Exception occured in addPhase", ex.getMessage()), ex);
-			System.out.println("Exception occured in addPhase"+ ex.getMessage());
-
-			throw new Exception("Exception occured in addPhase");
-		}
-		finally{
-
-		}
-	}
+//	private void addPhase(Job job, Session session)throws Exception {
+//		try{
+//			for(int i=0; i< job.getJobPhases().size(); i++){
+//				Phases phase = job.getJobPhases().get(i);
+//				phase.setJobId(job);
+//				session.saveOrUpdate(phase);
+//				session.flush();
+//			}
+//		}catch(Exception ex){
+//			logger.warn(String.format("Exception occured in addPhase", ex.getMessage()), ex);
+//			System.out.println("Exception occured in addPhase"+ ex.getMessage());
+//
+//			throw new Exception("Exception occured in addPhase");
+//		}
+//		finally{
+//
+//		}
+//	}
 
 	public ArrayList<Job> fetchJobs(User loggedInUser) throws Exception{
 		ArrayList<Job> jobs = new ArrayList<Job>();
@@ -1071,17 +1058,17 @@ public class MySQLRdbHelper {
 			for(Iterator it=rsList.iterator();it.hasNext();)
 			{
 				Job job =  (Job)it.next();
-				job.setJobPhases(fetchJobPhases(job.getJobId()));
+				//job.setJobPhases(fetchJobPhases(job.getJobId()));
 				job.setJobEmployeesList(fetchJobEmployees(session, job.getJobId()));
 				job.setJobAttributes(fetchjobAttributes(session, job.getJobId()));
 				job.setTimeSheets(fetchJobTimeSheets(session, job.getJobId(), loggedInUser.getRoleId().getRoleId(), loggedInUser.getUserId()));
 				HibernateDetachUtility.nullOutUninitializedFields(job, HibernateDetachUtility.SerializationType.SERIALIZATION);
 				HibernateDetachUtility.nullOutUninitializedFields(job.getLineofServiceId(), HibernateDetachUtility.SerializationType.SERIALIZATION);
 				HibernateDetachUtility.nullOutUninitializedFields(job.getDomainId(), HibernateDetachUtility.SerializationType.SERIALIZATION);
-				HibernateDetachUtility.nullOutUninitializedFields(job.getPrincipalConsultantId(), HibernateDetachUtility.SerializationType.SERIALIZATION);
-				HibernateDetachUtility.nullOutUninitializedFields(job.getSubLineofServiceId(), HibernateDetachUtility.SerializationType.SERIALIZATION);
+			//	HibernateDetachUtility.nullOutUninitializedFields(job.getPrincipalConsultantId(), HibernateDetachUtility.SerializationType.SERIALIZATION);
+			//	HibernateDetachUtility.nullOutUninitializedFields(job.getSubLineofServiceId(), HibernateDetachUtility.SerializationType.SERIALIZATION);
 				HibernateDetachUtility.nullOutUninitializedFields(job.getCountryId(), HibernateDetachUtility.SerializationType.SERIALIZATION);
-				HibernateDetachUtility.nullOutUninitializedFields(job.getSupervisorId(), HibernateDetachUtility.SerializationType.SERIALIZATION);
+			//	HibernateDetachUtility.nullOutUninitializedFields(job.getSupervisorId(), HibernateDetachUtility.SerializationType.SERIALIZATION);
 		
 
 				jobs.add(job);
@@ -1149,7 +1136,7 @@ public class MySQLRdbHelper {
 			for(Iterator it=rsList.iterator();it.hasNext();)
 			{
 				Job job =  (Job)it.next();
-				job.setJobPhases(fetchJobPhases(job.getJobId()));
+			//	job.setJobPhases(fetchJobPhases(job.getJobId()));
 				job.setJobEmployeesList(fetchJobEmployees(session, job.getJobId()));
 				job.setJobAttributes(fetchjobAttributes(session, job.getJobId()));
 				job.setTimeSheets(fetchJobTimeSheets(session, job.getJobId(), loggedInUser.getRoleId().getRoleId(), loggedInUser.getUserId()));
@@ -1182,13 +1169,17 @@ public class MySQLRdbHelper {
 			crit.createAlias("job.supervisorId", "supervisor");
 			crit.createAlias("job.domainId", "domain1");
 			crit.createAlias("job.countryId", "count1");
+			crit.createAlias("activityId", "activity");
 			crit.createAlias("job.principalConsultantId", "principalConsultant");
 			crit.add(Restrictions.eq("job.jobId", jobId));
 			crit.add(Restrictions.eq("user.userId", userId));
+			crit.add(Restrictions.ne("activity.activityId", 0));
 			
 			if(roleId==5){
 //				crit.add(Restrictions.eq("status", 1));
 			}
+			
+			crit.addOrder(Order.asc("activity.activityId"));
 			
 			List rsList = crit.list();
 			
@@ -1511,7 +1502,7 @@ public class MySQLRdbHelper {
 				TimeSheet timeSheet =  (TimeSheet)it.next();
 				TimeSheetReportDTO timeSheetReportDTO = new TimeSheetReportDTO();
 				timeSheetReportDTO.setJobName(timeSheet.getJobId().getJobName());
-				timeSheetReportDTO.setFee(timeSheet.getJobId().getClientFee());
+				//timeSheetReportDTO.setFee(timeSheet.getJobId().getClientFee());
 				timeSheetReportDTO.setJobType(timeSheet.getJobId().getLineofServiceId().getName());
 				timeSheetReportDTO.setJobId(timeSheet.getJobId().getJobId());
 				timeSheetReportDTO.setTotal(timeSheet.getHours());
@@ -1740,7 +1731,7 @@ public class MySQLRdbHelper {
 			for(Iterator it=rsList.iterator();it.hasNext();)
 			{
 				Job job =  (Job)it.next();
-				job.setJobPhases(fetchJobPhases(job.getJobId()));
+				//job.setJobPhases(fetchJobPhases(job.getJobId()));
 				job.setJobEmployeesList(fetchJobEmployees(session, job.getJobId()));
 				job.setJobAttributes(fetchjobAttributes(session, job.getJobId()));
 				job.setTimeSheets(fetchJobTimeSheets(session, job.getJobId(), loggedInUser.getRoleId().getRoleId(), loggedInUser.getUserId()));
@@ -1908,7 +1899,7 @@ public class MySQLRdbHelper {
 			for(Iterator it=rsList.iterator();it.hasNext();)
 			{
 				Job job =  (Job)it.next();
-				job.setJobPhases(fetchJobPhases(job.getJobId()));
+				//job.setJobPhases(fetchJobPhases(job.getJobId()));
 				job.setJobEmployeesList(fetchJobEmployees(session, job.getJobId()));
 				job.setJobAttributes(fetchjobAttributes(session, job.getJobId()));
 //				job.setTimeSheets(fetchJobTimeSheets(session, job.getJobId(), loggedInUser.getRoleId().getRoleId()));

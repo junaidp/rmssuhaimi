@@ -94,25 +94,25 @@ public class JobsListView extends MaterialColumn {
 		};
 		table.addColumn(jobDomain,"Domain");
 		
-		jobPhase = new Column<Job, String>(new TextCell()) {
-			@Override
-			public String getValue(Job object) {
-				String phases="";
-				for(int i=0; i< object.getJobPhases().size(); i++){
-					if(object.getJobPhases().size()>1){
-					if(object.getJobPhases().get(i).getPhaseName().length()>10){
-						phases =  phases+" "+object.getJobPhases().get(i).getPhaseName().substring(0, 10)+" ,";
-					}else{
-						phases =  phases+" "+object.getJobPhases().get(i).getPhaseName()+" ,";
-						
-					}
-					}else{
-						return object.getJobPhases().get(i).getPhaseName();
-					}
-					}
-				return phases;
-			}
-		};
+//		jobPhase = new Column<Job, String>(new TextCell()) {
+//			@Override
+//			public String getValue(Job object) {
+//				String phases="";
+//				for(int i=0; i< object.getJobPhases().size(); i++){
+//					if(object.getJobPhases().size()>1){
+//					if(object.getJobPhases().get(i).getPhaseName().length()>10){
+//						phases =  phases+" "+object.getJobPhases().get(i).getPhaseName().substring(0, 10)+" ,";
+//					}else{
+//						phases =  phases+" "+object.getJobPhases().get(i).getPhaseName()+" ,";
+//						
+//					}
+//					}else{
+//						return object.getJobPhases().get(i).getPhaseName();
+//					}
+//					}
+//				return phases;
+//			}
+//		};
 //		table.addColumn(jobPhase,"Phases");
 		
 		jobLineOfService = new Column<Job, String>(new TextCell()) {
@@ -123,12 +123,12 @@ public class JobsListView extends MaterialColumn {
 		};
 //		table.addColumn(jobLineOfService,"Line of Service");
 		
-		jobSubLineofService = new Column<Job, String>(new TextCell()) {
-			@Override
-			public String getValue(Job object) {
-				return object.getSubLineofServiceId().getName();
-			}
-		};
+//		jobSubLineofService = new Column<Job, String>(new TextCell()) {
+//			@Override
+//			public String getValue(Job object) {
+//				return object.getSubLineofServiceId().getName();
+//			}
+//		};
 //		table.addColumn(jobSubLineofService,"Subline of Service");
 		 ButtonCell btnDel = new ButtonCell() ;
 		 
@@ -149,34 +149,34 @@ public class JobsListView extends MaterialColumn {
 		
 		closeJob.setCellStyleNames("btnStyle");
 				
-		jobStartDate = new Column<Job, String>(new TextCell()) {
-			@Override
-			public String getValue(Job job) {
-				 DateTimeFormat fmt = DateTimeFormat.getFormat(" MMMM dd, yyyy");
-				    // prints Monday, December 17, 2007 in the default locale
-				 if(job.getJobPhases().size() > 0){
-				    return fmt.format(job.getJobPhases().get(0).getStartDate());
-				 }else{
-					 return "No phase Added";
-				 }
-//				return job.getJobPhases().get(0).getStartDate().toString().substring(0,11);
-				
-			}
-		};
+//		jobStartDate = new Column<Job, String>(new TextCell()) {
+//			@Override
+//			public String getValue(Job job) {
+//				 DateTimeFormat fmt = DateTimeFormat.getFormat(" MMMM dd, yyyy");
+//				    // prints Monday, December 17, 2007 in the default locale
+//				 if(job.getJobPhases().size() > 0){
+//				    return fmt.format(job.getJobPhases().get(0).getStartDate());
+//				 }else{
+//					 return "No phase Added";
+//				 }
+////				return job.getJobPhases().get(0).getStartDate().toString().substring(0,11);
+//				
+//			}
+//		};
 		
-		jobDeliveryDate = new Column<Job, String>(new TextCell()) {
-			@Override
-			public String getValue(Job job) {
-				int last = job.getJobPhases().size();
-				 DateTimeFormat fmt = DateTimeFormat.getFormat(" MMMM dd, yyyy");
-				 if(job.getJobPhases().size() > 0){
-				 return fmt.format(job.getJobPhases().get(last-1).getDeliveryDate());
-				 }else{
-					 return "No phase Added";
-				 }
-				
-			}
-		};
+//		jobDeliveryDate = new Column<Job, String>(new TextCell()) {
+//			@Override
+//			public String getValue(Job job) {
+//				int last = job.getJobPhases().size();
+//				 DateTimeFormat fmt = DateTimeFormat.getFormat(" MMMM dd, yyyy");
+//				 if(job.getJobPhases().size() > 0){
+//				 return fmt.format(job.getJobPhases().get(last-1).getDeliveryDate());
+//				 }else{
+//					 return "No phase Added";
+//				 }
+//				
+//			}
+//		};
 		
 		
 			table.addColumn(jobStartDate,"Start Date");

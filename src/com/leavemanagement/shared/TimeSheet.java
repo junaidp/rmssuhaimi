@@ -42,6 +42,10 @@ public class TimeSheet   implements Serializable {
 	
 	
 	
+	@JoinColumn(name = "activityId")
+	@ManyToOne(fetch = FetchType.EAGER)
+	private Activity activity;
+	
 	@JoinColumn(name = "userId")
 	@ManyToOne(fetch = FetchType.EAGER)
 	private User userId;
@@ -118,6 +122,16 @@ public class TimeSheet   implements Serializable {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+
+	public Activity getActivity() {
+		return activity;
+	}
+
+
+	public void setActivity(Activity activity) {
+		this.activity = activity;
 	}
 
 

@@ -32,18 +32,18 @@ public class Job   implements Serializable {
 	@Column(name="client")
 	private String client;
 	
-	@Column(name="clientFee")
-	private int clientFee;
+	@Column(name="segment")
+	private int segment;
 	
-	@Column(name="supervisorHours")
-	private int supervisorHours;
+	@Column(name="allocation")
+	private int allocation;
 	
-	@Column(name="principalConsultantHours")
-	private int principalConsultantHours;
+	@Column(name="nature")
+	private int nature;
 	
-	@JoinColumn(name = "subLineofServiceId")
-	@ManyToOne(fetch = FetchType.LAZY)
-	private SubLineofService subLineofServiceId;
+	@Column(name="company")
+	private int company;
+	
 	
 	@JoinColumn(name = "lineofServiceId")
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -61,16 +61,6 @@ public class Job   implements Serializable {
 //	@ManyToOne(fetch = FetchType.LAZY)
 //	private User employee1;
 	
-	@JoinColumn(name = "supervisorId")
-	@ManyToOne(fetch = FetchType.LAZY)
-	private User supervisorId;
-	
-	@JoinColumn(name = "principalConsultantId")
-	@ManyToOne(fetch = FetchType.LAZY)
-	private User principalConsultantId;
-	
-	@Transient
-	private ArrayList<Phases> jobPhases;
 	
 	@Transient
 	private ArrayList<JobEmployees> jobEmployeesList;
@@ -78,6 +68,9 @@ public class Job   implements Serializable {
 	@Transient ArrayList<JobAttributes> jobAttributes;
 	
 	@Transient ArrayList<TimeSheet> timeSheets;
+	//adding new array list
+	@Transient
+	private ArrayList<JobActivityEntity> jobActivityEntity;                     
 	
 	@Column(name="status")
 	private String status;
@@ -108,14 +101,6 @@ public class Job   implements Serializable {
 		this.client = client;
 	}
 
-	public SubLineofService getSubLineofServiceId() {
-		return subLineofServiceId;
-	}
-
-	public void setSubLineofServiceId(SubLineofService subLineofServiceId) {
-		this.subLineofServiceId = subLineofServiceId;
-	}
-
 	public LineofService getLineofServiceId() {
 		return lineofServiceId;
 	}
@@ -132,13 +117,7 @@ public class Job   implements Serializable {
 		this.domainId = domainId;
 	}
 
-	public ArrayList<Phases> getJobPhases() {
-		return jobPhases;
-	}
 
-	public void setJobPhases(ArrayList<Phases> jobPhases) {
-		this.jobPhases = jobPhases;
-	}
 
 	public Countries getCountryId() {
 		return countryId;
@@ -156,29 +135,6 @@ public class Job   implements Serializable {
 //		this.employee1 = userId;
 //	}
 
-	public User getSupervisorId() {
-		return supervisorId;
-	}
-
-	public void setSupervisorId(User supervisorId) {
-		this.supervisorId = supervisorId;
-	}
-
-	public User getPrincipalConsultantId() {
-		return principalConsultantId;
-	}
-
-	public void setPrincipalConsultantId(User principalConsultantId) {
-		this.principalConsultantId = principalConsultantId;
-	}
-
-	public int getClientFee() {
-		return clientFee;
-	}
-
-	public void setClientFee(int clientFee) {
-		this.clientFee = clientFee;
-	}
 
 	public ArrayList<JobEmployees> getJobEmployeesList() {
 		return jobEmployeesList;
@@ -212,20 +168,44 @@ public class Job   implements Serializable {
 		this.timeSheets = timeSheets;
 	}
 
-	public int getSupervisorHours() {
-		return supervisorHours;
+	public ArrayList<JobActivityEntity> getJobActivityEntity() {
+		return jobActivityEntity;
 	}
 
-	public void setSupervisorHours(int supervisorHours) {
-		this.supervisorHours = supervisorHours;
+	public void setJobActivityEntity(ArrayList<JobActivityEntity> jobActivityEntity) {
+		this.jobActivityEntity = jobActivityEntity;
 	}
 
-	public int getPrincipalConsultantHours() {
-		return principalConsultantHours;
+	public int getSegment() {
+		return segment;
 	}
 
-	public void setPrincipalConsultantHours(int principalConsultantHours) {
-		this.principalConsultantHours = principalConsultantHours;
+	public void setSegment(int segment) {
+		this.segment = segment;
+	}
+
+	public int getAllocation() {
+		return allocation;
+	}
+
+	public void setAllocation(int allocation) {
+		this.allocation = allocation;
+	}
+
+	public int getNature() {
+		return nature;
+	}
+
+	public void setNature(int nature) {
+		this.nature = nature;
+	}
+
+	public int getCompany() {
+		return company;
+	}
+
+	public void setCompany(int company) {
+		this.company = company;
 	}
 
 	
