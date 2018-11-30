@@ -66,7 +66,7 @@ public class AttributesView extends MaterialColumn{
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
-				Window.alert("fetch jobs list failed");
+				Window.alert("fetch jobs list failed in attributes view");
 			}
 		});
 	}

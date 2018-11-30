@@ -1016,9 +1016,9 @@ public class MySQLRdbHelper {
 			session = sessionFactory.openSession();
 			Criteria crit = session.createCriteria(Job.class);
 			crit.createAlias("lineofServiceId", "lineofService");
-			crit.createAlias("subLineofServiceId", "subLineofService");
-			crit.createAlias("subLineofService.domainId", "sublineDomain");
-			crit.createAlias("sublineDomain.lineofServiceId", "ddomainlineofservice");
+			//crit.createAlias("subLineofServiceId", "subLineofService");
+			//crit.createAlias("subLineofService.domainId", "sublineDomain");
+			//crit.createAlias("sublineDomain.lineofServiceId", "ddomainlineofservice");
 			
 			crit.createAlias("domainId", "domain");
 			crit.createAlias("domain.lineofServiceId", "domainlineofservice");
@@ -1030,17 +1030,17 @@ public class MySQLRdbHelper {
 //			crit.createAlias("user.companyId", "company");
 			
 			
-			crit.createAlias("supervisorId", "supervisor");
-			crit.createAlias("supervisor.roleId", "roles");
-			crit.createAlias("supervisor.companyId", "companys");
+			//crit.createAlias("supervisorId", "supervisor");
+			//crit.createAlias("supervisor.roleId", "roles");
+			//crit.createAlias("supervisor.companyId", "companys");
 			
 			
-			crit.createAlias("principalConsultantId", "principalConsultant");
-			crit.createAlias("principalConsultant.roleId", "rolep");
-			crit.createAlias("principalConsultant.companyId", "companyp");
+			//crit.createAlias("principalConsultantId", "principalConsultant");
+			//crit.createAlias("principalConsultant.roleId", "rolep");
+			//crit.createAlias("principalConsultant.companyId", "companyp");
 			
 			crit.add(Restrictions.ne("status", "InActive"));
-			crit.add(Restrictions.ne("client", "office"));
+		//	crit.add(Restrictions.ne("client", "office"));
 			crit.add(Restrictions.ne("status", "Closed"));
 			
 			if(loggedInUser.getRoleId().getRoleId()!=5){

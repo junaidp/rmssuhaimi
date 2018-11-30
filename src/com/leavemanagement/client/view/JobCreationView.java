@@ -23,6 +23,7 @@ import gwt.material.design.client.ui.MaterialListBox;
 
 import com.leavemanagement.client.GreetingService;
 import com.leavemanagement.client.GreetingServiceAsync;
+import com.leavemanagement.shared.Allocations;
 import com.leavemanagement.shared.Countries;
 import com.leavemanagement.shared.Domains;
 import com.leavemanagement.shared.Job;
@@ -69,8 +70,11 @@ public class JobCreationView extends MaterialColumn {
 		this.selectedJob = job;
 		listLocation.addItem("Local");
 		listLocation.addItem("Overseas");
-		listBoxAllocation.addItem("Chargeable");
-		listBoxAllocation.addItem("Non Chargeable");
+		
+		
+		for (Allocations allocations : Allocations.values()) {
+			listBoxAllocation.addItem(allocations.name());
+		}
 		
 		listBoxNature.addItem("Adhoc");
 		listBoxNature.addItem("Audit Solution");
@@ -387,7 +391,7 @@ public class JobCreationView extends MaterialColumn {
 					job.setCompany(Integer.parseInt(txtBoxCompanyName.getText()));
 					job.setAllocation(listBoxAllocation.getSelectedIndex());
 					job.setSegment(listBoxSegment.getSelectedIndex());
-					job.setNature(listBoxNature.getSelectedIndex());
+					job.setNature(listBoxNature.getSelectedValue());
 					
 				
 					//job.setJobPhases(phases);

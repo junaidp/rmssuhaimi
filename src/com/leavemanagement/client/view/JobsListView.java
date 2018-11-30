@@ -68,7 +68,7 @@ public class JobsListView extends MaterialColumn {
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
-				Window.alert("fetch jobs list failed");
+				Window.alert("fetch jobs list failed in joblist view");
 			}
 		});
 	}
@@ -179,8 +179,8 @@ public class JobsListView extends MaterialColumn {
 //		};
 		
 		
-			table.addColumn(jobStartDate,"Start Date");
-			table.addColumn(jobDeliveryDate,"Submission Date");
+			//table.addColumn(jobStartDate,"Start Date");
+			//table.addColumn(jobDeliveryDate,"Submission Date");
 		
 			if(loggedInUser.getRoleId().getRoleId()==5){
 				table.addColumn(closeJob,"");

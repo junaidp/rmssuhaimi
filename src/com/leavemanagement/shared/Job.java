@@ -29,8 +29,8 @@ public class Job   implements Serializable {
 	@Column(name="jobName")
 	private String jobName;
 	
-	@Column(name="client")
-	private String client;
+	//@Column(name="client")
+	//private String client;
 	
 	@Column(name="segment")
 	private int segment;
@@ -39,7 +39,7 @@ public class Job   implements Serializable {
 	private int allocation;
 	
 	@Column(name="nature")
-	private int nature;
+	private String nature;
 	
 	@Column(name="company")
 	private int company;
@@ -93,13 +93,7 @@ public class Job   implements Serializable {
 		this.jobName = jobName;
 	}
 
-	public String getClient() {
-		return client;
-	}
-
-	public void setClient(String client) {
-		this.client = client;
-	}
+	
 
 	public LineofService getLineofServiceId() {
 		return lineofServiceId;
@@ -192,13 +186,7 @@ public class Job   implements Serializable {
 		this.allocation = allocation;
 	}
 
-	public int getNature() {
-		return nature;
-	}
-
-	public void setNature(int nature) {
-		this.nature = nature;
-	}
+	
 
 	public int getCompany() {
 		return company;
@@ -206,6 +194,14 @@ public class Job   implements Serializable {
 
 	public void setCompany(int company) {
 		this.company = company;
+	}
+
+	public String getNature() {
+		return nature;
+	}
+
+	public void setNature(String nature) {
+		this.nature = nature;
 	}
 
 	
