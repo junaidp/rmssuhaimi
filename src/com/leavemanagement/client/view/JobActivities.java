@@ -21,31 +21,33 @@ import gwt.material.design.client.ui.MaterialLabel;
 import gwt.material.design.client.ui.MaterialListBox;
 import gwt.material.design.client.ui.MaterialRow;
 import gwt.material.design.client.ui.MaterialTextBox;
+import gwt.material.design.client.ui.MaterialToast;
 
 public class JobActivities extends MaterialRow {
 	int totalhours=0; 
 	ArrayList<JobActivityEntity> jobActivities =new ArrayList<JobActivityEntity>();
 	GreetingServiceAsync rpcService = GWT.create(GreetingService.class);
+	private MaterialTextBox txtBoxTotalHours = new MaterialTextBox();
+	private MaterialTextBox txtBoxPlanning = new MaterialTextBox();
+	private MaterialTextBox txtBoxReporting = new MaterialTextBox();
+	private MaterialTextBox txtBoxExecution = new MaterialTextBox();
+	private MaterialTextBox txtBoxFollowUp = new MaterialTextBox();
+
 	public JobActivities(){
-		
+
 		MaterialLabel lblDesignation = new MaterialLabel("Designation");
 		MaterialLabel lblPlanning = new MaterialLabel("Planning");
 		MaterialLabel lblReporting = new MaterialLabel("Reporting");
 		MaterialLabel lblExecution = new MaterialLabel("Execution");
 		MaterialLabel lblFollowUp = new MaterialLabel("Follow Up");
 		MaterialLabel lblTotalHours = new MaterialLabel("Total Hours");
-		
+
 		final MaterialListBox listBoxDesignation = new MaterialListBox();
 		listBoxDesignation.addItem("Senior Auditor");
 		listBoxDesignation.addItem("Chief Auditor");
-		final MaterialTextBox txtBoxPlanning = new MaterialTextBox();
-		final MaterialTextBox txtBoxReporting = new MaterialTextBox();
-		final MaterialTextBox txtBoxExecution = new MaterialTextBox();
-		final MaterialTextBox txtBoxFollowUp = new MaterialTextBox();
-		final MaterialTextBox txtBoxTotalHours = new MaterialTextBox();
 		MaterialButton btnSave = new MaterialButton("Save");
-		
-		
+
+
 		//Styling
 		lblDesignation.addStyleName("blueBold");
 		lblPlanning.addStyleName("blueBold");
@@ -53,7 +55,45 @@ public class JobActivities extends MaterialRow {
 		lblReporting.addStyleName("blueBold");
 		lblFollowUp.addStyleName("blueBold");
 		lblTotalHours.addStyleName("blueBold");
+
+		setTextBoxes(listBoxDesignation);
 		
+
+		FlexTable flex = new FlexTable();
+
+		flex.setWidget(1, 0, lblDesignation);
+		flex.setWidget(2, 0, listBoxDesignation);
+
+		flex.setWidget(1, 1, lblPlanning);
+		flex.setWidget(2, 1, txtBoxPlanning);
+
+		flex.setWidget(1, 2, lblReporting);
+		flex.setWidget(2, 2, txtBoxReporting);
+
+		flex.setWidget(1, 3, lblExecution);
+		flex.setWidget(2, 3, txtBoxExecution);
+
+		flex.setWidget(1, 4, lblFollowUp);
+		flex.setWidget(2, 4, txtBoxFollowUp);
+
+		flex.setWidget(3, 2, btnSave);
+
+		flex.setWidget(3, 3, lblTotalHours);
+		flex.setWidget(3, 4, txtBoxTotalHours);
+
+
+
+		add(flex);
+
+
+		calculateHours();
+		setHandlers(listBoxDesignation, btnSave);
+		
+		
+		
+	}
+
+	private void setTextBoxes(final MaterialListBox listBoxDesignation) {
 		txtBoxExecution.setWidth("100px");
 		listBoxDesignation.setWidth("100px");
 		txtBoxFollowUp.setWidth("100px");
@@ -62,42 +102,44 @@ public class JobActivities extends MaterialRow {
 		txtBoxTotalHours.setWidth("100px");
 		//End styling
 		
-		FlexTable flex = new FlexTable();
-
-		flex.setWidget(1, 0, lblDesignation);
-		flex.setWidget(2, 0, listBoxDesignation);
-		
-		flex.setWidget(1, 1, lblPlanning);
-		flex.setWidget(2, 1, txtBoxPlanning);
-		
-		flex.setWidget(1, 2, lblReporting);
-		flex.setWidget(2, 2, txtBoxReporting);
-		
-		flex.setWidget(1, 3, lblExecution);
-		flex.setWidget(2, 3, txtBoxExecution);
-		
-		flex.setWidget(1, 4, lblFollowUp);
-		flex.setWidget(2, 4, txtBoxFollowUp);
-		
-		flex.setWidget(3, 2, btnSave);
-		
-		flex.setWidget(3, 3, lblTotalHours);
-		flex.setWidget(3, 4, txtBoxTotalHours);
+		txtBoxFollowUp.setAllowBlank(false);
+		txtBoxPlanning.setAllowBlank(false);
+		txtBoxReporting.setAllowBlank(false);
+		txtBoxExecution.setAllowBlank(false);
+		txtBoxTotalHours.setEnabled(false);
 		
 		
+		txtBoxFollowUp.setPlaceholder("0");
+		txtBoxPlanning.setPlaceholder("0");
+		txtBoxReporting.setPlaceholder("0");
+		txtBoxExecution.setPlaceholder("0");
 		
-		add(flex);
 		
-		
-		calculateHours(txtBoxPlanning, txtBoxReporting, txtBoxExecution, txtBoxFollowUp, txtBoxTotalHours);
-		saveHandler(listBoxDesignation, txtBoxPlanning, txtBoxReporting, txtBoxExecution, txtBoxFollowUp, btnSave);
 	}
 
-	private void saveHandler(final MaterialListBox listBoxDesignation, final MaterialTextBox txtBoxPlanning,
-			final MaterialTextBox txtBoxReporting, final MaterialTextBox txtBoxExecution,
-			final MaterialTextBox txtBoxFollowUp, MaterialButton btnSave) {
-		btnSave.addClickHandler(new ClickHandler() {
+	private void emptyTextBoxes() {
+		 	txtBoxFollowUp.clear();
+			txtBoxPlanning.clear();
+			txtBoxReporting.clear();
+			txtBoxExecution.clear();
+		
+	}
+
+	private void setHandlers(final MaterialListBox listBoxDesignation, MaterialButton btnSave) {
+		
+		listBoxDesignation.addValueChangeHandler(new ValueChangeHandler<String>() {
 			
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				emptyTextBoxes();
+				
+			}
+
+			
+		});
+		
+		btnSave.addClickHandler(new ClickHandler() {
+
 			@Override
 			public void onClick(ClickEvent event) {
 				JobActivityEntity jobActivityEntity = new JobActivityEntity();
@@ -107,51 +149,69 @@ public class JobActivities extends MaterialRow {
 				jobActivityEntity.setFollowup(Integer.parseInt(txtBoxFollowUp.getText()));
 				jobActivityEntity.setDesignation(listBoxDesignation.getSelectedIndex());
 				jobActivities.add(jobActivityEntity);
-				
+				emptyTextBoxes();
+				MaterialToast.fireToast("Hours saved for : "+ listBoxDesignation.getSelectedItemText());
+				try{
+				listBoxDesignation.setSelectedIndex(listBoxDesignation.getSelectedIndex()+1);
+				}catch(Exception ex){
+					// no more data in listbox
+				}
+
 			}
 		});
 	}
-	
-	private void calculateHours(final MaterialTextBox txtBoxPlanning, final MaterialTextBox txtBoxReporting,
-			final MaterialTextBox txtBoxExecution, final MaterialTextBox txtBoxFollowUp,
-			final MaterialTextBox txtBoxTotalHours) {
-		txtBoxPlanning.addValueChangeHandler(new ValueChangeHandler<String>() {
-			
-			@Override
-			public void onValueChange(ValueChangeEvent<String> event) {
-				totalhours = totalhours+ Integer.parseInt(txtBoxPlanning.getSelectedText());
-				txtBoxTotalHours.setText(totalhours+"");
-				
-			}
-		});
+
+	private void calculateHours() {
 		
-		txtBoxExecution.addValueChangeHandler(new ValueChangeHandler<String>() {
-			
+		
+		
+		txtBoxPlanning.addValueChangeHandler(new ValueChangeHandler<String>() {
+
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
-				totalhours = totalhours+ Integer.parseInt(txtBoxExecution.getSelectedText());
-				txtBoxTotalHours.setText(totalhours+"");
-				Window.alert(""+totalhours);
+				calculateHours(txtBoxPlanning);
+
+			}
+
+
+		});
+
+		txtBoxExecution.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				calculateHours(txtBoxExecution);
 			}
 		});
 
 		txtBoxReporting.addValueChangeHandler(new ValueChangeHandler<String>() {
-		
-		@Override
-		public void onValueChange(ValueChangeEvent<String> event) {
-			totalhours = totalhours+ Integer.parseInt(txtBoxReporting.getSelectedText());
-			txtBoxTotalHours.setText(totalhours+"");
-			Window.alert(""+totalhours);
-		}
-	});
-		txtBoxFollowUp.addValueChangeHandler(new ValueChangeHandler<String>() {
-			
+
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
-				totalhours = totalhours+ Integer.parseInt(txtBoxFollowUp.getSelectedText());
-				txtBoxTotalHours.setText(totalhours+"");
+				calculateHours(txtBoxReporting);
 			}
 		});
+		
+		txtBoxFollowUp.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				calculateHours(txtBoxFollowUp);
+			}
+		});
+	}
+
+	private void calculateHours( MaterialTextBox textBox) {
+		try{
+		textBox.reset();
+		int hours = Integer.parseInt(textBox.getText());
+		totalhours = totalhours+ hours;
+		txtBoxTotalHours.setText(totalhours+"");
+		
+		}catch(Exception ex){
+			textBox.setError("Enter valid number");
+		}
+		
 	}
 
 	public ArrayList<JobActivityEntity> getJobActivities() {

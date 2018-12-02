@@ -73,7 +73,7 @@ public class JobCreationView extends MaterialColumn {
 		
 		
 		for (Allocations allocations : Allocations.values()) {
-			listBoxAllocation.addItem(allocations.name());
+			listBoxAllocation.addItem(allocations.getValue()+"", allocations.getName());
 		}
 		
 		listBoxNature.addItem("Adhoc");
@@ -389,7 +389,7 @@ public class JobCreationView extends MaterialColumn {
 				//	job.setSubLineofServiceId(subLineofService);
 					job.setJobName(txtJobName.getText());
 					job.setCompany(Integer.parseInt(txtBoxCompanyName.getText()));
-					job.setAllocation(listBoxAllocation.getSelectedIndex());
+					job.setAllocation(Integer.parseInt(listBoxAllocation.getSelectedValue()));
 					job.setSegment(listBoxSegment.getSelectedIndex());
 					job.setNature(listBoxNature.getSelectedIndex());
 					
