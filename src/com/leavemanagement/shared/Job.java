@@ -39,7 +39,7 @@ public class Job   implements Serializable {
 	private int allocation;
 	
 	@Column(name="nature")
-	private String nature;
+	private int nature;
 	
 	@Column(name="company")
 	private int company;
@@ -71,9 +71,7 @@ public class Job   implements Serializable {
 	//adding new array list
 	@Transient
 	private ArrayList<JobActivityEntity> jobActivityEntity;                     
-	
-	@Column(name="status")
-	private String status;
+
 	
 	public Job(){}
 
@@ -138,13 +136,6 @@ public class Job   implements Serializable {
 		this.jobEmployeesList = jobEmployeesList;
 	}
 
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
 
 	public ArrayList<JobAttributes> getJobAttributes() {
 		return jobAttributes;
@@ -196,11 +187,11 @@ public class Job   implements Serializable {
 		this.company = company;
 	}
 
-	public String getNature() {
+	public int getNature() {
 		return nature;
 	}
 
-	public void setNature(String nature) {
+	public void setNature(int nature) {
 		this.nature = nature;
 	}
 

@@ -379,7 +379,7 @@ public class JobCreationView extends MaterialColumn {
 					domain.setDomainId(Integer.parseInt(listDomain.getValue(listDomain.getSelectedIndex())));
 					LineofService lineofService = new LineofService();
 					lineofService.setLineofServiceId(Integer.parseInt(listLineOfService.getValue(listLineOfService.getSelectedIndex())));
-					SubLineofService subLineofService = new SubLineofService();
+					//SubLineofService subLineofService = new SubLineofService();
 					//subLineofService.setSubLineofServiceId(Integer.parseInt(listSubLineofService.getValue(listSubLineofService.getSelectedIndex())));
 					Countries country = new Countries();
 					country.setCountryId(Integer.parseInt(listCountry.getValue(listCountry.getSelectedIndex())));
@@ -391,7 +391,7 @@ public class JobCreationView extends MaterialColumn {
 					job.setCompany(Integer.parseInt(txtBoxCompanyName.getText()));
 					job.setAllocation(listBoxAllocation.getSelectedIndex());
 					job.setSegment(listBoxSegment.getSelectedIndex());
-					job.setNature(listBoxNature.getSelectedValue());
+					job.setNature(listBoxNature.getSelectedIndex());
 					
 				
 					//job.setJobPhases(phases);

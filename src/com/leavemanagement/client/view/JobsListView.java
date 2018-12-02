@@ -16,6 +16,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ScrollPanel;
+
 import gwt.material.design.addins.client.window.MaterialWindow;
 import gwt.material.design.client.ui.MaterialColumn;
 import com.leavemanagement.client.GreetingService;
@@ -43,7 +45,12 @@ public class JobsListView extends MaterialColumn {
 		setTable();
 		fetchJobs();
 		add(imgRefresh);
-		add(table);
+		ScrollPanel scrollpanel = new ScrollPanel();
+		scrollpanel.add(table);
+		scrollpanel.setWidth("500px");
+		scrollpanel.setHeight("300px");
+		add(scrollpanel);
+		//add(table);
 		table.getColumn(0).setCellStyleNames("editCell");
 		table.addColumnStyleName(0, "editCell");
 		
