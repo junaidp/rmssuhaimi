@@ -69,7 +69,7 @@ public interface GreetingServiceAsync {
 	void getLineOfServices( AsyncCallback<ArrayList<LineofService>> asyncCallback);
 	void saveRating(AttributeRating attributeRating, AsyncCallback<String> asyncCallback);
 	void fetchMonthAllowedhours(int month, AsyncCallback<Integer> asyncCallback);
-	void fetchJobsForTimeSheet(User loggedInUser, AsyncCallback<ArrayList<Job>> callback);
+	void fetchJobsForTimeSheet(User loggedInUser, boolean chargeable, AsyncCallback<ArrayList<Job>> callback);
 	void fetchUsersWithJobs(AsyncCallback<ArrayList<JobUsersDTO>> callback);
 	void fetchjobUserRating(int useId, int jobId, AsyncCallback< ArrayList<AttributeRating>> callback);
 	void fetchAllJobs( AsyncCallback<ArrayList<Job>> callback);

@@ -393,12 +393,12 @@ HttpSession session ;
 	}
 
 	@Override
-	public ArrayList<Job> fetchJobsForTimeSheet(User loggedInUser)
+	public ArrayList<Job> fetchJobsForTimeSheet(User loggedInUser, boolean chargeable)
 			throws Exception {
 		ApplicationContext ctx = new ClassPathXmlApplicationContext(
 				"applicationContext.xml");
 		MySQLRdbHelper rdbHelper = (MySQLRdbHelper) ctx.getBean("ManagerExams");
-		return rdbHelper.fetchJobsForTimeSheet(loggedInUser);
+		return rdbHelper.fetchJobsForTimeSheet(loggedInUser, chargeable);
 	}
 
 	@Override

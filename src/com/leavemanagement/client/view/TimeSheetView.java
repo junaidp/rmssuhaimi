@@ -44,25 +44,40 @@ public class TimeSheetView extends MaterialColumn{
 	private MaterialButton btnSave = new MaterialButton("Save");
 	private MaterialButton btnSubmit = new MaterialButton("Submit");
 	private MaterialListBox listActivities = new MaterialListBox();
+	private MaterialCheckBox chkChargeable = new MaterialCheckBox(Allocations.CHARGEABLE.getName());
+	private boolean chargeable = false;
 
 
 	public TimeSheetView(User loggedInUser){
 		this.loggedInUser = loggedInUser;
+		
+		btnSave.setEnabled(false);
+		
 		MaterialRow hpnl = new MaterialRow();
 		Label lblJob = new Label("Job Name");
 		//		hpnl.add(lblJob);
 		hpnl.add(flex);
-		add(listMonth);
+		MaterialRow mRow = new MaterialRow();
+		MaterialColumn mcMonth = new MaterialColumn();
+		MaterialColumn mcChargeable = new MaterialColumn();
+		mcMonth.add(listMonth);
+		mcChargeable.add(chkChargeable);
+		mRow.add(mcMonth);
+		mRow.add(mcChargeable);
+		
 		listMonth.getElement().getStyle().setHeight(60, Unit.PX);
-		add(hpnl);
+		
 		MaterialRow hpnlButtons = new MaterialRow();
 		MaterialColumn colBtnSave = new MaterialColumn();
 		colBtnSave.add(btnSave);
 		hpnlButtons.add(colBtnSave);
 		MaterialColumn colBtnSubmit = new MaterialColumn();
-		colBtnSubmit.add(btnSubmit);
+		//colBtnSubmit.add(btnSubmit);
 		hpnlButtons.add(colBtnSubmit);
 		add(hpnlButtons);
+		add(mRow);
+		add(hpnl);
+		
 		listMonth.addItem("0", "Select Month");
 		listMonth.addItem("1", "Jan");
 		listMonth.addItem("2", "Feb");
@@ -117,10 +132,22 @@ public class TimeSheetView extends MaterialColumn{
 				fetchJobs();
 			}
 		});
+		
+		chkChargeable.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				chargeable = event.getValue();
+				if(selectedMonth > 0){
+					fetchJobs();
+				}
+			}
+		});
 
 	}
 
 	public void fetchJobs(){
+		flex.clear();
 		flex.setWidget(0, 0, new Label("Job"));
 		//flex.setWidget(0, 1, new Label("Chargable"));
 		for(int k=0; k<31;k++){
@@ -131,7 +158,7 @@ public class TimeSheetView extends MaterialColumn{
 			flex.getFlexCellFormatter().setHorizontalAlignment(0, k+1, HasHorizontalAlignment.ALIGN_CENTER);
 
 		}
-		rpcService.fetchJobsForTimeSheet(loggedInUser, new AsyncCallback<ArrayList<Job>>() {
+		rpcService.fetchJobsForTimeSheet(loggedInUser, chargeable, new AsyncCallback<ArrayList<Job>>() {
 
 			@Override
 			public void onSuccess(ArrayList<Job> jobs) {
@@ -189,6 +216,7 @@ public class TimeSheetView extends MaterialColumn{
 					}
 
 				}
+				btnSave.setEnabled(true);
 			}
 
 

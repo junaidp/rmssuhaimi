@@ -1089,7 +1089,7 @@ public class MySQLRdbHelper {
 		}
 	}
 
-	public ArrayList<Job> fetchJobsForTimeSheet(User loggedInUser) throws Exception{
+	public ArrayList<Job> fetchJobsForTimeSheet(User loggedInUser, boolean chargeable) throws Exception{
 		ArrayList<Job> jobs = new ArrayList<Job>();
 		Session session = null;
 		try{
@@ -1121,6 +1121,9 @@ public class MySQLRdbHelper {
 			
 			crit.add(Restrictions.ne("status", "InActive"));
 			crit.add(Restrictions.ne("status", "Closed"));
+			if(chargeable){
+				crit.add(Restrictions.eq("allocation", 1));
+			}
 //			crit.add(Restrictions.ne("client", "office"));
 			
 //			if(loggedInUser.getRoleId().getRoleId()!=5){

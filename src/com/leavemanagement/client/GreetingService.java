@@ -68,7 +68,7 @@ public interface GreetingService extends RemoteService {
 	 ArrayList<LineofService> getLineOfServices() throws Exception;
 	 String saveRating(AttributeRating attributeRating)throws Exception;
 	 Integer fetchMonthAllowedhours(int month)throws Exception;
-	 ArrayList<Job> fetchJobsForTimeSheet (User loggedInUser) throws Exception;
+	 ArrayList<Job> fetchJobsForTimeSheet (User loggedInUser, boolean chargeable) throws Exception;
 	 ArrayList<JobUsersDTO>fetchUsersWithJobs()throws Exception;
 	 ArrayList<AttributeRating> fetchjobUserRating(int userId, int jobId)throws Exception;
 	 ArrayList<Job> fetchAllJobs () throws Exception;
