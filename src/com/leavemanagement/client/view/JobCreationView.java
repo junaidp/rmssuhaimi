@@ -465,7 +465,7 @@ public class JobCreationView extends MaterialColumn {
 						//
 						//job.setJobEmployeesList(jobEmployeesList);
 						//2018 work
-						job.setJobActivityEntity(jobActivityView.getJobActivities());
+						job.setJobActivities(jobActivityView.getJobActivities());
 					}
 
 					final LoadingPopup loadingPopup = new LoadingPopup();

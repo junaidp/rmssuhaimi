@@ -899,9 +899,10 @@ public class MySQLRdbHelper {
 			tr = session.beginTransaction();
 			//job.setStatus("Active");
 			session.saveOrUpdate(job);
-			setJobActivities(job.getJobActivityEntity(), session, job.getJobId());
+			
 		//	saveEmployeeJob(job.getJobEmployeesList(),job.getSupervisorId().getUserId(), job.getPrincipalConsultantId().getUserId(), job.getJobId(), session);
 			session.flush();
+			setJobActivities(job.getJobActivities(), session, job);
 		//	addPhase(job, session);
 			tr.commit();
 			
@@ -931,20 +932,21 @@ public class MySQLRdbHelper {
 		
 	}
 
-	private void setJobActivities(ArrayList<JobActivityEntity> jobActivityList, Session session, int jobId) {
+	private void setJobActivities(ArrayList<JobActivityEntity> jobActivityList, Session session, Job job) {
 		try{
 			for(int i=0; i< jobActivityList.size(); i++){
 				
 				JobActivityEntity  jobActivity = jobActivityList.get(i);
-				Job j = new Job();
-				j.setJobId(jobId);
+				
+				//Job j = new Job();
+				//j.setJobId(job);
 				
 				jobActivity.setDesignation(jobActivityList.get(i).getDesignation());
 				jobActivity.setPlanning(jobActivityList.get(i).getPlanning());
 				jobActivity.setExecution(jobActivityList.get(i).getExecution());
 				jobActivity.setFollowup(jobActivityList.get(i).getFollowup());
 				jobActivity.setReporting(jobActivityList.get(i).getReporting());
-				jobActivity.setJobId(j);
+				jobActivity.setJobId(job);
 					session.saveOrUpdate(jobActivity);
 					session.flush();
 			}
@@ -1039,9 +1041,9 @@ public class MySQLRdbHelper {
 			//crit.createAlias("principalConsultant.roleId", "rolep");
 			//crit.createAlias("principalConsultant.companyId", "companyp");
 			
-		//	crit.add(Restrictions.ne("status", "InActive"));
-		//	crit.add(Restrictions.ne("client", "office"));
-		//	crit.add(Restrictions.ne("status", "Closed"));
+			crit.add(Restrictions.ne("status", "InActive"));
+			//crit.add(Restrictions.ne("client", "office"));
+			crit.add(Restrictions.ne("status", "Closed"));
 			
 			if(loggedInUser.getRoleId().getRoleId()!=5){
 				ArrayList<Integer> jobIds = getUserJobs(loggedInUser.getUserId(), session);
@@ -1156,6 +1158,29 @@ public class MySQLRdbHelper {
 	}
 
 	
+	private ArrayList<JobActivityEntity> fetchJobActivities(Session session, int jobId) throws Exception {
+		ArrayList<JobActivityEntity> listJobActivity = new ArrayList<JobActivityEntity>();
+		try{
+			Criteria crit = session.createCriteria(JobActivityEntity.class);
+			crit.createAlias("jobId", "job");
+			crit.add(Restrictions.eq("job.jobId", jobId));
+			List rsList = crit.list();
+			
+			for(Iterator it=rsList.iterator();it.hasNext();)
+			{
+				JobActivityEntity jobActivityEntity =  (JobActivityEntity)it.next();
+				listJobActivity.add(jobActivityEntity);
+			}
+			return listJobActivity;	
+		}catch(Exception ex){
+			logger.warn(String.format("Exception occured in fetchJobActivities", ex.getMessage()), ex);
+			System.out.println("Exception occured in fetchJobActivities"+ ex.getMessage());
+
+			throw new Exception("Exception occured in fetchJobActivities");
+		}
+		
+	}
+
 	private ArrayList<TimeSheet> fetchJobTimeSheets(Session session, int jobId, int roleId, int userId)throws Exception {
 		ArrayList<TimeSheet> listTimeSheet = new ArrayList<TimeSheet>();
 		try{
@@ -1770,9 +1795,9 @@ public class MySQLRdbHelper {
 			//crit.createAlias("principalConsultantId", "principalConsultant");
 		//	crit.createAlias("principalConsultant.roleId", "rolep");
 		//	crit.createAlias("principalConsultant.companyId", "companyp");
-//			crit.add(Restrictions.ne("status", "InActive"));
-//			crit.add(Restrictions.ne("status", "Closed"));
-//			crit.add(Restrictions.ne("client", "office"));
+			crit.add(Restrictions.ne("status", "InActive"));
+			crit.add(Restrictions.ne("status", "Closed"));
+			//crit.add(Restrictions.ne("client", "office"));
 			
 			List rsList = crit.list();
 			

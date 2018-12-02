@@ -70,8 +70,11 @@ public class Job   implements Serializable {
 	@Transient ArrayList<TimeSheet> timeSheets;
 	//adding new array list
 	@Transient
-	private ArrayList<JobActivityEntity> jobActivityEntity;                     
+	private ArrayList<JobActivityEntity> jobActivities;                     
 
+	
+	@Column(name="status")
+	private String status;
 	
 	public Job(){}
 
@@ -136,6 +139,13 @@ public class Job   implements Serializable {
 		this.jobEmployeesList = jobEmployeesList;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
 	public ArrayList<JobAttributes> getJobAttributes() {
 		return jobAttributes;
@@ -153,12 +163,12 @@ public class Job   implements Serializable {
 		this.timeSheets = timeSheets;
 	}
 
-	public ArrayList<JobActivityEntity> getJobActivityEntity() {
-		return jobActivityEntity;
+	public ArrayList<JobActivityEntity> getJobActivities() {
+		return jobActivities;
 	}
 
-	public void setJobActivityEntity(ArrayList<JobActivityEntity> jobActivityEntity) {
-		this.jobActivityEntity = jobActivityEntity;
+	public void setJobActivities(ArrayList<JobActivityEntity> jobActivityEntity) {
+		this.jobActivities = jobActivityEntity;
 	}
 
 	public int getSegment() {
