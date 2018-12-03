@@ -1800,7 +1800,6 @@ public class MySQLRdbHelper {
 		//	crit.createAlias("principalConsultant.companyId", "companyp");
 			crit.add(Restrictions.ne("status", "InActive"));
 			crit.add(Restrictions.ne("status", "Closed"));
-			//crit.add(Restrictions.ne("client", "office"));
 			
 			List rsList = crit.list();
 			
