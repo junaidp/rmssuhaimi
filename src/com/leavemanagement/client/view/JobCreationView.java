@@ -63,6 +63,7 @@ public class JobCreationView extends MaterialColumn {
 	private MaterialColumn vpnlEmployees = new MaterialColumn();
 	private ArrayList<User> employeesList;
 	private CostWidget costWidget = new CostWidget();
+	private JobActivities jobActivityView = new JobActivities();
 
 
 	public JobCreationView(Job job, User loggedInUser){
@@ -234,7 +235,6 @@ public class JobCreationView extends MaterialColumn {
 
 		MaterialRow hpnl = new MaterialRow();
 		hpnl.add(flex);
-		final JobActivities jobActivityView = new JobActivities();
 		
 		MaterialColumn vpnlJobCreation = new MaterialColumn();
 
@@ -746,6 +746,10 @@ public class JobCreationView extends MaterialColumn {
 		this.vpnlEmployees = vpnlEmployees;
 	}
 
+	public JobActivities getJobActivityView() {
+		return jobActivityView;
+	}
+
 //	public MaterialTextBox getTxtClientFee() {
 //		return txtClientFee;
 //	}
@@ -770,4 +774,17 @@ public class JobCreationView extends MaterialColumn {
 //		this.textPrinicialConsultantHours = textPrinicialConsultantHours;
 //	}
 
+	public void populate(Job selectedJob){
+		
+		
+		txtJobName.setText(selectedJob.getJobName());
+		listBoxAllocation.setSelectedValue(selectedJob.getAllocation()+"");
+		
+		//TODO: set all the data here from saved job like above 2 lines.. (this will show corret saved data when any job will be clicked from job list)
+		//activities is already populating in below line, dont work on them
+		jobActivityView.poupulateSavedActivites(selectedJob.getJobActivities());
+		
+		
+	}
+	
 }

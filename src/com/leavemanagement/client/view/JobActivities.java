@@ -32,6 +32,9 @@ public class JobActivities extends MaterialRow {
 	private MaterialTextBox txtBoxReporting = new MaterialTextBox();
 	private MaterialTextBox txtBoxExecution = new MaterialTextBox();
 	private MaterialTextBox txtBoxFollowUp = new MaterialTextBox();
+	private  MaterialListBox listBoxDesignation = new MaterialListBox();
+	ArrayList<JobActivityEntity> savedActivites;
+	
 
 	public JobActivities(){
 
@@ -42,9 +45,8 @@ public class JobActivities extends MaterialRow {
 		MaterialLabel lblFollowUp = new MaterialLabel("Follow Up");
 		MaterialLabel lblTotalHours = new MaterialLabel("Total Hours");
 
-		final MaterialListBox listBoxDesignation = new MaterialListBox();
-		listBoxDesignation.addItem("Senior Auditor");
-		listBoxDesignation.addItem("Chief Auditor");
+		listBoxDesignation.addItem("0","Senior Auditor");
+		listBoxDesignation.addItem("1","Chief Auditor");
 		MaterialButton btnSave = new MaterialButton("Save");
 
 
@@ -132,6 +134,8 @@ public class JobActivities extends MaterialRow {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				emptyTextBoxes();
+				if(savedActivites != null && savedActivites.size()>0)
+				poupulateSavedActivites();
 				
 			}
 
@@ -220,5 +224,39 @@ public class JobActivities extends MaterialRow {
 
 	public void setJobActivities(ArrayList<JobActivityEntity> jobActivities) {
 		this.jobActivities = jobActivities;
+	}
+	
+	public void poupulateSavedActivites(ArrayList<JobActivityEntity> activites){
+		savedActivites = activites;
+		for(int i=0; i<activites.size(); i++){
+			if(activites.get(i).getDesignation() == Integer.parseInt(listBoxDesignation.getSelectedValue())){
+				
+				txtBoxExecution.setText(activites.get(i).getExecution()+"");
+				txtBoxFollowUp.setText(activites.get(i).getFollowup()+"");
+				txtBoxPlanning.setText(activites.get(i).getPlanning()+"");
+				txtBoxReporting.setText(activites.get(i).getReporting()+"");
+				
+			}
+			txtBoxTotalHours.setText(activites.get(i).getExecution()+activites.get(i).getFollowup()+activites.get(i).getPlanning()+activites.get(i).getReporting()+"");
+			
+			
+		}
+		
+	}
+	
+	public void poupulateSavedActivites(){
+		for(int i=0; i<savedActivites.size(); i++){
+			if(savedActivites.get(i).getDesignation() == Integer.parseInt(listBoxDesignation.getSelectedValue())){
+				
+				txtBoxExecution.setText(savedActivites.get(i).getExecution()+"");
+				txtBoxFollowUp.setText(savedActivites.get(i).getFollowup()+"");
+				txtBoxPlanning.setText(savedActivites.get(i).getPlanning()+"");
+				txtBoxReporting.setText(savedActivites.get(i).getReporting()+"");
+			//	txtBoxTotalHours.setText(activites.get(i).getTotalHours+"");
+				
+			}
+			
+		}
+		
 	}
 }

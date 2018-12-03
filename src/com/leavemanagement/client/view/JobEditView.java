@@ -34,7 +34,10 @@ public class JobEditView extends MaterialColumn{
 		scroll.setWidget(vpnlMain);
 		
 		jobCreationView = new JobCreationView(selectedJob, loggedInUser);
-		jobCreationView.getTxtJobName().setText(selectedJob.getJobName());
+		jobCreationView.populate(selectedJob);
+		
+	
+		
 //		jobCreationView.getTxtClient().setText(selectedJob.getClient());
 //		jobCreationView.getTxtClientFee().setText(selectedJob.getClientFee()+"");
 //		jobCreationView.getTextPrinicialConsultantHours().setText(selectedJob.getPrincipalConsultantHours()+"");
@@ -43,7 +46,7 @@ public class JobEditView extends MaterialColumn{
 		vpnlMain.add(jobCreationView);
 		fetchEmployees(selectedJob);
 		
-		
+			
 		
 
 //		

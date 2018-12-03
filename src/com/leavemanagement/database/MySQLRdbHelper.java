@@ -1071,7 +1071,7 @@ public class MySQLRdbHelper {
 			//	HibernateDetachUtility.nullOutUninitializedFields(job.getSubLineofServiceId(), HibernateDetachUtility.SerializationType.SERIALIZATION);
 				HibernateDetachUtility.nullOutUninitializedFields(job.getCountryId(), HibernateDetachUtility.SerializationType.SERIALIZATION);
 			//	HibernateDetachUtility.nullOutUninitializedFields(job.getSupervisorId(), HibernateDetachUtility.SerializationType.SERIALIZATION);
-		
+				job.setJobActivities(fetchJobActivities(session, job.getJobId()));
 
 				jobs.add(job);
 			}
@@ -1435,11 +1435,11 @@ public class MySQLRdbHelper {
 			session.saveOrUpdate(jobAttribute);
 			session.flush();
 		}catch(Exception ex){
-			System.out.println("fail job save");
+			System.out.println("fail job attributes save");
 		}finally{
 			
 		}
-		return "job saved";
+		return "job attributes saved";
 	}
 
 	public String saveTimeSheet(ArrayList<TimeSheet> timeSheet) {
