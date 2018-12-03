@@ -1845,7 +1845,6 @@ public class MySQLRdbHelper {
 			
 			List rsList = crit.list();
 			
-			
 			for(Iterator it=rsList.iterator();it.hasNext();)
 			{
 				JobEmployees JobEmployees =  (JobEmployees)it.next();
