@@ -45,6 +45,9 @@ public class JobActivityEntity   implements Serializable {
 	
 	@Column(name="followup")
 	private Integer followup;
+	
+	@Column(name="totalhours")
+	private Integer totalHours;
 
 	public int getJobActivityId() {
 		return jobActivityId;
@@ -100,6 +103,14 @@ public class JobActivityEntity   implements Serializable {
 
 	public void setDesignation(Integer designation) {
 		this.designation = designation;
+	}
+
+	public Integer getTotalHours() {
+		return totalHours;
+	}
+
+	public void setTotalHours(Integer totalHours) {
+		this.totalHours = totalHours;
 	}
 
 	

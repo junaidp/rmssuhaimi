@@ -34,6 +34,7 @@ public class JobEditView extends MaterialColumn{
 		scroll.setWidget(vpnlMain);
 		
 		jobCreationView = new JobCreationView(selectedJob, loggedInUser);
+		jobCreationView.getPanel().remove(1);
 		jobCreationView.populate(selectedJob);
 		
 	
@@ -124,6 +125,9 @@ public class JobEditView extends MaterialColumn{
 				break;
 			}
 		}
+		
+		jobCreationView.getJobActivityView().poupulateSavedActivites(selectedJob.getJobActivities());
+		
 //		for(int i=0; i<jobCreationView.getListSubLineofService().getItemCount(); i++ ){
 //			if(jobCreationView.getListSubLineofService().getValue(i).equals(selectedJob.getSubLineofServiceId().getSubLineofServiceId()+"")){
 //				jobCreationView.getListSubLineofService().setSelectedIndex(i);

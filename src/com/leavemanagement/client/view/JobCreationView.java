@@ -1,7 +1,5 @@
 package com.leavemanagement.client.view;
-
 import java.util.ArrayList;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -24,13 +22,17 @@ import gwt.material.design.client.ui.MaterialListBox;
 import com.leavemanagement.client.GreetingService;
 import com.leavemanagement.client.GreetingServiceAsync;
 import com.leavemanagement.shared.Allocations;
+import com.leavemanagement.shared.Branches;
 import com.leavemanagement.shared.Countries;
 import com.leavemanagement.shared.Domains;
 import com.leavemanagement.shared.Job;
 import com.leavemanagement.shared.JobAttributesDTO;
 import com.leavemanagement.shared.JobEmployees;
 import com.leavemanagement.shared.LineofService;
+import com.leavemanagement.shared.Nature;
 import com.leavemanagement.shared.Phases;
+import com.leavemanagement.shared.Roles;
+import com.leavemanagement.shared.Segment;
 import com.leavemanagement.shared.SubLineofService;
 import com.leavemanagement.shared.User;
 
@@ -41,7 +43,7 @@ public class JobCreationView extends MaterialColumn {
 	//private MaterialListBox listSubLineofService = new MaterialListBox();
 	private MaterialListBox listLocation = new MaterialListBox();
 	private MaterialTextBox txtJobName = new MaterialTextBox();
-	private MaterialTextBox txtBoxCompanyName = new MaterialTextBox();
+	private MaterialListBox listBoxCompanyName = new MaterialListBox();
 	private MaterialListBox listCountry = new MaterialListBox();
 	//private MaterialListBox listSupervisor = new MaterialListBox();
 	//private MaterialListBox listPrincipalConsultant = new MaterialListBox();
@@ -64,6 +66,7 @@ public class JobCreationView extends MaterialColumn {
 	private ArrayList<User> employeesList;
 	private CostWidget costWidget = new CostWidget();
 	private JobActivities jobActivityView = new JobActivities();
+	private StackPanel panel = new StackPanel();
 
 
 	public JobCreationView(Job job, User loggedInUser){
@@ -77,32 +80,43 @@ public class JobCreationView extends MaterialColumn {
 			listBoxAllocation.addItem(allocations.getValue()+"", allocations.getName());
 		}
 		
-		listBoxNature.addItem("Adhoc");
-		listBoxNature.addItem("Audit Solution");
-		listBoxNature.addItem("Business Meetups");
-		listBoxNature.addItem("Evaluation");
-		listBoxNature.addItem("IT Configuration & Upgrade");
-		listBoxNature.addItem("Leaves");
-		listBoxNature.addItem("Lunch");
-		listBoxNature.addItem("N/A");
-		listBoxNature.addItem("Office & Supplies Assignment");
-		listBoxNature.addItem("Orientation & Awareness");
-		listBoxNature.addItem("Others");
-		listBoxNature.addItem("Planned");
-		listBoxNature.addItem("Training & Development");
-		listBoxNature.addItem("Unassigned");
+		for (Nature natures : Nature.values()) {
+			listBoxNature.addItem(natures.getValue()+"", natures.getName());
+		}
 		
+		for (Segment segments : Segment.values()) {
+			listBoxSegment.addItem(segments.getValue()+"", segments.getName());
+		}
 		
-		listBoxSegment.addItem("Annual Plan");
-		listBoxSegment.addItem("Audit Management");
-		listBoxSegment.addItem("Breaks");
-		listBoxSegment.addItem("Corporate Governance");
-		listBoxSegment.addItem("Employee Induction");
-		listBoxSegment.addItem("Finance");
-		listBoxSegment.addItem("Personnel Development");
-		listBoxSegment.addItem("Personnel Management");
-		listBoxSegment.addItem("System Upkeep");
-		listBoxSegment.addItem("Unassigned");
+		for (Branches branches : Branches.values()) {
+			listBoxCompanyName.addItem(branches.getValue()+"", branches.getName());
+		}
+//		listBoxNature.addItem("Adhoc");
+//		listBoxNature.addItem("Audit Solution");
+//		listBoxNature.addItem("Business Meetups");
+//		listBoxNature.addItem("Evaluation");
+//		listBoxNature.addItem("IT Configuration & Upgrade");
+//		listBoxNature.addItem("Leaves");
+//		listBoxNature.addItem("Lunch");
+//		listBoxNature.addItem("N/A");
+//		listBoxNature.addItem("Office & Supplies Assignment");
+//		listBoxNature.addItem("Orientation & Awareness");
+//		listBoxNature.addItem("Others");
+//		listBoxNature.addItem("Planned");
+//		listBoxNature.addItem("Training & Development");
+//		listBoxNature.addItem("Unassigned");
+//		
+//		
+//		listBoxSegment.addItem("Annual Plan");
+//		listBoxSegment.addItem("Audit Management");
+//		listBoxSegment.addItem("Breaks");
+//		listBoxSegment.addItem("Corporate Governance");
+//		listBoxSegment.addItem("Employee Induction");
+//		listBoxSegment.addItem("Finance");
+//		listBoxSegment.addItem("Personnel Development");
+//		listBoxSegment.addItem("Personnel Management");
+//		listBoxSegment.addItem("System Upkeep");
+//		listBoxSegment.addItem("Unassigned");
 		
 		
 		FlexTable flex = new FlexTable();
@@ -148,7 +162,7 @@ public class JobCreationView extends MaterialColumn {
 
 // adding new allignments
 		flex.setWidget(1, 0, lblCompanyName);
-		flex.setWidget(1, 1, txtBoxCompanyName);
+		flex.setWidget(1, 1, listBoxCompanyName);
 		flex.setWidget(2, 0, lblLocation);
 		flex.setWidget(2, 1, listLocation);
 		flex.setWidget(3, 0, lblJobName);
@@ -224,7 +238,7 @@ public class JobCreationView extends MaterialColumn {
 		listBoxNature.setWidth("200px");
 		listBoxSegment.setWidth("200px");
 		txtJobName.setWidth("200px");
-		txtBoxCompanyName.setWidth("200px");
+		listBoxCompanyName.setWidth("200px");
 		listLocation.setWidth("200px");
 		listCountry.setWidth("200px");
 //		txtClient.setWidth("200px");
@@ -247,11 +261,13 @@ public class JobCreationView extends MaterialColumn {
 
 		//		add(jobsListView);
 
-		StackPanel panel = new StackPanel();
+		
+		
 		if(loggedInUser.getRoleId().getRoleId()==5){
 			panel.add(vpnlJobCreation, "Job Creation");
 		}
 		panel.add(jobsListView, "Jobs List");
+		
 		
 		add(panel);
 
@@ -308,20 +324,20 @@ public class JobCreationView extends MaterialColumn {
 				}
 			}
 		});
-		listLineOfService.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-			@Override
-			public void onValueChange(ValueChangeEvent<String> event) {
-				fetchDomains();
-			}
-		});
-		listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-			@Override
-			public void onValueChange(ValueChangeEvent<String> event) {
-				//fetchSubLineofServices();
-			}
-		});
+//		listLineOfService.addValueChangeHandler(new ValueChangeHandler<String>() {
+//
+//			@Override
+//			public void onValueChange(ValueChangeEvent<String> event) {
+//				fetchDomains();
+//			}
+//		});
+//		listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
+//
+//			@Override
+//			public void onValueChange(ValueChangeEvent<String> event) {
+//				//fetchSubLineofServices();
+//			}
+//		});
 		//
 		//			@Override
 		//			public void onChange(ChangeEvent event) {
@@ -388,10 +404,11 @@ public class JobCreationView extends MaterialColumn {
 					job.setLineofServiceId(lineofService);
 				//	job.setSubLineofServiceId(subLineofService);
 					job.setJobName(txtJobName.getText());
-					job.setCompany(Integer.parseInt(txtBoxCompanyName.getText()));
+					job.setCompany(Integer.parseInt(listBoxCompanyName.getSelectedValue()));
 					job.setAllocation(Integer.parseInt(listBoxAllocation.getSelectedValue()));
-					job.setSegment(listBoxSegment.getSelectedIndex());
-					job.setNature(listBoxNature.getSelectedIndex());
+					job.setSegment(Integer.parseInt(listBoxSegment.getSelectedValue()));
+					job.setNature(Integer.parseInt(listBoxNature.getSelectedValue()));
+				
 					
 				
 					//job.setJobPhases(phases);
@@ -546,6 +563,8 @@ public class JobCreationView extends MaterialColumn {
 			}});
 	}
 
+	
+	
 //	private void fetchSubLineofServices(){
 //		int domainId = Integer.parseInt(listDomain.getValue(listDomain.getSelectedIndex()));
 //
@@ -608,12 +627,15 @@ public class JobCreationView extends MaterialColumn {
 		ArrayList<SubLineofService> sublineofServices = new ArrayList<SubLineofService>();
 		ArrayList<Domains> domains = new ArrayList<Domains>();
 		ArrayList<Countries> countries = new ArrayList<Countries>();
+		ArrayList<Roles> designations = new ArrayList<Roles>();
 
 		countries = jobAttributesDTO.getCountries();
 		lineofServices = jobAttributesDTO.getLineofService();
 		sublineofServices = jobAttributesDTO.getSubLineofService();
 		domains = jobAttributesDTO.getDomains();
 		countries = jobAttributesDTO.getCountries();
+		designations = jobAttributesDTO.getDesignations();
+		
 		listCountry.clear();
 		listLineOfService.clear();
 		//listSubLineofService.clear();
@@ -631,6 +653,11 @@ public class JobCreationView extends MaterialColumn {
 		for(int i=0; i< domains.size(); i++){
 			listDomain.addItem( domains.get(i).getDomainId()+"",domains.get(i).getName());
 		}
+		
+		for(int i=0; i< designations.size(); i++){
+			jobActivityView.getListBoxDesignation().addItem(designations.get(i).getRoleId()+"",designations.get(i).getRoleName());
+		}
+	
 
 	}
 
@@ -779,12 +806,48 @@ public class JobCreationView extends MaterialColumn {
 		
 		txtJobName.setText(selectedJob.getJobName());
 		listBoxAllocation.setSelectedValue(selectedJob.getAllocation()+"");
+		listBoxCompanyName.setSelectedValue(selectedJob.getCompany()+"");
+		listBoxSegment.setSelectedValue(selectedJob.getSegment()+"");
+		listBoxNature.setSelectedValue(selectedJob.getNature()+"");
+	//	listLineOfService.setSelectedValue(selectedJob.getLineofServiceId()+"");
+		//listDomain.setSelectedValue(selectedJob.getDomainId()+"");
+	//final	int lineofservice = selectedJob.getLineofServiceId().getLineofServiceId();
+
+	
+		//	fetchDomains(lineofservice);
+	
+		
+	
+		
 		
 		//TODO: set all the data here from saved job like above 2 lines.. (this will show corret saved data when any job will be clicked from job list)
 		//activities is already populating in below line, dont work on them
-		jobActivityView.poupulateSavedActivites(selectedJob.getJobActivities());
+		//jobActivityView.poupulateSavedActivites(selectedJob.getJobActivities());
 		
 		
 	}
+
+	private void fetchDomains(int lineofservice) {
+		rpcService.fetchDomains(lineofservice, new AsyncCallback<ArrayList<Domains>>(){
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("fail fetch domain");
+			}
+
+			@Override
+			public void onSuccess(ArrayList<Domains> result) {
+				listDomain.clear();
+				for(int i=0; i< result.size(); i++){
+					listDomain.addItem(result.get(i).getDomainId()+"", result.get(i).getName());
+				}
+				//fetchSubLineofServices();
+			}});
+	}
+	public StackPanel getPanel() {
+		return panel;
+	}
+		
+	
 	
 }

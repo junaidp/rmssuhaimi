@@ -9,6 +9,7 @@ public class JobAttributesDTO implements Serializable {
 	private ArrayList<SubLineofService> subLineofService = new ArrayList<SubLineofService>();
 	private ArrayList<Domains> domains = new ArrayList<Domains>();
 	private ArrayList<Countries> countries = new ArrayList<Countries>();
+	private ArrayList<Roles> designations = new ArrayList<Roles>();
 	
 	public JobAttributesDTO(){
 		
@@ -44,6 +45,14 @@ public class JobAttributesDTO implements Serializable {
 
 	public void setCountries(ArrayList<Countries> countries) {
 		this.countries = countries;
+	}
+
+	public ArrayList<Roles> getDesignations() {
+		return designations;
+	}
+
+	public void setDesignations(ArrayList<Roles> designations) {
+		this.designations = designations;
 	}
 
 	

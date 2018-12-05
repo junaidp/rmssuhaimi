@@ -45,12 +45,12 @@ public class JobsListView extends MaterialColumn {
 		setTable();
 		fetchJobs();
 		add(imgRefresh);
-		ScrollPanel scrollpanel = new ScrollPanel();
-		scrollpanel.add(table);
-		scrollpanel.setWidth("500px");
-		scrollpanel.setHeight("300px");
-		add(scrollpanel);
-		//add(table);
+//		ScrollPanel scrollpanel = new ScrollPanel();
+//		scrollpanel.add(table);
+//		scrollpanel.setWidth("500px");
+//		scrollpanel.setHeight("300px");
+//		add(scrollpanel);
+		add(table);
 		table.getColumn(0).setCellStyleNames("editCell");
 		table.addColumnStyleName(0, "editCell");
 		

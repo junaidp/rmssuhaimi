@@ -9,12 +9,14 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.leavemanagement.client.GreetingService;
 import com.leavemanagement.client.GreetingServiceAsync;
 import com.leavemanagement.shared.JobActivityEntity;
+import com.leavemanagement.shared.Roles;
 
 import gwt.material.design.client.ui.MaterialButton;
 import gwt.material.design.client.ui.MaterialLabel;
@@ -45,8 +47,7 @@ public class JobActivities extends MaterialRow {
 		MaterialLabel lblFollowUp = new MaterialLabel("Follow Up");
 		MaterialLabel lblTotalHours = new MaterialLabel("Total Hours");
 
-		listBoxDesignation.addItem("0","Senior Auditor");
-		listBoxDesignation.addItem("1","Chief Auditor");
+		//populateLIstBoxDesignation();
 		MaterialButton btnSave = new MaterialButton("Save");
 
 
@@ -93,6 +94,27 @@ public class JobActivities extends MaterialRow {
 		
 		
 		
+	}
+
+	private void populateLIstBoxDesignation() {
+		listBoxDesignation.clear();
+		rpcService.fetchAllRoles(new AsyncCallback<ArrayList<Roles>>() {
+			
+			@Override
+			public void onSuccess(ArrayList<Roles> result) {
+				for(int i=0;i<result.size();i++){
+					listBoxDesignation.addItem(result.get(i).getRoleId() +"", result.get(i).getRoleName());
+					
+				}
+				
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("FetchAllroles populateListboxDesignation Failed");
+				
+			}
+		});
 	}
 
 	private void setTextBoxes(final MaterialListBox listBoxDesignation) {
@@ -152,6 +174,7 @@ public class JobActivities extends MaterialRow {
 				jobActivityEntity.setExecution(Integer.parseInt(txtBoxExecution.getText()));
 				jobActivityEntity.setFollowup(Integer.parseInt(txtBoxFollowUp.getText()));
 				jobActivityEntity.setDesignation(listBoxDesignation.getSelectedIndex());
+				jobActivityEntity.setTotalHours(totalhours);
 				jobActivities.add(jobActivityEntity);
 				emptyTextBoxes();
 				MaterialToast.fireToast("Hours saved for : "+ listBoxDesignation.getSelectedItemText());
@@ -230,14 +253,16 @@ public class JobActivities extends MaterialRow {
 		savedActivites = activites;
 		for(int i=0; i<activites.size(); i++){
 			if(activites.get(i).getDesignation() == Integer.parseInt(listBoxDesignation.getSelectedValue())){
-				
+			listBoxDesignation.setSelectedValue(activites.get(i).getDesignation()+"");
 				txtBoxExecution.setText(activites.get(i).getExecution()+"");
 				txtBoxFollowUp.setText(activites.get(i).getFollowup()+"");
 				txtBoxPlanning.setText(activites.get(i).getPlanning()+"");
 				txtBoxReporting.setText(activites.get(i).getReporting()+"");
-				
+			
+			//	txtBoxTotalHours.setText(activites.get(i).getExecution()+activites.get(i).getFollowup()+activites.get(i).getPlanning()+activites.get(i).getReporting()+"");
 			}
-			txtBoxTotalHours.setText(activites.get(i).getExecution()+activites.get(i).getFollowup()+activites.get(i).getPlanning()+activites.get(i).getReporting()+"");
+		
+			txtBoxTotalHours.setText(activites.get(i).getTotalHours()+"");
 			
 			
 		}
@@ -252,11 +277,17 @@ public class JobActivities extends MaterialRow {
 				txtBoxFollowUp.setText(savedActivites.get(i).getFollowup()+"");
 				txtBoxPlanning.setText(savedActivites.get(i).getPlanning()+"");
 				txtBoxReporting.setText(savedActivites.get(i).getReporting()+"");
-			//	txtBoxTotalHours.setText(activites.get(i).getTotalHours+"");
-				
+			//	txtBoxTotalHours.setText(savedActivites.get(i).getTotalHours()+"");
+				txtBoxTotalHours.setText(savedActivites.get(i).getExecution()+savedActivites.get(i).getFollowup()+savedActivites.get(i).getPlanning()+savedActivites.get(i).getReporting()+"");
 			}
+			
+			
 			
 		}
 		
+	}
+
+	public MaterialListBox getListBoxDesignation() {
+		return listBoxDesignation;
 	}
 }

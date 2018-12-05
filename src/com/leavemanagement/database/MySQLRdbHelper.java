@@ -757,15 +757,17 @@ public class MySQLRdbHelper {
 			session = sessionFactory.openSession();
 			ArrayList<LineofService> lineofServices =	getLineOfServices();
 			ArrayList<Countries> countries =getCountries(session);
+			ArrayList<Roles> designations =fetchAllRoles();
 			ArrayList<SubLineofService> subLineofServices = fetchSubLineOfServices(1);
-			ArrayList<Domains> domains = fetchDomains(1);
+			ArrayList<Domains> domains = fetchDomains();
 			
 			JobAttributesDTO jobAttributesDTO = new JobAttributesDTO();
 			jobAttributesDTO.setCountries(countries);
 			jobAttributesDTO.setDomains(domains);
 			jobAttributesDTO.setLineofService(lineofServices);
 			jobAttributesDTO.setSubLineofService(subLineofServices);
-//			
+			jobAttributesDTO.setDesignations(designations);
+			
 			return jobAttributesDTO;
 			
 		}catch(Exception ex){
@@ -860,6 +862,8 @@ public class MySQLRdbHelper {
 		}
 	}
 	
+	
+	
 	public ArrayList<Domains> fetchDomains(int lineofServiceId) throws Exception{
 		ArrayList<Domains> domains = new ArrayList<Domains>();
 		Session session = null;
@@ -867,7 +871,35 @@ public class MySQLRdbHelper {
 			session = sessionFactory.openSession();
 			Criteria crit = session.createCriteria(Domains.class);
 			crit.createAlias("lineofServiceId", "lineofService");
-			crit.add(Restrictions.eq("lineofService.lineofServiceId", lineofServiceId));
+			//crit.add(Restrictions.eq("lineofService.lineofServiceId", lineofServiceId));
+			List rsList = crit.list();
+
+			for(Iterator it=rsList.iterator();it.hasNext();)
+			{
+				Domains domain =  (Domains)it.next();
+				domains.add(domain);
+			}
+
+			return domains;
+		}catch(Exception ex){
+			logger.warn(String.format("Exception occured in getDomains", ex.getMessage()), ex);
+			System.out.println("Exception occured in getDomains"+ ex.getMessage());
+
+			throw new Exception("Exception occured in getDomains");
+		}
+		finally{
+
+		}
+	}
+	
+	public ArrayList<Domains> fetchDomains() throws Exception{
+		ArrayList<Domains> domains = new ArrayList<Domains>();
+		Session session = null;
+		try{
+			session = sessionFactory.openSession();
+			Criteria crit = session.createCriteria(Domains.class);
+			crit.createAlias("lineofServiceId", "lineofService");
+			////////////crit.add(Restrictions.eq("lineofService.lineofServiceId", lineofServiceId));
 			List rsList = crit.list();
 
 			for(Iterator it=rsList.iterator();it.hasNext();)
@@ -897,7 +929,7 @@ public class MySQLRdbHelper {
 			
 			session = sessionFactory.openSession();
 			tr = session.beginTransaction();
-			//job.setStatus("Active");
+			job.setStatus("Active");
 			session.saveOrUpdate(job);
 			
 		//	saveEmployeeJob(job.getJobEmployeesList(),job.getSupervisorId().getUserId(), job.getPrincipalConsultantId().getUserId(), job.getJobId(), session);
@@ -905,12 +937,12 @@ public class MySQLRdbHelper {
 			setJobActivities(job.getJobActivities(), session, job);
 		//	addPhase(job, session);
 			tr.commit();
-			
-			for(int i=0; i< job.getJobEmployeesList().size(); i++){
-				String email = fetchUsersEmail(job.getJobEmployeesList().get(i).getEmployeeId().getUserId(), session);
-				String body= "Dear "+ job.getJobEmployeesList().get(i).getEmployeeId().getName()+" : "+ "A new job has been created named (" + job.getJobName() +") and assigned to you";
-				sendEmail(body, email, "", "Job Created");
-			}
+//			
+//			for(int i=0; i< job.getJobEmployeesList().size(); i++){
+//				String email = fetchUsersEmail(job.getJobEmployeesList().get(i).getEmployeeId().getUserId(), session);
+//				String body= "Dear "+ job.getJobEmployeesList().get(i).getEmployeeId().getName()+" : "+ "A new job has been created named (" + job.getJobName() +") and assigned to you";
+//				sendEmail(body, email, "", "Job Created");
+//			}
 //			String email = fetchUsersEmail(job.getSupervisorId().getUserId(), session);
 //			String body= "Dear "+ job.getSupervisorId().getName()+" : "+ "A new job has been created named (" + job.getJobName() +") and assigned to you";
 //			
@@ -1402,7 +1434,7 @@ public class MySQLRdbHelper {
 			Criteria crit = session.createCriteria(Job.class);
 			crit.add(Restrictions.eq("jobId", jobId));
 			Job job = (Job) crit.list().get(0);
-			//job.setStatus("InActive");
+			job.setStatus("InActive");
 			session.update(job);
 			session.flush();
 			return "job deleted";
@@ -1953,7 +1985,7 @@ public class MySQLRdbHelper {
 			Criteria crit = session.createCriteria(Job.class);
 			crit.add(Restrictions.eq("jobId", jobId));
 			Job job = (Job) crit.list().get(0);
-		//	job.setStatus("Closed");
+			job.setStatus("Closed");
 			session.update(job);
 			session.flush();
 			return "job closed";
