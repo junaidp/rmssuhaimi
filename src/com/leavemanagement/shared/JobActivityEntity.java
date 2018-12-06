@@ -31,23 +31,24 @@ public class JobActivityEntity   implements Serializable {
 
 	
 	@Column(name="planning")
-	private Integer planning;
+	private int planning;
 
 	@Column(name="execution")
-	private Integer execution;
+	private int execution;
 	
 	@Column(name="reporting")
-	private Integer reporting;
+	private int reporting;
 	
-	@Column(name="designation")
-	private Integer designation;
+	@JoinColumn(name = "userId")
+	@ManyToOne(fetch = FetchType.LAZY)
+	private User userId;
 	
 	
 	@Column(name="followup")
-	private Integer followup;
+	private int followup;
 	
 	@Column(name="totalhours")
-	private Integer totalHours;
+	private int totalHours;
 
 	public int getJobActivityId() {
 		return jobActivityId;
@@ -65,52 +66,52 @@ public class JobActivityEntity   implements Serializable {
 		this.jobId = jobId;
 	}
 
-	public Integer getPlanning() {
+	public int getPlanning() {
 		return planning;
 	}
 
-	public void setPlanning(Integer planning) {
+	public void setPlanning(int planning) {
 		this.planning = planning;
 	}
 
-	public Integer getExecution() {
+	public int getExecution() {
 		return execution;
 	}
 
-	public void setExecution(Integer execution) {
+	public void setExecution(int execution) {
 		this.execution = execution;
 	}
 
-	public Integer getReporting() {
+	public int getReporting() {
 		return reporting;
 	}
 
-	public void setReporting(Integer reporting) {
+	public void setReporting(int reporting) {
 		this.reporting = reporting;
 	}
 
-	public Integer getFollowup() {
+	public int getFollowup() {
 		return followup;
 	}
 
-	public void setFollowup(Integer followup) {
+	public void setFollowup(int followup) {
 		this.followup = followup;
 	}
 
-	public Integer getDesignation() {
-		return designation;
-	}
-
-	public void setDesignation(Integer designation) {
-		this.designation = designation;
-	}
-
-	public Integer getTotalHours() {
+	public int getTotalHours() {
 		return totalHours;
 	}
 
-	public void setTotalHours(Integer totalHours) {
+	public void setTotalHours(int totalHours) {
 		this.totalHours = totalHours;
+	}
+
+	public User getUserId() {
+		return userId;
+	}
+
+	public void setUserId(User userId) {
+		this.userId = userId;
 	}
 
 	

@@ -553,6 +553,36 @@ public class MySQLRdbHelper {
 		}
 
 	}
+	
+	public ArrayList<User> fetchAllUsers() throws Exception {
+		Session session = null;
+		ArrayList<User> users = new  ArrayList<User>();
+		try{
+			session = sessionFactory.openSession();
+			Criteria crit = session.createCriteria(User.class);
+			crit.createAlias("roleId", "role");
+			crit.createAlias("companyId", "company");
+			crit.add(Restrictions.ne("status", "inActive"));
+			crit.add(Restrictions.ne("status", "Closed"));
+			List rsList = crit.list();
+
+			for(Iterator it=rsList.iterator();it.hasNext();)
+			{
+				User user =  (User)it.next();
+				users.add(user);
+			}
+			return users;
+		}catch(Exception ex){
+			logger.warn(String.format("Exception occured in fetchAllUsers", ex.getMessage()), ex);
+			System.out.println("Exception occured in fetchAllUsers"+ ex.getMessage());
+
+			throw new Exception("Exception occured in updatePassword");//Add this Line Accordingly in all method
+		}
+		finally{
+			session.close();
+		}
+
+	}
 
 	public ArrayList<LeaveRecord> fetchPendingLeavesRecordOfLoggedInUser(int userId, int companyId)throws Exception {
 		Session session = null;
@@ -757,7 +787,7 @@ public class MySQLRdbHelper {
 			session = sessionFactory.openSession();
 			ArrayList<LineofService> lineofServices =	getLineOfServices();
 			ArrayList<Countries> countries =getCountries(session);
-			ArrayList<Roles> designations =fetchAllRoles();
+			ArrayList<User> users = fetchAllUsers();
 			ArrayList<SubLineofService> subLineofServices = fetchSubLineOfServices(1);
 			ArrayList<Domains> domains = fetchDomains();
 			
@@ -766,7 +796,7 @@ public class MySQLRdbHelper {
 			jobAttributesDTO.setDomains(domains);
 			jobAttributesDTO.setLineofService(lineofServices);
 			jobAttributesDTO.setSubLineofService(subLineofServices);
-			jobAttributesDTO.setDesignations(designations);
+			jobAttributesDTO.setUsers(users);
 			
 			return jobAttributesDTO;
 			
@@ -932,7 +962,20 @@ public class MySQLRdbHelper {
 			job.setStatus("Active");
 			session.saveOrUpdate(job);
 			
-		//	saveEmployeeJob(job.getJobEmployeesList(),job.getSupervisorId().getUserId(), job.getPrincipalConsultantId().getUserId(), job.getJobId(), session);
+			//saveEmployeeJob(job.getJobEmployeesList(),job.getSupervisorId().getUserId(), job.getPrincipalConsultantId().getUserId(), job.getJobId(), session);
+		ArrayList<JobEmployees> jobEmployeeList = new ArrayList<JobEmployees>();
+			for(int i=0; i< job.getJobActivities().size(); i++){
+				if(job.getJobActivities().get(i).getTotalHours()>0 ){
+					JobEmployees jobEmployee = new JobEmployees();
+					jobEmployee.setEmployeeId(job.getJobActivities().get(i).getUserId());
+					jobEmployee.setJobId(job.getJobId());
+					jobEmployeeList.add(jobEmployee);
+					
+				}
+			}
+			
+			saveEmployeeJob(jobEmployeeList, job.getJobId(), session);
+			
 			session.flush();
 			setJobActivities(job.getJobActivities(), session, job);
 		//	addPhase(job, session);
@@ -970,14 +1013,12 @@ public class MySQLRdbHelper {
 				
 				JobActivityEntity  jobActivity = jobActivityList.get(i);
 				
-				//Job j = new Job();
-				//j.setJobId(job);
-				
-				jobActivity.setDesignation(jobActivityList.get(i).getDesignation());
+				/*jobActivity.setUserId(jobActivityList.get(i).getUserId());
 				jobActivity.setPlanning(jobActivityList.get(i).getPlanning());
 				jobActivity.setExecution(jobActivityList.get(i).getExecution());
 				jobActivity.setFollowup(jobActivityList.get(i).getFollowup());
 				jobActivity.setReporting(jobActivityList.get(i).getReporting());
+				*/
 				jobActivity.setJobId(job);
 					session.saveOrUpdate(jobActivity);
 					session.flush();
@@ -991,7 +1032,7 @@ public class MySQLRdbHelper {
 		
 	
 
-	private void saveEmployeeJob(ArrayList<JobEmployees> jobEmployeesList,  int supervisorId, int principalConsultantId, int jobId,Session session) {
+/*	private void saveEmployeeJob(ArrayList<JobEmployees> jobEmployeesList,  int jobId, Session session) {
 		try{
 		for(int i=0; i< jobEmployeesList.size(); i++){
 			JobEmployees jobEmployees = jobEmployeesList.get(i);
@@ -1003,6 +1044,26 @@ public class MySQLRdbHelper {
 				session.saveOrUpdate(jobEmployees);
 				session.flush();
 //			}
+		}
+		
+		}catch(Exception ex){
+			System.out.println(ex);
+		}
+		
+	}*/
+	
+	private void saveEmployeeJob(ArrayList<JobEmployees> jobEmployeesList,  int jobId, Session session) {
+		try{
+		for(int i=0; i< jobEmployeesList.size(); i++){
+			JobEmployees jobEmployees = jobEmployeesList.get(i);
+			jobEmployees.setJobId(jobId);
+			if(employeeJobAlreadySaved(jobId, jobEmployees.getEmployeeId().getUserId(), session)){
+			//session.update(jobEmployees);
+			//session.flush();
+			}else{
+				session.saveOrUpdate(jobEmployees);
+				session.flush();
+			}
 		}
 		
 		}catch(Exception ex){
@@ -1198,6 +1259,7 @@ public class MySQLRdbHelper {
 		try{
 			Criteria crit = session.createCriteria(JobActivityEntity.class);
 			crit.createAlias("jobId", "job");
+			crit.createAlias("userId", "user");
 			crit.add(Restrictions.eq("job.jobId", jobId));
 			List rsList = crit.list();
 			
@@ -1533,10 +1595,10 @@ public class MySQLRdbHelper {
 			crit.createAlias("jobId", "job");
 			crit.createAlias("job.lineofServiceId", "lineofService1");
 			crit.createAlias("job.subLineofServiceId", "subLineofService1");
-			crit.createAlias("job.supervisorId", "supervisor");
+		//	crit.createAlias("job.supervisorId", "supervisor");
 			crit.createAlias("job.domainId", "domain1");
 			crit.createAlias("job.countryId", "count1");
-			crit.createAlias("job.principalConsultantId", "principalConsultant");
+		//	crit.createAlias("job.principalConsultantId", "principalConsultant");
 			
 			
 			

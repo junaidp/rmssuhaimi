@@ -81,7 +81,7 @@ public class AddUserPresenter implements Presenter
 
 			@Override
 			public void onFailure(Throwable caught) {
-				System.out.println("fetch roles failes");
+				System.out.println("fetch roles failed");
 			}
 
 			@Override

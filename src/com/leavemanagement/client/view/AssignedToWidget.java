@@ -22,9 +22,9 @@ public class AssignedToWidget extends FlexTable {
 		txtDays.setWidth("20px");
 		setWidget(0, 0, lbl);
 		setWidget(0, 1, listAssign);
-		setWidget(1, 0, new Label("Hours: "));
-		setWidget(1, 1, txtDays);
-		setWidget(1, 2, btnRemove);
+		//setWidget(1, 0, new Label("Hours: "));
+		//setWidget(1, 1, txtDays);
+		setWidget(0, 3, btnRemove);
 		listAssign.clear();
 		for(int i=0; i< employeesList.size(); i++){
 			listAssign.addItem(employeesList.get(i).getUserId()+"", employeesList.get(i).getName());
