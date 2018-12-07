@@ -82,8 +82,8 @@ public class AddUserView extends MaterialColumn implements Display {
 		flex.setWidget(8, 1, listDesignation);
 		flex.setWidget(9, 0, lblReportingTo);
 		flex.setWidget(9, 1, listReportingTo);
-		flex.setWidget(10, 0, lblChargeRate);
-		flex.setWidget(10, 1, chargeRate);
+		//flex.setWidget(10, 0, lblChargeRate);
+		//flex.setWidget(10, 1, chargeRate);
 //		flex.setWidget(10, 2, new Label("Numeric value only"));
 		flex.setWidget(0, 2, lblEditUser);
 		flex.setWidget(0, 3, listUser);
