@@ -196,8 +196,10 @@ public class JobActivities extends MaterialRow {
 
 	private void calculateHours( MaterialTextBox textBox) {
 		try{
-		textBox.reset();
-		Integer.parseInt(textBox.getText());
+			if(textBox != null){
+				textBox.reset();
+				Integer.parseInt(textBox.getText());
+			}
 		
 		totalhours = Integer.parseInt(txtBoxPlanning.getText())+Integer.parseInt(txtBoxExecution.getText())+Integer.parseInt(txtBoxReporting.getText())
 		+Integer.parseInt(txtBoxFollowUp.getText());
@@ -220,20 +222,15 @@ public class JobActivities extends MaterialRow {
 	public void poupulateSavedActivites(ArrayList<JobActivityEntity> activites){
 		
 		for(int i=0; i<activites.size(); i++){
-				textBoxUsers.setText(activites.get(i).getUserId().getName());
-				textBoxUsers.setId(activites.get(i).getUserId().getUserId()+"");
+			if(Integer.parseInt(textBoxUsers.getId()) == activites.get(i).getUserId().getUserId())
+			{
 				txtBoxExecution.setText(activites.get(i).getExecution()+"");
 				txtBoxFollowUp.setText(activites.get(i).getFollowup()+"");
 				txtBoxPlanning.setText(activites.get(i).getPlanning()+"");
 				txtBoxReporting.setText(activites.get(i).getReporting()+"");
-			
-			//	txtBoxTotalHours.setText(activites.get(i).getExecution()+activites.get(i).getFollowup()+activites.get(i).getPlanning()+activites.get(i).getReporting()+"");
-			
-		
-		//	txtBoxTotalHours.setText(activites.get(i).getTotalHours()+"");
-			
-			
+			}
 		}
+		calculateHours(null);
 		
 	}
 

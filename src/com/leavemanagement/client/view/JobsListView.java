@@ -9,15 +9,12 @@ import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ScrollPanel;
-
 import gwt.material.design.addins.client.window.MaterialWindow;
 import gwt.material.design.client.ui.MaterialColumn;
 import com.leavemanagement.client.GreetingService;
@@ -41,7 +38,7 @@ public class JobsListView extends MaterialColumn {
 	Image imgRefresh = new Image("refresh.png");
 	public JobsListView(User loggedInUser){
 		this.loggedInUser = loggedInUser;
-		table.setWidth("100%");
+		table.setWidth("800px");
 		setTable();
 		fetchJobs();
 		add(imgRefresh);
@@ -83,6 +80,7 @@ public class JobsListView extends MaterialColumn {
 	private void setTable() {
 		table.setEmptyTableWidget(new HTML("No Record found"));
 		table.setRowCount(0);
+		table.setPageSize(200);
 
 		jobName = new Column<Job, String>(new ClickableTextCell()) {
 			@Override
@@ -199,9 +197,16 @@ public class JobsListView extends MaterialColumn {
 			
 			@Override
 			public void update(int index, Job object, String value) {
-				JobEditView jobEditView = new JobEditView(object, loggedInUser);
-				//final PopupsView popup = new PopupsView(jobEditView);
 				final MaterialWindow creationWindow = new MaterialWindow();
+				
+				JobEditView jobEditView = new JobEditView(object, loggedInUser, new Runnable() {
+					
+					@Override
+					public void run() {
+						creationWindow.close();
+					}
+				});
+				//final PopupsView popup = new PopupsView(jobEditView);
 				creationWindow.add(jobEditView);
 				creationWindow.setMaximize(true);
 				creationWindow.setTitle("Update Job");
@@ -280,6 +285,7 @@ public class JobsListView extends MaterialColumn {
 	
 	
 	public void populateJobsList(ArrayList<Job> jobs) {
+		
 		table.setRowData(0, jobs);
 		table.setRowCount(jobs.size());
 		

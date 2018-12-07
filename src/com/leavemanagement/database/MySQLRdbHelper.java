@@ -955,6 +955,9 @@ public class MySQLRdbHelper {
 	public String saveJob(Job job) throws Exception{
 		Session session = null;
 		Transaction tr = null;
+		String result ="Job Created";
+		if(job != null && job.getJobId()!=0)
+		 result = "Job Updated";
 		try{
 			
 			session = sessionFactory.openSession();
@@ -993,7 +996,7 @@ public class MySQLRdbHelper {
 				
 			
 			
-			return "job created";
+			return result;
 		}catch(Exception ex){
 			tr.rollback();
 			logger.warn(String.format("Exception occured in saveJob", ex.getMessage()), ex);
@@ -1135,7 +1138,7 @@ public class MySQLRdbHelper {
 			//crit.createAlias("principalConsultant.companyId", "companyp");
 			
 			crit.add(Restrictions.ne("status", "InActive"));
-			//crit.add(Restrictions.ne("client", "office"));
+			crit.add(Restrictions.ne("status", "office"));
 			crit.add(Restrictions.ne("status", "Closed"));
 			
 			if(loggedInUser.getRoleId().getRoleId()!=5){

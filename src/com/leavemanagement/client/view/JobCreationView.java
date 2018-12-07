@@ -10,6 +10,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import gwt.material.design.client.ui.MaterialButton;
+
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
@@ -18,6 +20,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.StackPanel;
 import gwt.material.design.client.ui.MaterialTextBox;
+import gwt.material.design.client.ui.MaterialToast;
 import gwt.material.design.client.ui.MaterialColumn;
 import gwt.material.design.client.ui.MaterialListBox;
 
@@ -71,9 +74,10 @@ public class JobCreationView extends MaterialColumn {
 	private StackPanel panel = new StackPanel();
 	private MaterialColumn containerActivities = new MaterialColumn();
 	private MaterialTextBox txtBoxTotalHours = new MaterialTextBox();
-	private Image imgRefresh = new Image("refresh.png");
+	private Anchor imgRefresh = new Anchor("calculate total");
+	
 
-	public JobCreationView(Job job, User loggedInUser){
+	public JobCreationView(Job job, User loggedInUser, final Runnable runnable){
 		jobsListView= new JobsListView(loggedInUser);
 		this.selectedJob = job;
 		listLocation.addItem("Local");
@@ -216,9 +220,13 @@ public class JobCreationView extends MaterialColumn {
 		//		textSupervisorHours.setText("0");
 		//		textPrinicialConsultantHours.setText("0");
 		//		txtClientFee.setText("0");
-		HorizontalPanel hTotal = new HorizontalPanel();
-		hTotal.add(imgRefresh);
-		hTotal.add(txtBoxTotalHours);
+		MaterialRow hTotal = new MaterialRow();
+		MaterialColumn mcR = new MaterialColumn();
+		MaterialColumn mcH = new MaterialColumn();
+		mcR.add(imgRefresh);
+		mcH.add(txtBoxTotalHours);
+		hTotal.add(mcR);
+		hTotal.add(mcH);
 
 		flex.setWidget(13, 1, containerActivities);
 		flex.setWidget(14, 1, hTotal);
@@ -377,13 +385,10 @@ public class JobCreationView extends MaterialColumn {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				int hours =0;
-				for(int j=0; j<containerActivities.getWidgetCount(); j++){
-					JobActivities jobActivityView = (JobActivities) containerActivities.getWidget(j);
-					hours = hours + jobActivityView.totalhours;
-				}
-				txtBoxTotalHours.setText(hours+"");
+				calculateTotalHours();
 			}
+
+			
 		});
 
 
@@ -522,10 +527,13 @@ public class JobCreationView extends MaterialColumn {
 
 					@Override
 					public void onSuccess(String result) {
-						Window.alert("Job created");
+						MaterialToast.fireToast(result);
 						jobsListView.fetchJobs();
 						if(loadingPopup!=null){
 							loadingPopup.remove();
+						}
+						if(runnable != null){
+							runnable.run();
 						}
 					}
 
@@ -573,6 +581,15 @@ public class JobCreationView extends MaterialColumn {
 	//
 	//			}});
 	//	}
+	
+	public void calculateTotalHours() {
+		int hours =0;
+		for(int j=0; j<containerActivities.getWidgetCount(); j++){
+			JobActivities jobActivityView = (JobActivities) containerActivities.getWidget(j);
+			hours = hours + jobActivityView.totalhours;
+		}
+		txtBoxTotalHours.setText(hours+"");
+	}
 
 	private void fetchDomains(){
 		int lineofServiceId = Integer.parseInt(listLineOfService.getValue(listLineOfService.getSelectedIndex()));
@@ -884,6 +901,14 @@ public class JobCreationView extends MaterialColumn {
 	}
 	public StackPanel getPanel() {
 		return panel;
+	}
+
+	public MaterialColumn getContainerActivities() {
+		return containerActivities;
+	}
+
+	public MaterialTextBox getTxtBoxTotalHours() {
+		return txtBoxTotalHours;
 	}
 
 

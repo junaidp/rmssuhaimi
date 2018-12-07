@@ -16,6 +16,7 @@ import com.leavemanagement.shared.Job;
 import com.leavemanagement.shared.JobAttributesDTO;
 import com.leavemanagement.shared.Phases;
 import com.leavemanagement.shared.User;
+import com.sun.javafx.css.CalculatedValue;
 
 public class JobEditView extends MaterialColumn{
 	private GreetingServiceAsync rpcService = GWT.create(GreetingService.class);
@@ -25,15 +26,14 @@ public class JobEditView extends MaterialColumn{
 	 User loggedInUser;
 	 private ArrayList<User> employeesList;
 	
-	public JobEditView(Job selectedJob, User loggedInUser){
+	public JobEditView(Job selectedJob, User loggedInUser, Runnable runnable){
 		this.loggedInUser = loggedInUser;
-		ScrollPanel scroll = new ScrollPanel();
-		scroll.setHeight("800px");
-		scroll.setWidth("800px");;
-		add(scroll);
-		scroll.setWidget(vpnlMain);
+		//ScrollPanel scroll = new ScrollPanel();
+		//scroll.setHeight("800px");
+		add(vpnlMain);
+		//scroll.setWidget(vpnlMain);
 		
-		jobCreationView = new JobCreationView(selectedJob, loggedInUser);
+		jobCreationView = new JobCreationView(selectedJob, loggedInUser, runnable);
 		jobCreationView.getPanel().remove(1);
 	
 		jobCreationView.populate(selectedJob);
@@ -129,9 +129,14 @@ public class JobEditView extends MaterialColumn{
 			}
 		}
 		
-// HERE		jobCreationView.getJobActivityView().poupulateSavedActivites(selectedJob.getJobActivities());
+		for(int i =0; i< jobCreationView.getContainerActivities().getWidgetCount(); i++){
+			
+			     JobActivities jobActivites = (JobActivities) jobCreationView.getContainerActivities().getWidget(i);
+			     jobActivites.poupulateSavedActivites(selectedJob.getJobActivities());
+		}
+		jobCreationView.calculateTotalHours();
 		
-//		for(int i=0; i<jobCreationView.getListSubLineofService().getItemCount(); i++ ){
+	//	for(int i=0; i<jobCreationView.getListSubLineofService().getItemCount(); i++ ){
 //			if(jobCreationView.getListSubLineofService().getValue(i).equals(selectedJob.getSubLineofServiceId().getSubLineofServiceId()+"")){
 //				jobCreationView.getListSubLineofService().setSelectedIndex(i);
 //				break;
