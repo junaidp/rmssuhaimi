@@ -414,6 +414,7 @@ public class MySQLRdbHelper {
 		}
 		try{
 			session = sessionFactory.openSession();
+			user.setStatus("active");
 			session.saveOrUpdate(user);
 			session.flush();
 			if(newUser){
@@ -1597,7 +1598,7 @@ public class MySQLRdbHelper {
 			crit.createAlias("user.companyId", "company");
 			crit.createAlias("jobId", "job");
 			crit.createAlias("job.lineofServiceId", "lineofService1");
-			crit.createAlias("job.subLineofServiceId", "subLineofService1");
+			//crit.createAlias("job.subLineofServiceId", "subLineofService1");
 		//	crit.createAlias("job.supervisorId", "supervisor");
 			crit.createAlias("job.domainId", "domain1");
 			crit.createAlias("job.countryId", "count1");

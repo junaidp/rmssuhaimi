@@ -19,6 +19,8 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 
 import gwt.material.design.client.ui.MaterialTextBox;
+import gwt.material.design.client.ui.MaterialToast;
+
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.leavemanagement.client.GreetingServiceAsync;
@@ -268,7 +270,7 @@ final LoadingPopup loadingPopup = new LoadingPopup();
 
 			@Override
 			public void onSuccess(String result) {
-				Window.alert(result);
+				MaterialToast.fireToast(result);
 				fetchAllUsers();
 				if(loadingPopup!=null){
 					loadingPopup.remove();

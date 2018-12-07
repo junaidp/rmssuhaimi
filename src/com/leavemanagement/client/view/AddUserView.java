@@ -38,7 +38,7 @@ public class AddUserView extends MaterialColumn implements Display {
 	public AddUserView(){
 		MaterialColumn vpnl = new MaterialColumn();
 		add(vpnl);
-		chargeRate.setEnabled(false);
+		//chargeRate.setEnabled(false);
 	Label lblHeading = new Label("Add a new user");
 		lblHeading.setStyleName("headerSignin");
 		lblHeading.setWidth(Window.getClientWidth()-100+"px");
