@@ -4,6 +4,7 @@
 	xmlns:m="urn:import:gwt.material.design.client.ui">
 
 <m:MaterialNavBar>
+<m:MaterialImage url="suhaimilogo.png" width="60px" height="20px"/>
 <m:MaterialNavBrand href="#Test" float="LEFT" text="Resource Management System"  />
 <m:MaterialNavSection float="RIGHT">
 <m:MaterialLink iconType="ACCOUNT_CIRCLE" iconPosition="LEFT" text="Add User" textColor="WHITE" waves="LIGHT" ui:field="addUser"/>

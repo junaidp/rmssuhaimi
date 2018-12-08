@@ -35,6 +35,7 @@ import com.leavemanagement.shared.JobActivityEntity;
 import com.leavemanagement.shared.JobAttributesDTO;
 import com.leavemanagement.shared.JobEmployees;
 import com.leavemanagement.shared.LineofService;
+import com.leavemanagement.shared.Location;
 import com.leavemanagement.shared.Nature;
 import com.leavemanagement.shared.Phases;
 import com.leavemanagement.shared.Segment;
@@ -80,14 +81,15 @@ public class JobCreationView extends MaterialColumn {
 	public JobCreationView(Job job, User loggedInUser, final Runnable runnable){
 		jobsListView= new JobsListView(loggedInUser);
 		this.selectedJob = job;
-		listLocation.addItem("Local");
-		listLocation.addItem("Overseas");
+
 
 		txtBoxTotalHours.setEnabled(false);
 		for (Allocations allocations : Allocations.values()) {
 			listBoxAllocation.addItem(allocations.getValue()+"", allocations.getName());
 		}
-
+		for (Location location : Location.values()) {
+			listLocation.addItem(location.getValue()+"", location.getName());
+		}
 		for (Nature natures : Nature.values()) {
 			listBoxNature.addItem(natures.getValue()+"", natures.getName());
 		}
@@ -433,7 +435,8 @@ public class JobCreationView extends MaterialColumn {
 				job.setAllocation(Integer.parseInt(listBoxAllocation.getSelectedValue()));
 				job.setSegment(Integer.parseInt(listBoxSegment.getSelectedValue()));
 				job.setNature(Integer.parseInt(listBoxNature.getSelectedValue()));
-
+				job.setLocation(Integer.parseInt(listLocation.getSelectedValue()));
+				
 
 
 				//job.setJobPhases(phases);
@@ -860,6 +863,7 @@ public class JobCreationView extends MaterialColumn {
 		listBoxCompanyName.setSelectedValue(selectedJob.getCompany()+"");
 		listBoxSegment.setSelectedValue(selectedJob.getSegment()+"");
 		listBoxNature.setSelectedValue(selectedJob.getNature()+"");
+		listLocation.setSelectedValue(selectedJob.getLocation()+"");
 		//	listLineOfService.setSelectedValue(selectedJob.getLineofServiceId()+"");
 		//listDomain.setSelectedValue(selectedJob.getDomainId()+"");
 		//final	int lineofservice = selectedJob.getLineofServiceId().getLineofServiceId();

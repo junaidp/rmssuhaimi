@@ -38,6 +38,9 @@ public class Job   implements Serializable {
 	@Column(name="allocation")
 	private int allocation;
 	
+	@Column(name="location")
+	private int location;
+	
 	@Column(name="nature")
 	private int nature;
 	
@@ -203,6 +206,14 @@ public class Job   implements Serializable {
 
 	public void setNature(int nature) {
 		this.nature = nature;
+	}
+
+	public int getLocation() {
+		return location;
+	}
+
+	public void setLocation(int location) {
+		this.location = location;
 	}
 
 	

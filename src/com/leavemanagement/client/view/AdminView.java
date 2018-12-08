@@ -98,7 +98,7 @@ public class AdminView extends MaterialColumn implements IsWidget,Display {
 		tab.getTab8().add(new HTML("&nbsp"));
 		tab.getTab8().add(new TimeSheetReportView(loggedInUser));
 		
-		if(loggedInUser.getReportingTo()==5){
+		if(loggedInUser.getRoleId().getRoleId()==5){
 			tab.getTabTimeReport().setVisible(true);
 			}else{
 				tab.getTabTimeReport().setVisible(false);
