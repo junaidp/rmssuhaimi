@@ -363,8 +363,9 @@ HttpSession session ;
 		ApplicationContext ctx = new ClassPathXmlApplicationContext(
 				"applicationContext.xml");
 		MySQLRdbHelper rdbHelper = (MySQLRdbHelper) ctx.getBean("ManagerExams");
+		String rootDir = getServletContext().getRealPath("/");
 		return rdbHelper.fetchTimeReport(selectedJob,selectedMonth,
-				 selecteduser, selectedJobType);
+				 selecteduser, selectedJobType, rootDir);
 	}
 
 	@Override

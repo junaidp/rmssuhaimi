@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import gwt.material.design.client.ui.MaterialRow;
 import gwt.material.design.client.ui.MaterialTextBox;
+import gwt.material.design.client.ui.MaterialToast;
 
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -334,7 +335,7 @@ public class TimeSheetView extends MaterialColumn{
 
 			@Override
 			public void onSuccess(String result) {
-				Window.alert("time sheet saved");
+				MaterialToast.fireToast("Time sheet updated");
 			}
 		});
 	}
