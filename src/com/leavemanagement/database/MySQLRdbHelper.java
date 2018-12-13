@@ -1,8 +1,12 @@
 package com.leavemanagement.database;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -13,6 +17,9 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -21,8 +28,12 @@ import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.w3c.dom.Attr;
+
 import com.leavemanagement.client.view.JobCreationView;
+import com.leavemanagement.shared.AllJobsReportDTO;
+import com.leavemanagement.shared.Allocations;
 import com.leavemanagement.shared.AttributeRating;
+import com.leavemanagement.shared.Branches;
 import com.leavemanagement.shared.Company;
 import com.leavemanagement.shared.Countries;
 import com.leavemanagement.shared.Domains;
@@ -38,6 +49,7 @@ import com.leavemanagement.shared.LeaveTypes;
 import com.leavemanagement.shared.LeavesDTO;
 import com.leavemanagement.shared.LeavesDTOForAllUsers;
 import com.leavemanagement.shared.LineofService;
+import com.leavemanagement.shared.Location;
 import com.leavemanagement.shared.MonthAllowedHours;
 import com.leavemanagement.shared.Phases;
 import com.leavemanagement.shared.Roles;
@@ -1583,10 +1595,307 @@ public class MySQLRdbHelper {
 		System.out.println("fail job delte");
 	}
 	}
+	
+	public void generatExcelTimeReport(HashMap<String, String> reportData, String rootDir){
+		Session session = null;
+		try{
+			
+	//		reportData.get("");
+		session = sessionFactory.openSession();
+		fetchJobWiseReport(reportData, rootDir, session);
+		fetchAllReport(reportData, rootDir, session);
+		
+		}catch(Exception ex){
+			
+			System.out.println("fail generatExcelTimeReport");
+		}
+		session.close();
+	}
+	
+	private void fetchAllReport(HashMap<String, String> reportData, String rootDir, Session session) {
+		ArrayList<AllJobsReportDTO> jobReports = new ArrayList<AllJobsReportDTO>();
+		try{
+				
+				Criteria crit = session.createCriteria(Job.class);
+				List rsList = crit.list();
+				
+				for(Iterator it=rsList.iterator();it.hasNext();)
+				{
+					Job job =  (Job)it.next();
+					AllJobsReportDTO reportDTO = new AllJobsReportDTO();
+					reportDTO.setJobName(job.getJobName());
+					reportDTO.setCompanyName(Branches.ALSUHAIMI.name());
+					reportDTO.setAllocation(Allocations.CHARGEABLE.getName());
+					reportDTO.setDomain(job.getDomainId().getName());
+					reportDTO.setLineOfService(job.getLineofServiceId().getName());
+					reportDTO.setBudgetedHours(getBudgetedHours(job.getJobId(), session));
+					reportDTO.setHoursWorked(getActualHours(job.getJobId(), session));
+					reportDTO.setHoursVariance(reportDTO.getBudgetedHours() - reportDTO.getHoursWorked());
+					jobReports.add(reportDTO);
+				}
+				
+				FileOutputStream fileOut = new FileOutputStream(rootDir + "/FullReport/report.xls");
+				HSSFWorkbook workbook = new HSSFWorkbook();
+				HSSFSheet worksheet = workbook.createSheet("All Jobs Report");
+				HSSFRow rowHeading = worksheet.createRow((short) 0);
+				
+				
+				rowHeading.createCell((short) 0).setCellValue("Sr.");
+				rowHeading.createCell((short) 1).setCellValue("Job Name");
+				rowHeading.createCell((short) 2).setCellValue("Company Name");
+				rowHeading.createCell((short) 3).setCellValue("Hours Worked");
+				rowHeading.createCell((short) 4).setCellValue("Budgeted Hours");
+				rowHeading.createCell((short) 5).setCellValue("Hours variance");
+				rowHeading.createCell((short) 6).setCellValue("Allocation");
+				rowHeading.createCell((short) 7).setCellValue("Line Of Service");
+				rowHeading.createCell((short) 8).setCellValue("Domain");
+				
+				for(int i=0; i< jobReports.size(); i++){
+					HSSFRow row = worksheet.createRow((short) i+1);
+					row.createCell((short) 0).setCellValue(i+1+"");
+					row.createCell((short) 1).setCellValue(jobReports.get(i).getJobName());
+					row.createCell((short) 2).setCellValue(jobReports.get(i).getCompanyName());
+					row.createCell((short) 3).setCellValue(jobReports.get(i).getHoursWorked());
+					row.createCell((short) 4).setCellValue(jobReports.get(i).getBudgetedHours());
+					row.createCell((short) 5).setCellValue(jobReports.get(i).getHoursVariance());
+					row.createCell((short) 6).setCellValue(jobReports.get(i).getAllocation());
+					row.createCell((short) 7).setCellValue(jobReports.get(i).getLineOfService());
+					row.createCell((short) 8).setCellValue(jobReports.get(i).getDomain());
+				}
+				
+				workbook.write(fileOut);
+				fileOut.flush();
+				fileOut.close();
+				
+					
+			
+		}catch(Exception ex){
+			
+			System.out.println("fail fetchAllReport");
+		}
+		
+	}
 
-	public ArrayList<TimeSheetReportDTO> fetchTimeReport(int selectedJob, int selectedMonth, int selectedUser, int selectedJobType) {
+	private float getBudgetedHours(int jobId, Session session) {
+		Criteria crit = session.createCriteria(JobActivityEntity.class);
+		crit.createAlias("jobId", "job");
+		crit.add(Restrictions.eq("job.jobId", jobId));
+		List rsList = crit.list();
+		int totalHours =0;
+		for(Iterator it=rsList.iterator();it.hasNext();)
+		{
+			
+			JobActivityEntity jobActivityEntity =  (JobActivityEntity)it.next();
+			int total = jobActivityEntity.getPlanning()+jobActivityEntity.getExecution()+jobActivityEntity.getReporting()+jobActivityEntity.getFollowup();
+			totalHours  =totalHours + total ;
+		}
+		return totalHours;
+	}
+	
+	private float getActualHours(int jobId, Session session) {
+		Criteria crit = session.createCriteria(TimeSheet.class);
+		crit.createAlias("jobId", "job");
+		crit.add(Restrictions.eq("job.jobId", jobId));
+		List rsList = crit.list();
+		float totalHours =0;
+		for(Iterator it=rsList.iterator();it.hasNext();)
+		{
+			
+			TimeSheet timeSheet =  (TimeSheet)it.next();
+			totalHours = totalHours + timeSheet.getHours();
+			
+		}
+		return totalHours;
+	}
+
+	private void fetchJobWiseReport(HashMap<String, String> reportData, String rootDir, Session session) {
+		
+		try{
+			ArrayList<JobActivityEntity> jobActivities = new ArrayList<JobActivityEntity>();
+			ArrayList<TimeSheet> timeSheets = new ArrayList<TimeSheet>();
+			int jobId =  Integer.parseInt(reportData.get("jobId"));   // value from job name listbox
+			
+			//Job job = fetchJobFromJobId(jobId, session);
+			Job job = (Job) session.get(Job.class, jobId);
+			
+			Criteria crit = session.createCriteria(JobActivityEntity.class);
+			crit.createAlias("jobId", "job");
+			crit.add(Restrictions.eq("job.jobId", jobId));
+			List rsList = crit.list();
+			
+			for(Iterator it=rsList.iterator();it.hasNext();)
+			{
+				
+				JobActivityEntity jobActivityEntity =  (JobActivityEntity)it.next();
+				jobActivities.add(jobActivityEntity);
+				
+			}
+			
+			Criteria crit1 = session.createCriteria(TimeSheet.class);
+			crit1.createAlias("jobId", "job");
+			crit1.add(Restrictions.eq("job.jobId", jobId));
+			List rsList1 = crit1.list();
+			
+			for(Iterator it=rsList1.iterator();it.hasNext();)
+			{
+				
+				TimeSheet timeSheet =  (TimeSheet)it.next();
+				timeSheets.add(timeSheet);
+				
+			}
+			
+			FileOutputStream fileOut = new FileOutputStream(rootDir + "/JobWiseReport/report.xls");// "D:\\POI111.xls"
+			HSSFWorkbook workbook = new HSSFWorkbook();
+			HSSFSheet worksheet = workbook.createSheet("Job wise Report");
+			HSSFRow rowJobName = worksheet.createRow((short) 0);
+			HSSFRow rowHeading = worksheet.createRow((short) 2);
+			HSSFRow rowHeading2 = worksheet.createRow((short) 3);
+			rowJobName.createCell((short) 0).setCellValue("Job Name :");
+			rowJobName.createCell((short) 1).setCellValue(job.getJobName());
+			//row.createCell((short) 0).setCellValue("Job Start Date :");
+			//row.createCell((short) 1).setCellValue(Location.valueOf(arg0));
+			
+			
+			rowHeading.createCell((short) 1).setCellValue("Planning");
+			rowHeading.createCell((short) 3).setCellValue("Execution");
+			rowHeading.createCell((short) 5).setCellValue("Reporting");
+			rowHeading.createCell((short) 7).setCellValue("Follow up ");
+			rowHeading.createCell((short) 9).setCellValue("Total hours");
+			
+			rowHeading2.createCell((short) 1).setCellValue("Budget");
+			rowHeading2.createCell((short) 2).setCellValue("Actual");
+			rowHeading2.createCell((short) 3).setCellValue("Budget");
+			rowHeading2.createCell((short) 4).setCellValue("Actual");
+			rowHeading2.createCell((short) 5).setCellValue("Budget");
+			rowHeading2.createCell((short) 6).setCellValue("Actual");
+			rowHeading2.createCell((short) 7).setCellValue("Budget");
+			rowHeading2.createCell((short) 8).setCellValue("Actual");
+			rowHeading2.createCell((short) 9).setCellValue("Budget");
+			rowHeading2.createCell((short) 10).setCellValue("Actual");
+			rowHeading2.createCell((short) 11).setCellValue("Variance");
+			
+			int currentUserId =0;
+			HSSFRow row1 = null;
+			
+			
+		
+			///////// TIME ACTIVITY
+			for (int i = 0; i < jobActivities.size(); i++) {
+				float totalBudgeted = 0;
+				row1 = worksheet.createRow((short) i + 4);
+				currentUserId = jobActivities.get(i).getUserId().getUserId();
+				String name = jobActivities.get(i).getUserId().getName();
+				row1.createCell((short) 0).setCellValue(name);
+				//planning
+				totalBudgeted = totalBudgeted + jobActivities.get(i).getPlanning();
+				row1.createCell((short) 1).setCellValue(jobActivities.get(i).getPlanning()+"");
+				//Execution
+				totalBudgeted = totalBudgeted + jobActivities.get(i).getExecution();
+				row1.createCell((short) 3).setCellValue(jobActivities.get(i).getExecution()+"");
+				//Reporting
+				totalBudgeted = totalBudgeted + jobActivities.get(i).getReporting();
+				row1.createCell((short) 5).setCellValue(jobActivities.get(i).getReporting()+"");
+				//Followup
+				totalBudgeted = totalBudgeted + jobActivities.get(i).getFollowup();
+				row1.createCell((short) 7).setCellValue(jobActivities.get(i).getFollowup()+"");
+				//Total
+				row1.createCell((short) 9).setCellValue(totalBudgeted+"");
+			
+			
+			
+			/////////  TIME SHEET
+			for (int j = 0; j < timeSheets.size(); j++) {
+				float totalActual = 0;
+				
+				int userId = timeSheets.get(j).getUserId().getUserId();
+				
+				if(userId == currentUserId ){
+					if(row1 != null){
+						if(row1.getCell((short) 2) == null){// planning
+							totalActual = totalActual + timeSheets.get(j).getHours();
+							row1.createCell((short) 2).setCellValue(timeSheets.get(j).getHours()+"");
+						}
+						else if(row1.getCell((short) 4) == null){// execution
+							totalActual = totalActual + timeSheets.get(j).getHours();
+							row1.createCell((short) 4).setCellValue(timeSheets.get(j).getHours()+"");
+						}
+						else if(row1.getCell((short) 6) == null){ // reporting
+							totalActual = totalActual + timeSheets.get(j).getHours();
+							row1.createCell((short) 6).setCellValue(timeSheets.get(j).getHours()+"");
+						}
+						else if(row1.getCell((short) 8) == null){ // follow up
+							totalActual = totalActual + timeSheets.get(j).getHours();
+							row1.createCell((short) 8).setCellValue(timeSheets.get(j).getHours()+"");
+						}
+					
+					}
+				}
+				
+				
+				row1.createCell((short) 10).setCellValue(totalActual+"");
+				row1.createCell((short) 11).setCellValue(totalBudgeted - totalActual+"");
+				//currentUserId = userId;
+			}
+			}
+			workbook.write(fileOut);
+			fileOut.flush();
+			fileOut.close();
+			
+			
+		
+		}catch(Exception ex){
+			System.out.println("fail fetch job wise report");
+		}
+		
+	}
+
+	
+	/*public String exportToExcel(ArrayList<ExcelDataDTO> excelDataList, String rootDir) {
+		try {
+
+			FileOutputStream fileOut = new FileOutputStream(rootDir + "/InternalAuditReport/report.xls");// "D:\\POI111.xls"
+			HSSFWorkbook workbook = new HSSFWorkbook();
+			HSSFSheet worksheet = workbook.createSheet("Orders Worksheet");
+			HSSFRow row = worksheet.createRow((short) 0);
+			row.createCell((short) 0).setCellValue("Objective");
+			row.createCell((short) 1).setCellValue("Auditable Unit");
+			row.createCell((short) 2).setCellValue("Domain");
+			row.createCell((short) 3).setCellValue("Division");
+			row.createCell((short) 4).setCellValue("Risk Assesment");
+
+			for (int i = 0; i < excelDataList.size(); i++) {
+				HSSFRow row1 = worksheet.createRow((short) i + 1);
+				row1.createCell((short) 0).setCellValue(excelDataList.get(i).getObjective());
+				row1.createCell((short) 1).setCellValue(excelDataList.get(i).getAuditableUnit());
+				row1.createCell((short) 2).setCellValue(excelDataList.get(i).getDomain());
+				row1.createCell((short) 3).setCellValue(excelDataList.get(i).getDivision());
+				row1.createCell((short) 4).setCellValue(excelDataList.get(i).getRiskAssesment());
+
+			}
+			workbook.write(fileOut);
+			fileOut.flush();
+			fileOut.close();
+
+			logger.info(String.format("(Inside exportToExcel)exporting ToExcel for rootDir" + rootDir + "for excel data"
+					+ excelDataList + "" + new Date()));
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("excel sheet: downloaded");
+		return "exported";
+	}
+*/
+	public ArrayList<TimeSheetReportDTO> fetchTimeReport(int selectedJob, int selectedMonth, int selectedUser, int selectedJobType, String rootDir) {
 		Session session = null;
 		int numberOfHours=0;
+		
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("jobId", selectedJob+"");
+		generatExcelTimeReport(map, rootDir);
+		
 		ArrayList<TimeSheetReportDTO> timeSheetlist = new ArrayList<TimeSheetReportDTO>();
 		try{
 			session = sessionFactory.openSession();
