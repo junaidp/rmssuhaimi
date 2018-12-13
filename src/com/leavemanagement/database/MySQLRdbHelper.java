@@ -257,13 +257,13 @@ public class MySQLRdbHelper {
 			crit.add(Restrictions.eq("userId", userId));
 			User user = (User) crit.list().get(0);
 			email = user.getEmail();
-			
+
 		}catch(Exception ex){
 			System.out.println("fail fetchuseremail");
 		}
 		return email;
 	}
-	
+
 	public String saveLeaveRequest(LeaveRecord leaveRecord) throws Exception {
 		Session session = null;
 		try{
@@ -445,8 +445,8 @@ public class MySQLRdbHelper {
 			session.close();
 		}
 	}
-	
-	
+
+
 
 
 	public boolean sendEmail(String body, String sendTo, String cc, String subject) {
@@ -566,7 +566,7 @@ public class MySQLRdbHelper {
 		}
 
 	}
-	
+
 	public ArrayList<User> fetchAllUsers() throws Exception {
 		Session session = null;
 		ArrayList<User> users = new  ArrayList<User>();
@@ -803,16 +803,16 @@ public class MySQLRdbHelper {
 			ArrayList<User> users = fetchAllUsers();
 			ArrayList<SubLineofService> subLineofServices = fetchSubLineOfServices(1);
 			ArrayList<Domains> domains = fetchDomains();
-			
+
 			JobAttributesDTO jobAttributesDTO = new JobAttributesDTO();
 			jobAttributesDTO.setCountries(countries);
 			jobAttributesDTO.setDomains(domains);
 			jobAttributesDTO.setLineofService(lineofServices);
 			jobAttributesDTO.setSubLineofService(subLineofServices);
 			jobAttributesDTO.setUsers(users);
-			
+
 			return jobAttributesDTO;
-			
+
 		}catch(Exception ex){
 			logger.warn(String.format("Exception occured in getJobAttributes", ex.getMessage()), ex);
 			System.out.println("Exception occured in getJobAttributes"+ ex.getMessage());
@@ -849,8 +849,8 @@ public class MySQLRdbHelper {
 
 		}
 	}
-	
-	
+
+
 	public ArrayList<SubLineofService> fetchSubLineOfServices(int domainId) throws Exception{
 		ArrayList<SubLineofService> subLineofServices = new ArrayList<SubLineofService>();
 		Session session;
@@ -879,7 +879,7 @@ public class MySQLRdbHelper {
 
 		}
 	}
-	
+
 	private ArrayList<Countries> getCountries(Session session) throws Exception{
 		ArrayList<Countries> countries = new ArrayList<Countries>();
 
@@ -904,9 +904,9 @@ public class MySQLRdbHelper {
 
 		}
 	}
-	
-	
-	
+
+
+
 	public ArrayList<Domains> fetchDomains(int lineofServiceId) throws Exception{
 		ArrayList<Domains> domains = new ArrayList<Domains>();
 		Session session = null;
@@ -934,7 +934,7 @@ public class MySQLRdbHelper {
 
 		}
 	}
-	
+
 	public ArrayList<Domains> fetchDomains() throws Exception{
 		ArrayList<Domains> domains = new ArrayList<Domains>();
 		Session session = null;
@@ -962,53 +962,53 @@ public class MySQLRdbHelper {
 
 		}
 	}
-	
-	
+
+
 
 	public String saveJob(Job job) throws Exception{
 		Session session = null;
 		Transaction tr = null;
 		String result ="Job Created";
 		if(job != null && job.getJobId()!=0)
-		 result = "Job Updated";
+			result = "Job Updated";
 		try{
-			
+
 			session = sessionFactory.openSession();
 			tr = session.beginTransaction();
 			job.setStatus("Active");
 			session.saveOrUpdate(job);
-			
+
 			//saveEmployeeJob(job.getJobEmployeesList(),job.getSupervisorId().getUserId(), job.getPrincipalConsultantId().getUserId(), job.getJobId(), session);
-		ArrayList<JobEmployees> jobEmployeeList = new ArrayList<JobEmployees>();
+			ArrayList<JobEmployees> jobEmployeeList = new ArrayList<JobEmployees>();
 			for(int i=0; i< job.getJobActivities().size(); i++){
 				if(job.getJobActivities().get(i).getTotalHours()>0 ){
 					JobEmployees jobEmployee = new JobEmployees();
 					jobEmployee.setEmployeeId(job.getJobActivities().get(i).getUserId());
 					jobEmployee.setJobId(job.getJobId());
 					jobEmployeeList.add(jobEmployee);
-					
+
 				}
 			}
-			
+
 			saveEmployeeJob(jobEmployeeList, job.getJobId(), session);
-			
+
 			session.flush();
 			setJobActivities(job.getJobActivities(), session, job);
-		//	addPhase(job, session);
+			//	addPhase(job, session);
 			tr.commit();
-//			
-//			for(int i=0; i< job.getJobEmployeesList().size(); i++){
-//				String email = fetchUsersEmail(job.getJobEmployeesList().get(i).getEmployeeId().getUserId(), session);
-//				String body= "Dear "+ job.getJobEmployeesList().get(i).getEmployeeId().getName()+" : "+ "A new job has been created named (" + job.getJobName() +") and assigned to you";
-//				sendEmail(body, email, "", "Job Created");
-//			}
-//			String email = fetchUsersEmail(job.getSupervisorId().getUserId(), session);
-//			String body= "Dear "+ job.getSupervisorId().getName()+" : "+ "A new job has been created named (" + job.getJobName() +") and assigned to you";
-//			
-//			sendEmail(body, email, "", "Job Created");///////??
-				
-			
-			
+			//			
+			//			for(int i=0; i< job.getJobEmployeesList().size(); i++){
+			//				String email = fetchUsersEmail(job.getJobEmployeesList().get(i).getEmployeeId().getUserId(), session);
+			//				String body= "Dear "+ job.getJobEmployeesList().get(i).getEmployeeId().getName()+" : "+ "A new job has been created named (" + job.getJobName() +") and assigned to you";
+			//				sendEmail(body, email, "", "Job Created");
+			//			}
+			//			String email = fetchUsersEmail(job.getSupervisorId().getUserId(), session);
+			//			String body= "Dear "+ job.getSupervisorId().getName()+" : "+ "A new job has been created named (" + job.getJobName() +") and assigned to you";
+			//			
+			//			sendEmail(body, email, "", "Job Created");///////??
+
+
+
 			return result;
 		}catch(Exception ex){
 			tr.rollback();
@@ -1020,35 +1020,35 @@ public class MySQLRdbHelper {
 		finally{
 			session.close();
 		}
-		
+
 	}
 
 	private void setJobActivities(ArrayList<JobActivityEntity> jobActivityList, Session session, Job job) {
 		try{
 			for(int i=0; i< jobActivityList.size(); i++){
-				
+
 				JobActivityEntity  jobActivity = jobActivityList.get(i);
-				
+
 				/*jobActivity.setUserId(jobActivityList.get(i).getUserId());
 				jobActivity.setPlanning(jobActivityList.get(i).getPlanning());
 				jobActivity.setExecution(jobActivityList.get(i).getExecution());
 				jobActivity.setFollowup(jobActivityList.get(i).getFollowup());
 				jobActivity.setReporting(jobActivityList.get(i).getReporting());
-				*/
+				 */
 				jobActivity.setJobId(job);
-					session.saveOrUpdate(jobActivity);
-					session.flush();
+				session.saveOrUpdate(jobActivity);
+				session.flush();
 			}
-			
-			}catch(Exception ex){
-				System.out.println(ex);
-			}
-			
-		}
-		
-	
 
-/*	private void saveEmployeeJob(ArrayList<JobEmployees> jobEmployeesList,  int jobId, Session session) {
+		}catch(Exception ex){
+			System.out.println(ex);
+		}
+
+	}
+
+
+
+	/*	private void saveEmployeeJob(ArrayList<JobEmployees> jobEmployeesList,  int jobId, Session session) {
 		try{
 		for(int i=0; i< jobEmployeesList.size(); i++){
 			JobEmployees jobEmployees = jobEmployeesList.get(i);
@@ -1061,31 +1061,31 @@ public class MySQLRdbHelper {
 				session.flush();
 //			}
 		}
-		
+
 		}catch(Exception ex){
 			System.out.println(ex);
 		}
-		
+
 	}*/
-	
+
 	private void saveEmployeeJob(ArrayList<JobEmployees> jobEmployeesList,  int jobId, Session session) {
 		try{
-		for(int i=0; i< jobEmployeesList.size(); i++){
-			JobEmployees jobEmployees = jobEmployeesList.get(i);
-			jobEmployees.setJobId(jobId);
-			if(employeeJobAlreadySaved(jobId, jobEmployees.getEmployeeId().getUserId(), session)){
-			//session.update(jobEmployees);
-			//session.flush();
-			}else{
-				session.saveOrUpdate(jobEmployees);
-				session.flush();
+			for(int i=0; i< jobEmployeesList.size(); i++){
+				JobEmployees jobEmployees = jobEmployeesList.get(i);
+				jobEmployees.setJobId(jobId);
+				if(employeeJobAlreadySaved(jobId, jobEmployees.getEmployeeId().getUserId(), session)){
+					//session.update(jobEmployees);
+					//session.flush();
+				}else{
+					session.saveOrUpdate(jobEmployees);
+					session.flush();
+				}
 			}
-		}
-		
+
 		}catch(Exception ex){
 			System.out.println(ex);
 		}
-		
+
 	}
 
 	private boolean employeeJobAlreadySaved(int jobId, int userId, Session session) {
@@ -1098,27 +1098,27 @@ public class MySQLRdbHelper {
 		}else{
 			return false;
 		}
-		
+
 	}
 
-//	private void addPhase(Job job, Session session)throws Exception {
-//		try{
-//			for(int i=0; i< job.getJobPhases().size(); i++){
-//				Phases phase = job.getJobPhases().get(i);
-//				phase.setJobId(job);
-//				session.saveOrUpdate(phase);
-//				session.flush();
-//			}
-//		}catch(Exception ex){
-//			logger.warn(String.format("Exception occured in addPhase", ex.getMessage()), ex);
-//			System.out.println("Exception occured in addPhase"+ ex.getMessage());
-//
-//			throw new Exception("Exception occured in addPhase");
-//		}
-//		finally{
-//
-//		}
-//	}
+	//	private void addPhase(Job job, Session session)throws Exception {
+	//		try{
+	//			for(int i=0; i< job.getJobPhases().size(); i++){
+	//				Phases phase = job.getJobPhases().get(i);
+	//				phase.setJobId(job);
+	//				session.saveOrUpdate(phase);
+	//				session.flush();
+	//			}
+	//		}catch(Exception ex){
+	//			logger.warn(String.format("Exception occured in addPhase", ex.getMessage()), ex);
+	//			System.out.println("Exception occured in addPhase"+ ex.getMessage());
+	//
+	//			throw new Exception("Exception occured in addPhase");
+	//		}
+	//		finally{
+	//
+	//		}
+	//	}
 
 	public ArrayList<Job> fetchJobs(User loggedInUser) throws Exception{
 		ArrayList<Job> jobs = new ArrayList<Job>();
@@ -1130,42 +1130,42 @@ public class MySQLRdbHelper {
 			//crit.createAlias("subLineofServiceId", "subLineofService");
 			//crit.createAlias("subLineofService.domainId", "sublineDomain");
 			//crit.createAlias("sublineDomain.lineofServiceId", "ddomainlineofservice");
-			
+
 			crit.createAlias("domainId", "domain");
 			crit.createAlias("domain.lineofServiceId", "domainlineofservice");
-//			crit.createAlias("sublineDomain.lineofServiceId", "subdomainlineofservice");
-			
+			//			crit.createAlias("sublineDomain.lineofServiceId", "subdomainlineofservice");
+
 			crit.createAlias("countryId", "count");
-//			crit.createAlias("userId", "user");
-//			crit.createAlias("user.roleId", "role");
-//			crit.createAlias("user.companyId", "company");
-			
-			
+			//			crit.createAlias("userId", "user");
+			//			crit.createAlias("user.roleId", "role");
+			//			crit.createAlias("user.companyId", "company");
+
+
 			//crit.createAlias("supervisorId", "supervisor");
 			//crit.createAlias("supervisor.roleId", "roles");
 			//crit.createAlias("supervisor.companyId", "companys");
-			
-			
+
+
 			//crit.createAlias("principalConsultantId", "principalConsultant");
 			//crit.createAlias("principalConsultant.roleId", "rolep");
 			//crit.createAlias("principalConsultant.companyId", "companyp");
-			
+
 			crit.add(Restrictions.ne("status", "InActive"));
 			crit.add(Restrictions.ne("status", "office"));
 			crit.add(Restrictions.ne("status", "Closed"));
-			
+
 			if(loggedInUser.getRoleId().getRoleId()!=5){
 				ArrayList<Integer> jobIds = getUserJobs(loggedInUser.getUserId(), session);
 				Disjunction disc = Restrictions.disjunction();
 				for(int i=0; i<jobIds.size(); i++){
-				disc.add(Restrictions.eq("jobId", jobIds.get(i)));
+					disc.add(Restrictions.eq("jobId", jobIds.get(i)));
 				}
 				crit.add(disc);
-				
+
 			}
 			List rsList = crit.list();
-			
-			
+
+
 			for(Iterator it=rsList.iterator();it.hasNext();)
 			{
 				Job job =  (Job)it.next();
@@ -1176,17 +1176,17 @@ public class MySQLRdbHelper {
 				HibernateDetachUtility.nullOutUninitializedFields(job, HibernateDetachUtility.SerializationType.SERIALIZATION);
 				HibernateDetachUtility.nullOutUninitializedFields(job.getLineofServiceId(), HibernateDetachUtility.SerializationType.SERIALIZATION);
 				HibernateDetachUtility.nullOutUninitializedFields(job.getDomainId(), HibernateDetachUtility.SerializationType.SERIALIZATION);
-			//	HibernateDetachUtility.nullOutUninitializedFields(job.getPrincipalConsultantId(), HibernateDetachUtility.SerializationType.SERIALIZATION);
-			//	HibernateDetachUtility.nullOutUninitializedFields(job.getSubLineofServiceId(), HibernateDetachUtility.SerializationType.SERIALIZATION);
+				//	HibernateDetachUtility.nullOutUninitializedFields(job.getPrincipalConsultantId(), HibernateDetachUtility.SerializationType.SERIALIZATION);
+				//	HibernateDetachUtility.nullOutUninitializedFields(job.getSubLineofServiceId(), HibernateDetachUtility.SerializationType.SERIALIZATION);
 				HibernateDetachUtility.nullOutUninitializedFields(job.getCountryId(), HibernateDetachUtility.SerializationType.SERIALIZATION);
-			//	HibernateDetachUtility.nullOutUninitializedFields(job.getSupervisorId(), HibernateDetachUtility.SerializationType.SERIALIZATION);
+				//	HibernateDetachUtility.nullOutUninitializedFields(job.getSupervisorId(), HibernateDetachUtility.SerializationType.SERIALIZATION);
 				job.setJobActivities(fetchJobActivities(session, job.getJobId()));
 
 				jobs.add(job);
 			}
-				
-				
-				return jobs;
+
+
+			return jobs;
 		}catch(Exception ex){
 			logger.warn(String.format("Exception occured in fetchJobs", ex.getMessage()), ex);
 			System.out.println("Exception occured in fetchJobs"+ ex.getMessage());
@@ -1205,52 +1205,52 @@ public class MySQLRdbHelper {
 			session = sessionFactory.openSession();
 			Criteria crit = session.createCriteria(Job.class);
 			crit.createAlias("lineofServiceId", "lineofService");
-//			crit.createAlias("subLineofServiceId", "subLineofService");
-//			crit.createAlias("subLineofService.domainId", "sublineDomain");
-//			crit.createAlias("sublineDomain.lineofServiceId", "ddomainlineofservice");
-			
+			//			crit.createAlias("subLineofServiceId", "subLineofService");
+			//			crit.createAlias("subLineofService.domainId", "sublineDomain");
+			//			crit.createAlias("sublineDomain.lineofServiceId", "ddomainlineofservice");
+
 			crit.createAlias("domainId", "domain");
 			crit.createAlias("domain.lineofServiceId", "domainlineofservice");
-//			crit.createAlias("sublineDomain.lineofServiceId", "subdomainlineofservice");
-			
+			//			crit.createAlias("sublineDomain.lineofServiceId", "subdomainlineofservice");
+
 			crit.createAlias("countryId", "count");
-//			crit.createAlias("userId", "user");
-//			crit.createAlias("user.roleId", "role");
-//			crit.createAlias("user.companyId", "company");
-			
-			
-//			crit.createAlias("supervisorId", "supervisor");
-//			crit.createAlias("supervisor.roleId", "roles");
-//			crit.createAlias("supervisor.companyId", "companys");
-//			
-//			
-//			crit.createAlias("principalConsultantId", "principalConsultant");
-//			crit.createAlias("principalConsultant.roleId", "rolep");
-//			crit.createAlias("principalConsultant.companyId", "companyp");
-			
+			//			crit.createAlias("userId", "user");
+			//			crit.createAlias("user.roleId", "role");
+			//			crit.createAlias("user.companyId", "company");
+
+
+			//			crit.createAlias("supervisorId", "supervisor");
+			//			crit.createAlias("supervisor.roleId", "roles");
+			//			crit.createAlias("supervisor.companyId", "companys");
+			//			
+			//			
+			//			crit.createAlias("principalConsultantId", "principalConsultant");
+			//			crit.createAlias("principalConsultant.roleId", "rolep");
+			//			crit.createAlias("principalConsultant.companyId", "companyp");
+
 			crit.add(Restrictions.ne("status", "InActive"));
 			crit.add(Restrictions.ne("status", "Closed"));
 			if(chargeable){
 				crit.add(Restrictions.eq("allocation", 1));
 			}
-//			crit.add(Restrictions.ne("client", "office"));
-			
-//			if(loggedInUser.getRoleId().getRoleId()!=5){
-				ArrayList<Integer> jobIds = getUserJobs(loggedInUser.getUserId(), session);
-				Disjunction disc = Restrictions.disjunction();
-				for(int i=0; i<jobIds.size(); i++){
+			//			crit.add(Restrictions.ne("client", "office"));
+
+			//			if(loggedInUser.getRoleId().getRoleId()!=5){
+			ArrayList<Integer> jobIds = getUserJobs(loggedInUser.getUserId(), session);
+			Disjunction disc = Restrictions.disjunction();
+			for(int i=0; i<jobIds.size(); i++){
 				disc.add(Restrictions.eq("jobId", jobIds.get(i)));
-				}
-				crit.add(disc);
-				
-//			}
+			}
+			crit.add(disc);
+
+			//			}
 			List rsList = crit.list();
-			
-			
+
+
 			for(Iterator it=rsList.iterator();it.hasNext();)
 			{
 				Job job =  (Job)it.next();
-			//	job.setJobPhases(fetchJobPhases(job.getJobId()));
+				//	job.setJobPhases(fetchJobPhases(job.getJobId()));
 				job.setJobEmployeesList(fetchJobEmployees(session, job.getJobId()));
 				job.setJobAttributes(fetchjobAttributes(session, job.getJobId()));
 				job.setTimeSheets(fetchJobTimeSheets(session, job.getJobId(), loggedInUser.getRoleId().getRoleId(), loggedInUser.getUserId()));
@@ -1269,7 +1269,7 @@ public class MySQLRdbHelper {
 		}
 	}
 
-	
+
 	private ArrayList<JobActivityEntity> fetchJobActivities(Session session, int jobId) throws Exception {
 		ArrayList<JobActivityEntity> listJobActivity = new ArrayList<JobActivityEntity>();
 		try{
@@ -1278,7 +1278,7 @@ public class MySQLRdbHelper {
 			crit.createAlias("userId", "user");
 			crit.add(Restrictions.eq("job.jobId", jobId));
 			List rsList = crit.list();
-			
+
 			for(Iterator it=rsList.iterator();it.hasNext();)
 			{
 				JobActivityEntity jobActivityEntity =  (JobActivityEntity)it.next();
@@ -1291,7 +1291,7 @@ public class MySQLRdbHelper {
 
 			throw new Exception("Exception occured in fetchJobActivities");
 		}
-		
+
 	}
 
 	private ArrayList<TimeSheet> fetchJobTimeSheets(Session session, int jobId, int roleId, int userId)throws Exception {
@@ -1312,15 +1312,15 @@ public class MySQLRdbHelper {
 			crit.add(Restrictions.eq("job.jobId", jobId));
 			crit.add(Restrictions.eq("user.userId", userId));
 			crit.add(Restrictions.ne("activity.activityId", 0));
-			
+
 			if(roleId==5){
-//				crit.add(Restrictions.eq("status", 1));
+				//				crit.add(Restrictions.eq("status", 1));
 			}
-			
+
 			crit.addOrder(Order.asc("activity.activityId"));
-			
+
 			List rsList = crit.list();
-			
+
 			for(Iterator it=rsList.iterator();it.hasNext();)
 			{
 				TimeSheet timeSheet =  (TimeSheet)it.next();
@@ -1341,7 +1341,7 @@ public class MySQLRdbHelper {
 			Criteria crit = session.createCriteria(JobAttributes.class);
 			crit.add(Restrictions.eq("jobId", jobId));
 			List rsList = crit.list();
-			
+
 			for(Iterator it=rsList.iterator();it.hasNext();)
 			{
 				JobAttributes jobAttributes =  (JobAttributes)it.next();
@@ -1354,7 +1354,7 @@ public class MySQLRdbHelper {
 
 			throw new Exception("Exception occured in fetchjobAttributes");
 		}
-		
+
 	}
 
 	private ArrayList<Integer> getUserJobs(int userId, Session session) {
@@ -1364,32 +1364,32 @@ public class MySQLRdbHelper {
 			crit.createAlias("employeeId", "employee");
 			crit.add(Restrictions.eq("employee.userId", userId));
 			List rsList = crit.list();
-			
+
 			for(Iterator it=rsList.iterator();it.hasNext();)
 			{
 				JobEmployees jobEmployees =  (JobEmployees)it.next();
 				int jobId = jobEmployees.getJobId();
 				jobIds.add(jobId);
 			}
-			
+
 		}catch(Exception  ex){
 			System.out.println("getUserJobs failed");
 		}
 		return jobIds;
-		
+
 	}
 
 	private ArrayList<JobEmployees> fetchJobEmployees(Session session, int jobId)throws Exception {
 		try{
 			ArrayList<JobEmployees> jobEmployeesList = new ArrayList<JobEmployees>();
-		
+
 			Criteria crit = session.createCriteria(JobEmployees.class);
 			crit.createAlias("employeeId", "employee");
 			crit.createAlias("employee.companyId", "employeeComp");
 			crit.createAlias("employee.roleId", "employeeRole");
 			crit.add(Restrictions.eq("jobId", jobId));
 			List rsList = crit.list();
-					
+
 			for(Iterator it=rsList.iterator();it.hasNext();)
 			{
 				JobEmployees jobEmployees =  (JobEmployees)it.next();
@@ -1415,25 +1415,25 @@ public class MySQLRdbHelper {
 			crit.createAlias("job.domainId", "domain1");
 			crit.createAlias("job.countryId", "count1");
 			crit.createAlias("job.principalConsultantId", "principalConsultant");
-			
-//			crit.createAlias("job.userId", "user1");
-//			crit.createAlias("user1.roleId", "role");
-//			crit.createAlias("user1.companyId", "company");
+
+			//			crit.createAlias("job.userId", "user1");
+			//			crit.createAlias("user1.roleId", "role");
+			//			crit.createAlias("user1.companyId", "company");
 			crit.createAlias("domain1.lineofServiceId", "domain1lineofservice");
 
-			
-			
+
+
 			crit.createAlias("supervisor.roleId", "roles");
 			crit.createAlias("supervisor.companyId", "companys");
-			
-			
+
+
 			crit.createAlias("principalConsultant.roleId", "rolep");
 			crit.createAlias("principalConsultant.companyId", "companyp");
-			
+
 			crit.add(Restrictions.eq("job.jobId", jobId));
 			List rsList = crit.list();
-			
-			
+
+
 			for(Iterator it=rsList.iterator();it.hasNext();)
 			{
 				Phases phase =  (Phases)it.next();
@@ -1449,7 +1449,7 @@ public class MySQLRdbHelper {
 		finally{
 			session.close();
 		}
-		
+
 	}
 
 	public String updatePhase(Phases phase) throws Exception{
@@ -1468,7 +1468,7 @@ public class MySQLRdbHelper {
 		finally{
 			session.close();
 		}
-		
+
 	}
 
 	public String deletePhase(Phases phase)throws Exception {
@@ -1502,7 +1502,7 @@ public class MySQLRdbHelper {
 		}finally{
 			session.close();
 		}
-		
+
 	}
 
 	public String deleteJob(int jobId)throws Exception {
@@ -1547,7 +1547,7 @@ public class MySQLRdbHelper {
 		}catch(Exception ex){
 			System.out.println("fail job attributes save");
 		}finally{
-			
+
 		}
 		return "job attributes saved";
 	}
@@ -1557,21 +1557,21 @@ public class MySQLRdbHelper {
 		try{
 			session = sessionFactory.openSession();
 			deletePreviousTimeSheet(timeSheet.get(0).getMonth(), timeSheet.get(0).getUserId().getUserId(), session);
-			
+
 			for(int i=0; i< timeSheet.size(); i++){
 				session.saveOrUpdate(timeSheet.get(i));
 				session.flush();
 			}
-			
-			
-			
+
+
+
 		}catch(Exception ex){
 			System.out.println("fail saveTimeSheet");
 		}finally{
-			
+
 		}
 		return null;
-		
+
 	}
 
 	private void deletePreviousTimeSheet(int month, int userId , Session session) {
@@ -1581,99 +1581,187 @@ public class MySQLRdbHelper {
 			crit.add(Restrictions.eq("user.userId", userId));
 			crit.add(Restrictions.eq("month", month));
 			List rsList = crit.list();
-			
-			
+
+
 			for(Iterator it=rsList.iterator();it.hasNext();)
 			{
 				TimeSheet timeSheet =  (TimeSheet)it.next();
 				session.delete(timeSheet);
 				session.flush();
-			
-		}
-		
-	}catch(Exception ex){
-		System.out.println("fail job delte");
-	}
-	}
-	
-	public void generatExcelTimeReport(HashMap<String, String> reportData, String rootDir){
-		Session session = null;
-		try{
-			
-	//		reportData.get("");
-		session = sessionFactory.openSession();
-		fetchJobWiseReport(reportData, rootDir, session);
-		fetchAllReport(reportData, rootDir, session);
-		
+
+			}
+
 		}catch(Exception ex){
-			
+			System.out.println("fail job delte");
+		}
+	}
+
+	public void generatExcelTimeReport(HashMap<String, Integer> reportData, String rootDir){
+		try{
+
+			//		reportData.get("");
+			fetchJobWiseReport(reportData, rootDir);
+			fetchAllReport(reportData, rootDir);
+
+		}catch(Exception ex){
+
 			System.out.println("fail generatExcelTimeReport");
 		}
-		session.close();
+		
 	}
-	
-	private void fetchAllReport(HashMap<String, String> reportData, String rootDir, Session session) {
+
+	private void fetchAllReport(HashMap<String, Integer> reportData, String rootDir) {
 		ArrayList<AllJobsReportDTO> jobReports = new ArrayList<AllJobsReportDTO>();
+		Session session = null;
 		try{
-				
-				Criteria crit = session.createCriteria(Job.class);
-				List rsList = crit.list();
-				
-				for(Iterator it=rsList.iterator();it.hasNext();)
-				{
-					Job job =  (Job)it.next();
-					AllJobsReportDTO reportDTO = new AllJobsReportDTO();
-					reportDTO.setJobName(job.getJobName());
-					reportDTO.setCompanyName(Branches.ALSUHAIMI.name());
-					reportDTO.setAllocation(Allocations.CHARGEABLE.getName());
-					reportDTO.setDomain(job.getDomainId().getName());
-					reportDTO.setLineOfService(job.getLineofServiceId().getName());
-					reportDTO.setBudgetedHours(getBudgetedHours(job.getJobId(), session));
-					reportDTO.setHoursWorked(getActualHours(job.getJobId(), session));
-					reportDTO.setHoursVariance(reportDTO.getBudgetedHours() - reportDTO.getHoursWorked());
-					jobReports.add(reportDTO);
-				}
-				
-				FileOutputStream fileOut = new FileOutputStream(rootDir + "/FullReport/report.xls");
-				HSSFWorkbook workbook = new HSSFWorkbook();
-				HSSFSheet worksheet = workbook.createSheet("All Jobs Report");
-				HSSFRow rowHeading = worksheet.createRow((short) 0);
-				
-				
-				rowHeading.createCell((short) 0).setCellValue("Sr.");
-				rowHeading.createCell((short) 1).setCellValue("Job Name");
-				rowHeading.createCell((short) 2).setCellValue("Company Name");
-				rowHeading.createCell((short) 3).setCellValue("Hours Worked");
-				rowHeading.createCell((short) 4).setCellValue("Budgeted Hours");
-				rowHeading.createCell((short) 5).setCellValue("Hours variance");
-				rowHeading.createCell((short) 6).setCellValue("Allocation");
-				rowHeading.createCell((short) 7).setCellValue("Line Of Service");
-				rowHeading.createCell((short) 8).setCellValue("Domain");
-				
-				for(int i=0; i< jobReports.size(); i++){
-					HSSFRow row = worksheet.createRow((short) i+1);
-					row.createCell((short) 0).setCellValue(i+1+"");
-					row.createCell((short) 1).setCellValue(jobReports.get(i).getJobName());
-					row.createCell((short) 2).setCellValue(jobReports.get(i).getCompanyName());
-					row.createCell((short) 3).setCellValue(jobReports.get(i).getHoursWorked());
-					row.createCell((short) 4).setCellValue(jobReports.get(i).getBudgetedHours());
-					row.createCell((short) 5).setCellValue(jobReports.get(i).getHoursVariance());
-					row.createCell((short) 6).setCellValue(jobReports.get(i).getAllocation());
-					row.createCell((short) 7).setCellValue(jobReports.get(i).getLineOfService());
-					row.createCell((short) 8).setCellValue(jobReports.get(i).getDomain());
-				}
-				
-				workbook.write(fileOut);
-				fileOut.flush();
-				fileOut.close();
-				
-					
+			session = sessionFactory.openSession();
+			Criteria crit = session.createCriteria(Job.class);
 			
+			//send all the listboxes values from clientside in a hashmap HashMap<String, Integer>
+
+			if(reportData.get("jobId")  != null && reportData.get("jobId") != 0){  // EXAMPLE FOR adding a filter for job name listbox, need to do this for all listboxes.
+				crit.add(Restrictions.eq("jobId", reportData.get("jobId")));
+			}
+
+			if(reportData.get("lineOfServiceId")  != null && reportData.get("jobId") != 0){ //Example for line of service
+				crit.createAlias("lineofServiceId", "lineofService");
+				crit.add(Restrictions.eq("lineofService.lineofServiceId", reportData.get("lineOfServiceId")));
+			}
+			
+			//Dont add filter for Users here , its already added at bottom..
+
+			List rsList = crit.list();
+
+			for(Iterator it=rsList.iterator();it.hasNext();)
+			{
+				Job job =  (Job)it.next();
+				AllJobsReportDTO reportDTO = new AllJobsReportDTO();
+				reportDTO.setJobName(job.getJobName());
+				reportDTO.setCompanyName(Branches.ALSUHAIMI.name());
+				reportDTO.setAllocation(Allocations.CHARGEABLE.getName());
+				reportDTO.setDomain(job.getDomainId().getName());
+				reportDTO.setLocation(Location.LOCAL.getName());
+				reportDTO.setLineOfService(job.getLineofServiceId().getName());
+				reportDTO.setBudgetedHours(getBudgetedHours(job.getJobId(), session));
+				reportDTO.setHoursWorked(getActualHours(job.getJobId(), session));
+				reportDTO.setHoursVariance(reportDTO.getBudgetedHours() - reportDTO.getHoursWorked());
+				jobReports.add(reportDTO);
+			}
+
+			FileOutputStream fileOut = new FileOutputStream(rootDir + "/FullReport/report.xls");
+			HSSFWorkbook workbook = new HSSFWorkbook();
+			allJobReport(jobReports, workbook);
+			
+			if(reportData.get("userId")  != null){ //Example for line of service
+				specificUserReport(workbook, reportData.get("userId"), rsList, session);
+			}
+			specificUserReport(workbook, 1, rsList, session);
+
+			workbook.write(fileOut);
+			fileOut.flush();
+			fileOut.close();
+
+
+
 		}catch(Exception ex){
-			
+
 			System.out.println("fail fetchAllReport");
 		}
+		session.close();
+
+	}
+
+	private void allJobReport(ArrayList<AllJobsReportDTO> jobReports, HSSFWorkbook workbook) {
+		HSSFSheet worksheet = workbook.createSheet("All Jobs Report");
 		
+		HSSFRow rowUserName = worksheet.createRow((short) 0);
+		HSSFRow rowHeading = worksheet.createRow((short) 1);
+		
+		rowUserName.createCell((short) 0).setCellValue("Report For All Jobs");
+
+		rowHeading.createCell((short) 0).setCellValue("Sr.");
+		rowHeading.createCell((short) 1).setCellValue("Job Name");
+		rowHeading.createCell((short) 2).setCellValue("Company Name");
+		rowHeading.createCell((short) 3).setCellValue("Hours Worked");
+		rowHeading.createCell((short) 4).setCellValue("Budgeted Hours");
+		rowHeading.createCell((short) 5).setCellValue("Hours variance");
+		rowHeading.createCell((short) 6).setCellValue("Allocation");
+		rowHeading.createCell((short) 7).setCellValue("Line Of Service");
+		rowHeading.createCell((short) 8).setCellValue("Domain");
+
+		for(int i=0; i< jobReports.size(); i++){
+			HSSFRow row = worksheet.createRow((short) i+2);
+			row.createCell((short) 0).setCellValue(i+1+"");
+			row.createCell((short) 1).setCellValue(jobReports.get(i).getJobName());
+			row.createCell((short) 2).setCellValue(jobReports.get(i).getCompanyName());
+			row.createCell((short) 3).setCellValue(jobReports.get(i).getHoursWorked());
+			row.createCell((short) 4).setCellValue(jobReports.get(i).getBudgetedHours());
+			row.createCell((short) 5).setCellValue(jobReports.get(i).getHoursVariance());
+			row.createCell((short) 6).setCellValue(jobReports.get(i).getAllocation());
+			row.createCell((short) 7).setCellValue(jobReports.get(i).getLineOfService());
+			row.createCell((short) 8).setCellValue(jobReports.get(i).getDomain());
+		}
+	}
+	
+	private void specificUserReport(HSSFWorkbook workbook, int userId, List rsList, Session session) {
+		
+		ArrayList<AllJobsReportDTO> jobReports = new ArrayList<AllJobsReportDTO>();
+		try{
+		for(Iterator it=rsList.iterator();it.hasNext();)
+		{
+			Job job =  (Job)it.next();
+			AllJobsReportDTO reportDTO = new AllJobsReportDTO();
+			reportDTO.setJobName(job.getJobName());
+			reportDTO.setCompanyName(Branches.ALSUHAIMI.name());
+			reportDTO.setAllocation(Allocations.CHARGEABLE.getName());
+			reportDTO.setDomain(job.getDomainId().getName());
+			reportDTO.setLocation(Location.LOCAL.getName());
+			reportDTO.setLineOfService(job.getLineofServiceId().getName());
+			reportDTO.setBudgetedHours(getBudgetedHours(job.getJobId(), session, userId));
+			reportDTO.setHoursWorked(getActualHours(job.getJobId(), session, userId));
+			reportDTO.setHoursVariance(reportDTO.getBudgetedHours() - reportDTO.getHoursWorked());
+			jobReports.add(reportDTO);
+		}
+		
+		
+		
+		HSSFSheet worksheet = workbook.createSheet("User Report");
+		
+		HSSFRow rowUserName = worksheet.createRow((short) 0);
+		HSSFRow rowHeading = worksheet.createRow((short) 1);
+
+		User user = (User) session.get(User.class, userId);
+		if(user != null)
+		rowUserName.createCell((short) 0).setCellValue("Report for : " + user.getName());
+		rowHeading.createCell((short) 0).setCellValue("Sr.");
+		rowHeading.createCell((short) 1).setCellValue("Job Name");
+		rowHeading.createCell((short) 2).setCellValue("Company Name");
+		rowHeading.createCell((short) 3).setCellValue("Location");
+		//rowHeading.createCell((short) 4).setCellValue("Month");
+		rowHeading.createCell((short) 4).setCellValue("Hours Worked");
+		rowHeading.createCell((short) 5).setCellValue("Budgeted Hours");
+		rowHeading.createCell((short) 6).setCellValue("Hours variance");
+		rowHeading.createCell((short) 7).setCellValue("Allocation");
+		rowHeading.createCell((short) 8).setCellValue("Line Of Service");
+		rowHeading.createCell((short) 9).setCellValue("Domain");
+
+		for(int i=0; i< jobReports.size(); i++){
+			HSSFRow row = worksheet.createRow((short) i+2);
+			row.createCell((short) 0).setCellValue(i+1+"");
+			row.createCell((short) 1).setCellValue(jobReports.get(i).getJobName());
+			row.createCell((short) 2).setCellValue(jobReports.get(i).getCompanyName());
+			row.createCell((short) 3).setCellValue(jobReports.get(i).getLocation());
+			//row.createCell((short) 4).setCellValue(jobReports.get(i).getMonth());
+			row.createCell((short) 4).setCellValue(jobReports.get(i).getHoursWorked());
+			row.createCell((short) 5).setCellValue(jobReports.get(i).getBudgetedHours());
+			row.createCell((short) 6).setCellValue(jobReports.get(i).getHoursVariance());
+			row.createCell((short) 7).setCellValue(jobReports.get(i).getAllocation());
+			row.createCell((short) 8).setCellValue(jobReports.get(i).getLineOfService());
+			row.createCell((short) 9).setCellValue(jobReports.get(i).getDomain());
+		}
+		}catch(Exception ex){
+			System.out.println("fail specific user report"+ ex.getLocalizedMessage());
+		}
 	}
 
 	private float getBudgetedHours(int jobId, Session session) {
@@ -1684,66 +1772,103 @@ public class MySQLRdbHelper {
 		int totalHours =0;
 		for(Iterator it=rsList.iterator();it.hasNext();)
 		{
-			
+
 			JobActivityEntity jobActivityEntity =  (JobActivityEntity)it.next();
 			int total = jobActivityEntity.getPlanning()+jobActivityEntity.getExecution()+jobActivityEntity.getReporting()+jobActivityEntity.getFollowup();
 			totalHours  =totalHours + total ;
 		}
 		return totalHours;
 	}
-	
+
 	private float getActualHours(int jobId, Session session) {
 		Criteria crit = session.createCriteria(TimeSheet.class);
 		crit.createAlias("jobId", "job");
 		crit.add(Restrictions.eq("job.jobId", jobId));
 		List rsList = crit.list();
-		float totalHours =0;
+		float totalHours = 0;
 		for(Iterator it=rsList.iterator();it.hasNext();)
 		{
-			
+
 			TimeSheet timeSheet =  (TimeSheet)it.next();
 			totalHours = totalHours + timeSheet.getHours();
-			
+
+		}
+		return totalHours;
+	}
+	
+	//
+	private float getBudgetedHours(int jobId, Session session, int userId) {
+		Criteria crit = session.createCriteria(JobActivityEntity.class);
+		crit.createAlias("jobId", "job");
+		crit.add(Restrictions.eq("job.jobId", jobId));
+		crit.createAlias("userId", "user");
+		crit.add(Restrictions.eq("user.userId", userId));
+		List rsList = crit.list();
+		int totalHours =0;
+		for(Iterator it=rsList.iterator();it.hasNext();)
+		{
+
+			JobActivityEntity jobActivityEntity =  (JobActivityEntity)it.next();
+			int total = jobActivityEntity.getPlanning()+jobActivityEntity.getExecution()+jobActivityEntity.getReporting()+jobActivityEntity.getFollowup();
+			totalHours  =totalHours + total ;
 		}
 		return totalHours;
 	}
 
-	private void fetchJobWiseReport(HashMap<String, String> reportData, String rootDir, Session session) {
-		
+	private float getActualHours(int jobId, Session session, int userId) {
+		Criteria crit = session.createCriteria(TimeSheet.class);
+		crit.createAlias("jobId", "job");
+		crit.add(Restrictions.eq("job.jobId", jobId));
+		crit.createAlias("userId", "user");
+		crit.add(Restrictions.eq("user.userId", userId));
+		List rsList = crit.list();
+		float totalHours = 0;
+		for(Iterator it=rsList.iterator();it.hasNext();)
+		{
+
+			TimeSheet timeSheet =  (TimeSheet)it.next();
+			totalHours = totalHours + timeSheet.getHours();
+
+		}
+		return totalHours;
+	}
+
+	private void fetchJobWiseReport(HashMap<String, Integer> reportData, String rootDir) {
+		Session session = null;
 		try{
+			session = sessionFactory.openSession();
 			ArrayList<JobActivityEntity> jobActivities = new ArrayList<JobActivityEntity>();
 			ArrayList<TimeSheet> timeSheets = new ArrayList<TimeSheet>();
-			int jobId =  Integer.parseInt(reportData.get("jobId"));   // value from job name listbox
-			
-			//Job job = fetchJobFromJobId(jobId, session);
+			int jobId =  reportData.get("jobId");   // value from job name listbox
+
 			Job job = (Job) session.get(Job.class, jobId);
-			
+
 			Criteria crit = session.createCriteria(JobActivityEntity.class);
 			crit.createAlias("jobId", "job");
 			crit.add(Restrictions.eq("job.jobId", jobId));
 			List rsList = crit.list();
-			
+
 			for(Iterator it=rsList.iterator();it.hasNext();)
 			{
-				
+
 				JobActivityEntity jobActivityEntity =  (JobActivityEntity)it.next();
 				jobActivities.add(jobActivityEntity);
-				
+
 			}
-			
+
 			Criteria crit1 = session.createCriteria(TimeSheet.class);
 			crit1.createAlias("jobId", "job");
 			crit1.add(Restrictions.eq("job.jobId", jobId));
 			List rsList1 = crit1.list();
-			
+
 			for(Iterator it=rsList1.iterator();it.hasNext();)
 			{
-				
+
 				TimeSheet timeSheet =  (TimeSheet)it.next();
 				timeSheets.add(timeSheet);
-				
+
 			}
-			
+
 			FileOutputStream fileOut = new FileOutputStream(rootDir + "/JobWiseReport/report.xls");// "D:\\POI111.xls"
 			HSSFWorkbook workbook = new HSSFWorkbook();
 			HSSFSheet worksheet = workbook.createSheet("Job wise Report");
@@ -1754,14 +1879,14 @@ public class MySQLRdbHelper {
 			rowJobName.createCell((short) 1).setCellValue(job.getJobName());
 			//row.createCell((short) 0).setCellValue("Job Start Date :");
 			//row.createCell((short) 1).setCellValue(Location.valueOf(arg0));
-			
-			
+
+
 			rowHeading.createCell((short) 1).setCellValue("Planning");
 			rowHeading.createCell((short) 3).setCellValue("Execution");
 			rowHeading.createCell((short) 5).setCellValue("Reporting");
 			rowHeading.createCell((short) 7).setCellValue("Follow up ");
 			rowHeading.createCell((short) 9).setCellValue("Total hours");
-			
+
 			rowHeading2.createCell((short) 1).setCellValue("Budget");
 			rowHeading2.createCell((short) 2).setCellValue("Actual");
 			rowHeading2.createCell((short) 3).setCellValue("Budget");
@@ -1773,12 +1898,12 @@ public class MySQLRdbHelper {
 			rowHeading2.createCell((short) 9).setCellValue("Budget");
 			rowHeading2.createCell((short) 10).setCellValue("Actual");
 			rowHeading2.createCell((short) 11).setCellValue("Variance");
-			
+
 			int currentUserId =0;
 			HSSFRow row1 = null;
-			
-			
-		
+
+
+
 			///////// TIME ACTIVITY
 			for (int i = 0; i < jobActivities.size(); i++) {
 				float totalBudgeted = 0;
@@ -1800,56 +1925,58 @@ public class MySQLRdbHelper {
 				row1.createCell((short) 7).setCellValue(jobActivities.get(i).getFollowup()+"");
 				//Total
 				row1.createCell((short) 9).setCellValue(totalBudgeted+"");
-			
-			
-			
-			/////////  TIME SHEET
-			for (int j = 0; j < timeSheets.size(); j++) {
-				float totalActual = 0;
-				
-				int userId = timeSheets.get(j).getUserId().getUserId();
-				
-				if(userId == currentUserId ){
-					if(row1 != null){
-						if(row1.getCell((short) 2) == null){// planning
-							totalActual = totalActual + timeSheets.get(j).getHours();
-							row1.createCell((short) 2).setCellValue(timeSheets.get(j).getHours()+"");
+
+
+
+				/////////  TIME SHEET
+				for (int j = 0; j < timeSheets.size(); j++) {
+					float totalActual = 0;
+
+					int userId = timeSheets.get(j).getUserId().getUserId();
+
+					if(userId == currentUserId ){
+						if(row1 != null){
+							if(row1.getCell((short) 2) == null){// planning
+								totalActual = totalActual + timeSheets.get(j).getHours();
+								row1.createCell((short) 2).setCellValue(timeSheets.get(j).getHours()+"");
+							}
+							else if(row1.getCell((short) 4) == null){// execution
+								totalActual = totalActual + timeSheets.get(j).getHours();
+								row1.createCell((short) 4).setCellValue(timeSheets.get(j).getHours()+"");
+							}
+							else if(row1.getCell((short) 6) == null){ // reporting
+								totalActual = totalActual + timeSheets.get(j).getHours();
+								row1.createCell((short) 6).setCellValue(timeSheets.get(j).getHours()+"");
+							}
+							else if(row1.getCell((short) 8) == null){ // follow up
+								totalActual = totalActual + timeSheets.get(j).getHours();
+								row1.createCell((short) 8).setCellValue(timeSheets.get(j).getHours()+"");
+							}
+
 						}
-						else if(row1.getCell((short) 4) == null){// execution
-							totalActual = totalActual + timeSheets.get(j).getHours();
-							row1.createCell((short) 4).setCellValue(timeSheets.get(j).getHours()+"");
-						}
-						else if(row1.getCell((short) 6) == null){ // reporting
-							totalActual = totalActual + timeSheets.get(j).getHours();
-							row1.createCell((short) 6).setCellValue(timeSheets.get(j).getHours()+"");
-						}
-						else if(row1.getCell((short) 8) == null){ // follow up
-							totalActual = totalActual + timeSheets.get(j).getHours();
-							row1.createCell((short) 8).setCellValue(timeSheets.get(j).getHours()+"");
-						}
-					
 					}
+
+
+					row1.createCell((short) 10).setCellValue(totalActual+"");
+					row1.createCell((short) 11).setCellValue(totalBudgeted - totalActual+"");
+					//currentUserId = userId;
 				}
-				
-				
-				row1.createCell((short) 10).setCellValue(totalActual+"");
-				row1.createCell((short) 11).setCellValue(totalBudgeted - totalActual+"");
-				//currentUserId = userId;
-			}
 			}
 			workbook.write(fileOut);
 			fileOut.flush();
 			fileOut.close();
+
+
 			
-			
-		
 		}catch(Exception ex){
 			System.out.println("fail fetch job wise report");
+			
 		}
-		
+		session.close();
+
 	}
 
-	
+
 	/*public String exportToExcel(ArrayList<ExcelDataDTO> excelDataList, String rootDir) {
 		try {
 
@@ -1887,34 +2014,34 @@ public class MySQLRdbHelper {
 		System.out.println("excel sheet: downloaded");
 		return "exported";
 	}
-*/
+	 */
 	public ArrayList<TimeSheetReportDTO> fetchTimeReport(int selectedJob, int selectedMonth, int selectedUser, int selectedJobType, String rootDir) {
 		Session session = null;
 		int numberOfHours=0;
-		
-		HashMap<String, String> map = new HashMap<String, String>();
-		map.put("jobId", selectedJob+"");
+
+		HashMap<String, Integer> map = new HashMap<String, Integer>();
+		map.put("jobId", selectedJob);
 		generatExcelTimeReport(map, rootDir);
-		
+
 		ArrayList<TimeSheetReportDTO> timeSheetlist = new ArrayList<TimeSheetReportDTO>();
 		try{
 			session = sessionFactory.openSession();
-			
+
 			Criteria crit = session.createCriteria(TimeSheet.class);
-			
+
 			crit.createAlias("userId", "user");
 			crit.createAlias("user.roleId", "role");
 			crit.createAlias("user.companyId", "company");
 			crit.createAlias("jobId", "job");
 			crit.createAlias("job.lineofServiceId", "lineofService1");
 			//crit.createAlias("job.subLineofServiceId", "subLineofService1");
-		//	crit.createAlias("job.supervisorId", "supervisor");
+			//	crit.createAlias("job.supervisorId", "supervisor");
 			crit.createAlias("job.domainId", "domain1");
 			crit.createAlias("job.countryId", "count1");
-		//	crit.createAlias("job.principalConsultantId", "principalConsultant");
-			
-			
-			
+			//	crit.createAlias("job.principalConsultantId", "principalConsultant");
+
+
+
 			if(selectedJob!=0){
 				crit.add(Restrictions.eq("job.jobId", selectedJob));
 			}
@@ -1924,13 +2051,13 @@ public class MySQLRdbHelper {
 			if(selectedUser!=0){
 				crit.add(Restrictions.eq("user.userId", selectedUser));
 			}
-			
+
 			if(selectedJobType!=0){
 				crit.add(Restrictions.eq("lineofService1.lineofServiceId", selectedJobType));
 			}
-			
+
 			List rsList = crit.list();
-			
+
 			for(Iterator it=rsList.iterator();it.hasNext();)
 			{
 				boolean matchFound=false; 
@@ -1942,62 +2069,62 @@ public class MySQLRdbHelper {
 				timeSheetReportDTO.setJobId(timeSheet.getJobId().getJobId());
 				timeSheetReportDTO.setTotal(timeSheet.getHours());
 				int userCost =  timeSheet.getUserId().getRoleId().getChargeRate();
-				
+
 				for(int i=0;i<timeSheetlist.size(); i++){
-					
+
 					if(timeSheetlist.get(i).getJobId() == timeSheet.getJobId().getJobId()){
-						
+
 						if(timeSheetlist.get(i).getUsersList()==null ||timeSheetlist.get(i).getUsersList().size()<1){
 							addNewuserTotheJob(timeSheet, userCost, timeSheetlist.get(i));
 						}else{
 							boolean userMatchFound=false;
 							float totalTimeCost = 0;
-						for(int j=0; j< timeSheetlist.get(i).getUsersList().size(); j++){
-							if(timeSheetlist.get(i).getUsersList().get(j).getUserId() == timeSheet.getUserId().getUserId()){
-								timeSheetlist.get(i).getUsersList().get(j).setActualHours(timeSheetlist.get(i).getUsersList().get(j).getActualHours() + timeSheet.getHours());
-								timeSheetlist.get(i).getUsersList().get(j).setTimeCost(userCost * timeSheetlist.get(i).getUsersList().get(j).getActualHours());
-								timeSheetlist.get(i).setTotal(timeSheetlist.get(i).getTotal()+timeSheet.getHours());
-								totalTimeCost = totalTimeCost+ timeSheetlist.get(i).getUsersList().get(j).getTimeCost();
-								timeSheetlist.get(i).setTimeCost(totalTimeCost);
-								timeSheetlist.get(i).setActualRecoveryRate(timeSheetlist.get(i).getFee()/timeSheetlist.get(i).getTotal());
-							
-								userMatchFound = true;
-								break;
+							for(int j=0; j< timeSheetlist.get(i).getUsersList().size(); j++){
+								if(timeSheetlist.get(i).getUsersList().get(j).getUserId() == timeSheet.getUserId().getUserId()){
+									timeSheetlist.get(i).getUsersList().get(j).setActualHours(timeSheetlist.get(i).getUsersList().get(j).getActualHours() + timeSheet.getHours());
+									timeSheetlist.get(i).getUsersList().get(j).setTimeCost(userCost * timeSheetlist.get(i).getUsersList().get(j).getActualHours());
+									timeSheetlist.get(i).setTotal(timeSheetlist.get(i).getTotal()+timeSheet.getHours());
+									totalTimeCost = totalTimeCost+ timeSheetlist.get(i).getUsersList().get(j).getTimeCost();
+									timeSheetlist.get(i).setTimeCost(totalTimeCost);
+									timeSheetlist.get(i).setActualRecoveryRate(timeSheetlist.get(i).getFee()/timeSheetlist.get(i).getTotal());
+
+									userMatchFound = true;
+									break;
+								}
+								//							else{
+								//								addNewuserTotheJob(timeSheet, userCost, timeSheetlist.get(i));
+								//							}
 							}
-//							else{
-//								addNewuserTotheJob(timeSheet, userCost, timeSheetlist.get(i));
-//							}
+							if(!userMatchFound){
+								addNewuserTotheJob(timeSheet, userCost, timeSheetlist.get(i));
+								timeSheetlist.get(i).setTotal(timeSheetlist.get(i).getTotal()+timeSheet.getHours());
+								timeSheetlist.get(i).setActualRecoveryRate(timeSheetlist.get(i).getFee()/timeSheetlist.get(i).getTotal());
+
+							}
 						}
-						if(!userMatchFound){
-							addNewuserTotheJob(timeSheet, userCost, timeSheetlist.get(i));
-							timeSheetlist.get(i).setTotal(timeSheetlist.get(i).getTotal()+timeSheet.getHours());
-							timeSheetlist.get(i).setActualRecoveryRate(timeSheetlist.get(i).getFee()/timeSheetlist.get(i).getTotal());
-							
-						}
-					}
 						matchFound = true;
 					}
 				}
 				if(!matchFound){
-				timeSheetlist.add(timeSheetReportDTO);
-				addNewuserTotheJob(timeSheet, userCost, timeSheetReportDTO);
+					timeSheetlist.add(timeSheetReportDTO);
+					addNewuserTotheJob(timeSheet, userCost, timeSheetReportDTO);
 				}
-				
-//				numberOfHours = numberOfHours+ timeSheet.getHours();
-			
+
+				//				numberOfHours = numberOfHours+ timeSheet.getHours();
+
+			}
+
+		}catch(Exception ex){
+			System.out.println("fail job delte");
 		}
-		
-	}catch(Exception ex){
-		System.out.println("fail job delte");
-	}
-//		return "Total Number of hours worked: " + numberOfHours;
+		//		return "Total Number of hours worked: " + numberOfHours;
 		return timeSheetlist;
 	}
 
 	private void addNewuserTotheJob(TimeSheet timeSheet, int userCost, TimeSheetReportDTO timeSheetReportDTO) {
 		UserReportDTO userReportDTO = new UserReportDTO();
 		userReportDTO.setActualHours(timeSheet.getHours());
-//		userReportDTO.setBudgetedHours(budgetedHours);
+		//		userReportDTO.setBudgetedHours(budgetedHours);
 		userReportDTO.setTimeCost(timeSheet.getHours() * userCost);
 		userReportDTO.setUserId(timeSheet.getUserId().getUserId());
 		userReportDTO.setUserName(timeSheet.getUserId().getName());
@@ -2005,23 +2132,23 @@ public class MySQLRdbHelper {
 		timeSheetReportDTO.getUsersList().add(userReportDTO);
 	}
 
-//	public String saveRating(int attributeId, String rating, int score, int userId)throws Exception {
-//		Session session = null;
-//		try{
-//			session = sessionFactory.openSession();
-//			JobAttributes jobAttributes = (JobAttributes) session.get(JobAttributes.class, attributeId);
-//			jobAttributes.setScore(score);
-//			jobAttributes.setRating(rating);
-//			jobAttributes.setUserId(userId);
-//			session.update(jobAttributes);
-//			session.flush();
-//			return "rating saved";
-//		}catch(Exception ex){
-//			System.out.println("fail saveRating");
-//			throw ex;
-//		}
-//	}
-	
+	//	public String saveRating(int attributeId, String rating, int score, int userId)throws Exception {
+	//		Session session = null;
+	//		try{
+	//			session = sessionFactory.openSession();
+	//			JobAttributes jobAttributes = (JobAttributes) session.get(JobAttributes.class, attributeId);
+	//			jobAttributes.setScore(score);
+	//			jobAttributes.setRating(rating);
+	//			jobAttributes.setUserId(userId);
+	//			session.update(jobAttributes);
+	//			session.flush();
+	//			return "rating saved";
+	//		}catch(Exception ex){
+	//			System.out.println("fail saveRating");
+	//			throw ex;
+	//		}
+	//	}
+
 	public String saveRating(AttributeRating attributeRating)throws Exception {
 		Session session = null;
 		try{
@@ -2029,50 +2156,50 @@ public class MySQLRdbHelper {
 			Criteria crit = session.createCriteria(AttributeRating.class);
 			crit.add(Restrictions.eq("attributeId", attributeRating.getAttributeId()));
 			crit.add(Restrictions.eq("userId", attributeRating.getUserId()));
-			
-			
+
+
 			List rsList = crit.list();
-			
+
 			if(rsList.size()>0){
 				AttributeRating attributeRat = (AttributeRating) rsList.get(0);
 				attributeRat.setRating(attributeRating.getRating());
 				attributeRat.setScore(attributeRating.getScore());
 				attributeRat.setLevel(attributeRating.getScore());
 				session.update(attributeRat);
-				
+
 			}else{
 				session.save(attributeRating);
 			}
 			session.flush();
-			
-//			boolean found = false;
-//			JobAttributes jobAttributes = null;
-//			for(Iterator it=rsList.iterator();it.hasNext();)
-//			{
-//				jobAttributes =  (JobAttributes)it.next();
-//				jobAttributes.setScore(score);
-//				jobAttributes.setRating(rating);
-//				if(jobAttributes.getUserId() == userId){
-//					found = true;
-//				}
-//			}
-//				
-//				if(found){
-//				session.update(jobAttributes);
-//				session.flush();
-//			}else{
-//				int jobId = jobAttributes.getJobId();
-//				int levelSaved = jobAttributes.getLevel();
-//				int scoreSaved = jobAttributes.getScore();
-//				
-//				String nameSaved = jobAttributes.getName();
-//				String ratingSaved = jobAttributes.getRating();
-//				
-//				saveNewRating(jobId, levelSaved,score,userId,nameSaved, rating   );
-//				}
-//			
-	
-	
+
+			//			boolean found = false;
+			//			JobAttributes jobAttributes = null;
+			//			for(Iterator it=rsList.iterator();it.hasNext();)
+			//			{
+			//				jobAttributes =  (JobAttributes)it.next();
+			//				jobAttributes.setScore(score);
+			//				jobAttributes.setRating(rating);
+			//				if(jobAttributes.getUserId() == userId){
+			//					found = true;
+			//				}
+			//			}
+			//				
+			//				if(found){
+			//				session.update(jobAttributes);
+			//				session.flush();
+			//			}else{
+			//				int jobId = jobAttributes.getJobId();
+			//				int levelSaved = jobAttributes.getLevel();
+			//				int scoreSaved = jobAttributes.getScore();
+			//				
+			//				String nameSaved = jobAttributes.getName();
+			//				String ratingSaved = jobAttributes.getRating();
+			//				
+			//				saveNewRating(jobId, levelSaved,score,userId,nameSaved, rating   );
+			//				}
+			//			
+
+
 			return "rating saved";
 		}catch(Exception ex){
 			System.out.println("fail saveRating");
@@ -2085,27 +2212,27 @@ public class MySQLRdbHelper {
 		Session session = null;
 		try{
 			session = sessionFactory.openSession();
-			
-				JobAttributes jobAttributes =  new JobAttributes();
-				jobAttributes.setScore(scoreSaved);
-				jobAttributes.setRating(ratingSaved);
-				jobAttributes.setUserId(userSaved);
-				jobAttributes.setName(nameSaved);
-				jobAttributes.setLevel(levelSaved);
-				jobAttributes.setJobId(jobId);
-				session.save(jobAttributes);
-				session.flush();
+
+			JobAttributes jobAttributes =  new JobAttributes();
+			jobAttributes.setScore(scoreSaved);
+			jobAttributes.setRating(ratingSaved);
+			jobAttributes.setUserId(userSaved);
+			jobAttributes.setName(nameSaved);
+			jobAttributes.setLevel(levelSaved);
+			jobAttributes.setJobId(jobId);
+			session.save(jobAttributes);
+			session.flush();
 		}catch(Exception ex){
 			System.out.println("error saving new attribute"+ ex);
 		}
-		
+
 	}
 
 	public Integer fetchMonthAllowedhours(int month) throws Exception{
 		Session session = null;
 		int allowedhours =0;
 		try{
-			
+
 			session = sessionFactory.openSession();
 			Criteria crit = session.createCriteria(MonthAllowedHours.class);
 			crit.add(Restrictions.eq("month", month));
@@ -2115,7 +2242,7 @@ public class MySQLRdbHelper {
 		}catch(Exception ex){
 			throw ex;
 		}
-		
+
 	}
 
 	public ArrayList<Job> tim(User loggedInUser)throws Exception {
@@ -2125,44 +2252,44 @@ public class MySQLRdbHelper {
 			session = sessionFactory.openSession();
 			Criteria crit = session.createCriteria(Job.class);
 			crit.createAlias("lineofServiceId", "lineofService");
-//			crit.createAlias("subLineofServiceId", "subLineofService");
-//			crit.createAlias("subLineofService.domainId", "sublineDomain");
-//			crit.createAlias("sublineDomain.lineofServiceId", "ddomainlineofservice");
-//			
+			//			crit.createAlias("subLineofServiceId", "subLineofService");
+			//			crit.createAlias("subLineofService.domainId", "sublineDomain");
+			//			crit.createAlias("sublineDomain.lineofServiceId", "ddomainlineofservice");
+			//			
 			crit.createAlias("domainId", "domain");
 			crit.createAlias("domain.lineofServiceId", "domainlineofservice");
-//			crit.createAlias("sublineDomain.lineofServiceId", "subdomainlineofservice");
-			
+			//			crit.createAlias("sublineDomain.lineofServiceId", "subdomainlineofservice");
+
 			crit.createAlias("countryId", "count");
-//			crit.createAlias("userId", "user");
-//			crit.createAlias("user.roleId", "role");
-//			crit.createAlias("user.companyId", "company");
-			
-			
-//			crit.createAlias("supervisorId", "supervisor");
-//			crit.createAlias("supervisor.roleId", "roles");
-//			crit.createAlias("supervisor.companyId", "companys");
-//			
-			
-//			crit.createAlias("principalConsultantId", "principalConsultant");
-//			crit.createAlias("principalConsultant.roleId", "rolep");
-//			crit.createAlias("principalConsultant.companyId", "companyp");
-			
+			//			crit.createAlias("userId", "user");
+			//			crit.createAlias("user.roleId", "role");
+			//			crit.createAlias("user.companyId", "company");
+
+
+			//			crit.createAlias("supervisorId", "supervisor");
+			//			crit.createAlias("supervisor.roleId", "roles");
+			//			crit.createAlias("supervisor.companyId", "companys");
+			//			
+
+			//			crit.createAlias("principalConsultantId", "principalConsultant");
+			//			crit.createAlias("principalConsultant.roleId", "rolep");
+			//			crit.createAlias("principalConsultant.companyId", "companyp");
+
 			crit.add(Restrictions.ne("status", "InActive"));
-//			crit.add(Restrictions.eq("client", "office"));
-			
+			//			crit.add(Restrictions.eq("client", "office"));
+
 			if(loggedInUser.getRoleId().getRoleId()!=5){
 				ArrayList<Integer> jobIds = getUserJobs(loggedInUser.getUserId(), session);
 				Disjunction disc = Restrictions.disjunction();
 				for(int i=0; i<jobIds.size(); i++){
-				disc.add(Restrictions.eq("jobId", jobIds.get(i)));
+					disc.add(Restrictions.eq("jobId", jobIds.get(i)));
 				}
 				crit.add(disc);
-				
+
 			}
 			List rsList = crit.list();
-			
-			
+
+
 			for(Iterator it=rsList.iterator();it.hasNext();)
 			{
 				Job job =  (Job)it.next();
@@ -2201,16 +2328,16 @@ public class MySQLRdbHelper {
 			crit.createAlias("countryId", "count");
 			//crit.createAlias("supervisorId", "supervisor");
 			//crit.createAlias("supervisor.roleId", "roles");
-		//	crit.createAlias("supervisor.companyId", "companys");
+			//	crit.createAlias("supervisor.companyId", "companys");
 			//crit.createAlias("principalConsultantId", "principalConsultant");
-		//	crit.createAlias("principalConsultant.roleId", "rolep");
-		//	crit.createAlias("principalConsultant.companyId", "companyp");
+			//	crit.createAlias("principalConsultant.roleId", "rolep");
+			//	crit.createAlias("principalConsultant.companyId", "companyp");
 			crit.add(Restrictions.ne("status", "InActive"));
 			crit.add(Restrictions.ne("status", "Closed"));
-			
+
 			List rsList = crit.list();
-			
-			
+
+
 			for(Iterator it=rsList.iterator();it.hasNext();)
 			{
 				Job job =  (Job)it.next();
@@ -2218,13 +2345,13 @@ public class MySQLRdbHelper {
 				JobUsersDTO jobUsersDTO = new JobUsersDTO();
 				jobUsersDTO.setJob(job);
 				jobUsersDTO.setUsers(users);
-//				job.setJobPhases(fetchJobPhases(job.getJobId()));
+				//				job.setJobPhases(fetchJobPhases(job.getJobId()));
 				job.setJobEmployeesList(fetchJobEmployees(session, job.getJobId()));
 				job.setJobAttributes(fetchjobAttributes(session, job.getJobId()));
-//				job.setTimeSheets(fetchJobTimeSheets(session, job.getJobId(), loggedInUser.getRoleId().getRoleId()));
-//				jobs.add(job);
+				//				job.setTimeSheets(fetchJobTimeSheets(session, job.getJobId(), loggedInUser.getRoleId().getRoleId()));
+				//				jobs.add(job);
 				jobUsersDTOs.add(jobUsersDTO);
-				
+
 			}
 
 			return jobUsersDTOs;
@@ -2238,10 +2365,10 @@ public class MySQLRdbHelper {
 			session.close();
 		}
 	}
-	
+
 	public ArrayList<User> fetchUsersonSelectedJob(int jobId)throws Exception{
 		Session session = null;
-		 ArrayList<User> users = new ArrayList<User>();
+		ArrayList<User> users = new ArrayList<User>();
 		try{
 			session = sessionFactory.openSession();
 			Criteria crit = session.createCriteria(JobEmployees.class);
@@ -2249,24 +2376,24 @@ public class MySQLRdbHelper {
 			crit.createAlias("employee.companyId", "employeeComp");
 			crit.createAlias("employee.roleId", "employeeRole");
 			crit.add(Restrictions.eq("jobId", jobId));
-			
+
 			List rsList = crit.list();
-			
+
 			for(Iterator it=rsList.iterator();it.hasNext();)
 			{
 				JobEmployees JobEmployees =  (JobEmployees)it.next();
 				User user = JobEmployees.getEmployeeId();
 				users.add(user);
-		}
+			}
 			return users;
 		}catch(Exception ex){
 			System.out.println("fail : fetchUsersonSelectedJob: "+ ex);
 			throw ex;
 		}
-		
+
 	}
-	
-	
+
+
 	public ArrayList<AttributeRating> fetchjobUserRating(int userId, int jobId)throws Exception {
 		ArrayList<AttributeRating> jobAttributesList = new ArrayList<AttributeRating>();
 		Session session = null;
@@ -2276,7 +2403,7 @@ public class MySQLRdbHelper {
 			crit.add(Restrictions.eq("jobId", jobId));
 			crit.add(Restrictions.eq("userId", userId));
 			List rsList = crit.list();
-			
+
 			for(Iterator it=rsList.iterator();it.hasNext();)
 			{
 				AttributeRating attributeRating =  (AttributeRating)it.next();
@@ -2289,7 +2416,7 @@ public class MySQLRdbHelper {
 
 			throw new Exception("Exception occured in AttributeRating");
 		}
-		
+
 	}
 
 	public ArrayList<Job> fetchAllJobs()throws Exception {
@@ -2299,43 +2426,43 @@ public class MySQLRdbHelper {
 			session = sessionFactory.openSession();
 			Criteria crit = session.createCriteria(Job.class);
 			crit.createAlias("lineofServiceId", "lineofService");
-//			crit.createAlias("subLineofServiceId", "subLineofService");
-//			crit.createAlias("subLineofService.domainId", "sublineDomain");
-//			crit.createAlias("sublineDomain.lineofServiceId", "ddomainlineofservice");
-			
+			//			crit.createAlias("subLineofServiceId", "subLineofService");
+			//			crit.createAlias("subLineofService.domainId", "sublineDomain");
+			//			crit.createAlias("sublineDomain.lineofServiceId", "ddomainlineofservice");
+
 			crit.createAlias("domainId", "domain");
 			crit.createAlias("domain.lineofServiceId", "domainlineofservice");
-//			crit.createAlias("sublineDomain.lineofServiceId", "subdomainlineofservice");
-			
+			//			crit.createAlias("sublineDomain.lineofServiceId", "subdomainlineofservice");
+
 			crit.createAlias("countryId", "count");
-//			crit.createAlias("userId", "user");
-//			crit.createAlias("user.roleId", "role");
-//			crit.createAlias("user.companyId", "company");
-			
-			
-//			crit.createAlias("supervisorId", "supervisor");
-//			crit.createAlias("supervisor.roleId", "roles");
-//			crit.createAlias("supervisor.companyId", "companys");
-//			
-//			
-//			crit.createAlias("principalConsultantId", "principalConsultant");
-//			crit.createAlias("principalConsultant.roleId", "rolep");
-//			crit.createAlias("principalConsultant.companyId", "companyp");
-			
+			//			crit.createAlias("userId", "user");
+			//			crit.createAlias("user.roleId", "role");
+			//			crit.createAlias("user.companyId", "company");
+
+
+			//			crit.createAlias("supervisorId", "supervisor");
+			//			crit.createAlias("supervisor.roleId", "roles");
+			//			crit.createAlias("supervisor.companyId", "companys");
+			//			
+			//			
+			//			crit.createAlias("principalConsultantId", "principalConsultant");
+			//			crit.createAlias("principalConsultant.roleId", "rolep");
+			//			crit.createAlias("principalConsultant.companyId", "companyp");
+
 			//crit.add(Restrictions.ne("status", "InActive"));
-//			crit.add(Restrictions.ne("client", "office"));
-			
-			
+			//			crit.add(Restrictions.ne("client", "office"));
+
+
 			List rsList = crit.list();
-			
-			
+
+
 			for(Iterator it=rsList.iterator();it.hasNext();)
 			{
 				Job job =  (Job)it.next();
 				//job.setJobPhases(fetchJobPhases(job.getJobId()));
 				job.setJobEmployeesList(fetchJobEmployees(session, job.getJobId()));
 				job.setJobAttributes(fetchjobAttributes(session, job.getJobId()));
-//				job.setTimeSheets(fetchJobTimeSheets(session, job.getJobId(), loggedInUser.getRoleId().getRoleId()));
+				//				job.setTimeSheets(fetchJobTimeSheets(session, job.getJobId(), loggedInUser.getRoleId().getRoleId()));
 				HibernateDetachUtility.nullOutUninitializedFields(job, HibernateDetachUtility.SerializationType.SERIALIZATION);
 
 				jobs.add(job);
@@ -2370,7 +2497,7 @@ public class MySQLRdbHelper {
 			session.close();
 		}
 	}
-	
-	
+
+
 
 }
