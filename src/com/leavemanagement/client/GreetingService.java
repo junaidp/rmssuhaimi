@@ -55,6 +55,7 @@ public interface GreetingService extends RemoteService {
 	String saveJob(Job job)throws Exception;
 	ArrayList<Job> fetchJobs (User loggedInUser) throws Exception;
 	ArrayList<Domains> fetchDomains (int lineOfServiceId) throws Exception;
+	ArrayList<Domains> fetchDomains () throws Exception;
 	ArrayList<SubLineofService> fetchSublineofServices (int domainId) throws Exception;
 	String updatePhase(Phases phase) throws Exception;
 	String deletePhase(Phases phase) throws Exception;

@@ -56,6 +56,7 @@ public interface GreetingServiceAsync {
 	void updatePhase(Phases phase, AsyncCallback<String> callback);
 	void deletePhase(Phases phase, AsyncCallback<String> callback);
 	void fetchDomains(int lineofServiceId, AsyncCallback<ArrayList<Domains>> callback);
+	void fetchDomains( AsyncCallback<ArrayList<Domains>> callback);
 	void fetchSublineofServices(int domainId, AsyncCallback<ArrayList<SubLineofService>> callback);
 	void deleteJobEmployee(int jobEmployeeId,AsyncCallback<String> callback);
 	void deleteJob(int jobId, AsyncCallback<String> callback);

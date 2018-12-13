@@ -12,15 +12,29 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gwt.material.design.client.ui.MaterialButton;
+
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.VerticalPanel;
+
 import gwt.material.design.client.ui.MaterialRow;
 import gwt.material.design.client.ui.MaterialColumn;
+import gwt.material.design.client.ui.MaterialLabel;
 import gwt.material.design.client.ui.MaterialListBox;
 
 import com.leavemanagement.client.GreetingService;
 import com.leavemanagement.client.GreetingServiceAsync;
+import com.leavemanagement.shared.Allocations;
+import com.leavemanagement.shared.Branches;
+import com.leavemanagement.shared.Countries;
+import com.leavemanagement.shared.Domains;
 import com.leavemanagement.shared.Job;
+import com.leavemanagement.shared.JobAttributesDTO;
 import com.leavemanagement.shared.LineofService;
+import com.leavemanagement.shared.Location;
+import com.leavemanagement.shared.Nature;
+import com.leavemanagement.shared.Segment;
+import com.leavemanagement.shared.SubLineofService;
 import com.leavemanagement.shared.TimeSheet;
 import com.leavemanagement.shared.TimeSheetReportDTO;
 import com.leavemanagement.shared.User;
@@ -28,8 +42,19 @@ import com.leavemanagement.shared.User;
 public class TimeSheetReportView extends MaterialColumn{
 	
 	private 	GreetingServiceAsync rpcService = GWT.create(GreetingService.class);
+	private MaterialLabel lblJobName = new MaterialLabel("Job Name");
+	private MaterialLabel lblCompanyName = new MaterialLabel("Company Name");
+	private MaterialLabel lblMonth = new MaterialLabel("Month");
+	private MaterialLabel lblAllocation = new MaterialLabel("Allocation");
+	private MaterialLabel lblLineOfService = new MaterialLabel("Line Of Service");
+	private MaterialLabel lblDomain = new MaterialLabel("Domain");
+	private MaterialLabel lblUser = new MaterialLabel("User");
 	private MaterialListBox listUsers = new MaterialListBox();
 	private MaterialListBox listJobs = new MaterialListBox();
+	private MaterialListBox listBoxCompany = new MaterialListBox();
+	private MaterialListBox listBoxAllocation = new MaterialListBox();
+	private MaterialListBox listBoxDomain= new MaterialListBox();
+	private MaterialListBox listBoxLineOfServices = new MaterialListBox();
 	private MaterialListBox listMonth = new MaterialListBox();
 	private MaterialListBox listJobType = new MaterialListBox();
 	private User loggedInUser = null;
@@ -56,21 +81,49 @@ public class TimeSheetReportView extends MaterialColumn{
 		listMonth.addItem( "8","Aug");
 		listMonth.addItem("9","Sep" );
 		listMonth.addItem("10","Oct" );
-		listMonth.addItem("11","Nev" );
+		listMonth.addItem("11","Nov" );
 		listMonth.addItem("12","Dec" );
 		
 		fetchJobs();
 		fetchUsers();
 		fetchJobType();
+		fetchDomain();
+		 
+		FlexTable flex = new FlexTable();
+		flex.setWidget(0,1, lblJobName);
+		flex.setWidget(0,2,listJobs);
 		
-		MaterialRow hpnlSearch = new MaterialRow();
-		add(hpnlSearch);
+		flex.setWidget(1,1, lblCompanyName);
+		flex.setWidget(1,2,listBoxCompany);
 		
-		hpnlSearch.add(listJobs);
-		hpnlSearch.add(listMonth);
-		hpnlSearch.add(listUsers);
-		hpnlSearch.add(listJobType);
-		hpnlSearch.add(btnSearch);
+		flex.setWidget(2,1, lblMonth);
+		flex.setWidget(2,2,listMonth);
+		
+		flex.setWidget(3,1, lblAllocation);
+		flex.setWidget(3,2,listBoxAllocation);
+		
+		flex.setWidget(4,1, lblLineOfService);
+		flex.setWidget(4,2,listJobType);
+		
+		flex.setWidget(5,1, lblDomain);
+		flex.setWidget(5,2,listBoxDomain);
+		
+		flex.setWidget(6,1, lblUser);
+		flex.setWidget(6,2,listUsers);
+		
+		
+		flex.setWidget(7,2,btnSearch);
+		
+		add(flex);
+		
+		listBoxAllocation.addItem( "0","All Allocations" );
+		for (Allocations allocations : Allocations.values()) {
+			listBoxAllocation.addItem(allocations.getValue()+"", allocations.getName());
+		}
+		listBoxCompany.addItem( "0","All Companies" );
+		for (Branches branches : Branches.values()) {
+			listBoxCompany.addItem(branches.getValue()+"", branches.getName());
+		}
 		add(vpnlResult);
 		
 		btnSearch.addClickHandler(new ClickHandler(){
@@ -81,6 +134,25 @@ public class TimeSheetReportView extends MaterialColumn{
 			}});
 		
 		
+	}
+
+	private void fetchDomain() {
+		rpcService.fetchDomains(new AsyncCallback<ArrayList<Domains>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("fetch domain failed"+caught.getMessage());
+			}
+
+			@Override
+			public void onSuccess(ArrayList<Domains> result) {
+				listBoxDomain.addItem( "0","All Domains" );
+				for (int i = 0; i < result.size(); i++) {
+					listBoxDomain.addItem(result.get(i).getDomainId()+"",result.get(i).getName());
+				}
+				
+			}
+		});
 	}
 	
 	private void setTable() {
@@ -220,5 +292,6 @@ public class TimeSheetReportView extends MaterialColumn{
 			}
 		});
 	}
-
+	
 }
+

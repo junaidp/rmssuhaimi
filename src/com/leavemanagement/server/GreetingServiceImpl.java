@@ -433,4 +433,12 @@ HttpSession session ;
 		MySQLRdbHelper rdbHelper = (MySQLRdbHelper) ctx.getBean("ManagerExams");
 		return rdbHelper.closeJob(jobId);
 	}
+
+	@Override
+	public ArrayList<Domains> fetchDomains() throws Exception {
+		ApplicationContext ctx = new ClassPathXmlApplicationContext(
+				"applicationContext.xml");
+		MySQLRdbHelper rdbHelper = (MySQLRdbHelper) ctx.getBean("ManagerExams");
+		return rdbHelper.fetchDomains();
+	}
 }
