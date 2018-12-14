@@ -2,6 +2,7 @@ package com.leavemanagement.client;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -74,6 +75,8 @@ public interface GreetingService extends RemoteService {
 	 ArrayList<AttributeRating> fetchjobUserRating(int userId, int jobId)throws Exception;
 	 ArrayList<Job> fetchAllJobs () throws Exception;
 	 String closeJob(int jobId)throws Exception;
+	 String fetchJobWiseReport(HashMap<String, Integer> map);
+	String fetchAllReport(HashMap<String, Integer> map);
 		
 		
 }

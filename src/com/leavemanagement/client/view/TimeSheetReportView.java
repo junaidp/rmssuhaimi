@@ -1,6 +1,7 @@
 package com.leavemanagement.client.view;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
@@ -15,26 +16,18 @@ import gwt.material.design.client.ui.MaterialButton;
 
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.VerticalPanel;
-
-import gwt.material.design.client.ui.MaterialRow;
 import gwt.material.design.client.ui.MaterialColumn;
 import gwt.material.design.client.ui.MaterialLabel;
 import gwt.material.design.client.ui.MaterialListBox;
+import gwt.material.design.client.ui.MaterialToast;
 
 import com.leavemanagement.client.GreetingService;
 import com.leavemanagement.client.GreetingServiceAsync;
 import com.leavemanagement.shared.Allocations;
 import com.leavemanagement.shared.Branches;
-import com.leavemanagement.shared.Countries;
 import com.leavemanagement.shared.Domains;
 import com.leavemanagement.shared.Job;
-import com.leavemanagement.shared.JobAttributesDTO;
 import com.leavemanagement.shared.LineofService;
-import com.leavemanagement.shared.Location;
-import com.leavemanagement.shared.Nature;
-import com.leavemanagement.shared.Segment;
-import com.leavemanagement.shared.SubLineofService;
 import com.leavemanagement.shared.TimeSheet;
 import com.leavemanagement.shared.TimeSheetReportDTO;
 import com.leavemanagement.shared.User;
@@ -58,7 +51,8 @@ public class TimeSheetReportView extends MaterialColumn{
 	private MaterialListBox listMonth = new MaterialListBox();
 	private MaterialListBox listJobType = new MaterialListBox();
 	private User loggedInUser = null;
-	private MaterialButton btnSearch = new MaterialButton("Search");
+	private MaterialButton btnSearchAllReport = new MaterialButton("Search");
+	private MaterialButton btnSearchJobWiseReport = new MaterialButton("Search");
 	private MaterialColumn vpnlResult = new MaterialColumn();
 	Column<TimeSheet, String> jobName;
 	Column<TimeSheet, String> jobType;
@@ -87,7 +81,7 @@ public class TimeSheetReportView extends MaterialColumn{
 		fetchJobs();
 		fetchUsers();
 		fetchJobType();
-		fetchDomain();
+		
 		 
 		FlexTable flex = new FlexTable();
 		flex.setWidget(0,1, lblJobName);
@@ -112,7 +106,8 @@ public class TimeSheetReportView extends MaterialColumn{
 		flex.setWidget(6,2,listUsers);
 		
 		
-		flex.setWidget(7,2,btnSearch);
+		flex.setWidget(7,2,btnSearchAllReport);
+		
 		
 		add(flex);
 		
@@ -126,15 +121,83 @@ public class TimeSheetReportView extends MaterialColumn{
 		}
 		add(vpnlResult);
 		
-		btnSearch.addClickHandler(new ClickHandler(){
+		btnSearchAllReport.addClickHandler(new ClickHandler(){
 
 			@Override
 			public void onClick(ClickEvent event) {
-				fetchTimeReport();
+				fetchAllReport();
+			}});
+			
+		
+		
+		btnSearchJobWiseReport.addClickHandler(new ClickHandler(){
+
+			@Override
+			public void onClick(ClickEvent event) {
+				fetchJobWiseReport();
 			}});
 		
-		
 	}
+
+
+	private void fetchJobWiseReport() {
+		HashMap<String, Integer> map = new HashMap<String, Integer>();
+		//map.put("jobId", newListboxofjobslistValue)
+		//map.put("companyId", new listBox of Branches Value)
+		rpcService.fetchJobWiseReport(map, new AsyncCallback<String>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("fetchJobWiseReport failes"+ caught.getLocalizedMessage());
+				
+			}
+
+			@Override
+			public void onSuccess(String result) {
+				Window.open("/JobWiseReport/report.xls", "_blank", "");
+				MaterialToast.fireToast("Report Generated !");
+			}
+		});
+	}
+
+
+	private HashMap<String, Integer> fetchAllReport() {
+		int selectedJob = (Integer.parseInt(listJobs.getSelectedValue()));
+		int selectedCompany = (Integer.parseInt(listBoxCompany.getSelectedValue()));
+		int selectedMonth = (Integer.parseInt(listMonth.getSelectedValue()));
+		int selectedAllocation = (Integer.parseInt(listBoxAllocation.getSelectedValue()));
+		int selectedLineOfService = (Integer.parseInt(listJobType.getSelectedValue()));
+		int selectedDomain = (Integer.parseInt(listBoxDomain.getSelectedValue()));
+		int selectedUser = (Integer.parseInt(listUsers.getSelectedValue()));
+		
+		
+		HashMap<String, Integer> map = new HashMap<String, Integer>();	
+		map.put("jobId", selectedJob);
+		map.put("companyId", selectedCompany);
+		map.put("monthId", selectedMonth);
+		map.put("allocationId", selectedAllocation);
+		map.put("lineOfServiceId", selectedLineOfService);
+		map.put("domainId", selectedDomain);
+		map.put("userId", selectedUser);
+		
+		
+		rpcService.fetchAllReport(map, new AsyncCallback<String>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("fetchAllReport failed" + caught.getLocalizedMessage());
+			}
+
+			@Override
+			public void onSuccess(String result) {
+			
+				Window.open("/FullReport/report.xls", "_blank", "");
+				MaterialToast.fireToast("Report Generated !");
+			}
+		});
+		return map;
+	}
+
 
 	private void fetchDomain() {
 		rpcService.fetchDomains(new AsyncCallback<ArrayList<Domains>>() {
@@ -204,6 +267,8 @@ public class TimeSheetReportView extends MaterialColumn{
 		int selecteduser = Integer.parseInt(listUsers.getValue(listUsers.getSelectedIndex()));
 		int selectedJob = Integer.parseInt(listJobs.getValue(listJobs.getSelectedIndex()));
 		int selectedJobType = Integer.parseInt(listJobType.getValue(listJobType.getSelectedIndex()));
+		
+		
 		
 		rpcService.fetchTimeReport(selectedJob, selectedMonth, selecteduser, selectedJobType,  new AsyncCallback<ArrayList<TimeSheetReportDTO>>() {
 
@@ -289,6 +354,8 @@ public class TimeSheetReportView extends MaterialColumn{
 				for(int i=0; i< result.size(); i++){
 					listJobType.addItem(  result.get(i).getLineofServiceId()+"",result.get(i).getName());
 				}
+				
+				fetchDomain();
 			}
 		});
 	}

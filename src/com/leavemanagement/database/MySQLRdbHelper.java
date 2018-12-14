@@ -1600,8 +1600,8 @@ public class MySQLRdbHelper {
 		try{
 
 			//		reportData.get("");
-			fetchJobWiseReport(reportData, rootDir);
-			fetchAllReport(reportData, rootDir);
+		//	fetchJobWiseReport(reportData, rootDir);
+		//	fetchAllReport(reportData, rootDir);
 
 		}catch(Exception ex){
 
@@ -1610,12 +1610,13 @@ public class MySQLRdbHelper {
 		
 	}
 
-	private void fetchAllReport(HashMap<String, Integer> reportData, String rootDir) {
+	public String fetchAllReport(HashMap<String, Integer> reportData, String rootDir) {
 		ArrayList<AllJobsReportDTO> jobReports = new ArrayList<AllJobsReportDTO>();
 		Session session = null;
 		try{
 			session = sessionFactory.openSession();
 			Criteria crit = session.createCriteria(Job.class);
+			int month =0;
 			
 			//send all the listboxes values from clientside in a hashmap HashMap<String, Integer>
 
@@ -1623,11 +1624,25 @@ public class MySQLRdbHelper {
 				crit.add(Restrictions.eq("jobId", reportData.get("jobId")));
 			}
 
-			if(reportData.get("lineOfServiceId")  != null && reportData.get("jobId") != 0){ //Example for line of service
+			if(reportData.get("lineOfServiceId")  != null && reportData.get("lineOfServiceId") != 0){ //Example for line of service
 				crit.createAlias("lineofServiceId", "lineofService");
 				crit.add(Restrictions.eq("lineofService.lineofServiceId", reportData.get("lineOfServiceId")));
 			}
+			if(reportData.get("companyId")  != null && reportData.get("companyId") != 0){  
+				crit.add(Restrictions.eq("companyId", reportData.get("companyId")));
+			}
+			if(reportData.get("monthId")  != null && reportData.get("monthId") != 0){  
+				month = reportData.get("monthId");
+			}
+			if(reportData.get("allocationId")  != null && reportData.get("allocationId") != 0){  
+				crit.add(Restrictions.eq("allocation", reportData.get("allocationId")));
+				
+			}
 			
+			if(reportData.get("domainId")  != null && reportData.get("domainId") != 0){  
+				crit.createAlias("domainId", "domain");
+				crit.add(Restrictions.eq("domain.domainId", reportData.get("domainId")));
+			}
 			//Dont add filter for Users here , its already added at bottom..
 
 			List rsList = crit.list();
@@ -1637,17 +1652,34 @@ public class MySQLRdbHelper {
 				Job job =  (Job)it.next();
 				AllJobsReportDTO reportDTO = new AllJobsReportDTO();
 				reportDTO.setJobName(job.getJobName());
-				reportDTO.setCompanyName(Branches.ALSUHAIMI.name());
-				reportDTO.setAllocation(Allocations.CHARGEABLE.getName());
+				//reportDTO.setCompanyName(Branches.ALSUHAIMI.name());
+				
+				for (Branches branch : Branches.values()) {
+					if(job.getCompany() == branch.getValue()){
+						reportDTO.setCompanyName(branch.getName());
+					}
+				}
+				
+				for (Allocations allocation : Allocations.values()) {
+					if(job.getAllocation() == allocation.getValue()){
+						reportDTO.setAllocation(allocation.getName());
+					}
+				}
+				for (Location location : Location.values()) {
+					if(job.getLocation() == location.getValue()){
+						reportDTO.setLocation(location.getName());
+					}
+				}
+				
+				
 				reportDTO.setDomain(job.getDomainId().getName());
-				reportDTO.setLocation(Location.LOCAL.getName());
 				reportDTO.setLineOfService(job.getLineofServiceId().getName());
-				reportDTO.setBudgetedHours(getBudgetedHours(job.getJobId(), session));
-				reportDTO.setHoursWorked(getActualHours(job.getJobId(), session));
+				reportDTO.setBudgetedHours(getBudgetedHours(job.getJobId(), session, month));
+				reportDTO.setHoursWorked(getActualHours(job.getJobId(), session, month));
 				reportDTO.setHoursVariance(reportDTO.getBudgetedHours() - reportDTO.getHoursWorked());
 				jobReports.add(reportDTO);
 			}
-
+			
 			FileOutputStream fileOut = new FileOutputStream(rootDir + "/FullReport/report.xls");
 			HSSFWorkbook workbook = new HSSFWorkbook();
 			allJobReport(jobReports, workbook);
@@ -1668,6 +1700,8 @@ public class MySQLRdbHelper {
 			System.out.println("fail fetchAllReport");
 		}
 		session.close();
+		return "All report file generated";
+		
 
 	}
 
@@ -1717,8 +1751,8 @@ public class MySQLRdbHelper {
 			reportDTO.setDomain(job.getDomainId().getName());
 			reportDTO.setLocation(Location.LOCAL.getName());
 			reportDTO.setLineOfService(job.getLineofServiceId().getName());
-			reportDTO.setBudgetedHours(getBudgetedHours(job.getJobId(), session, userId));
-			reportDTO.setHoursWorked(getActualHours(job.getJobId(), session, userId));
+			reportDTO.setBudgetedHours(getBudgetedHoursForUser(job.getJobId(), session, userId));
+			reportDTO.setHoursWorked(getActualHoursForUser(job.getJobId(), session, userId));
 			reportDTO.setHoursVariance(reportDTO.getBudgetedHours() - reportDTO.getHoursWorked());
 			jobReports.add(reportDTO);
 		}
@@ -1764,10 +1798,11 @@ public class MySQLRdbHelper {
 		}
 	}
 
-	private float getBudgetedHours(int jobId, Session session) {
+	private float getBudgetedHours(int jobId, Session session, int month) {
 		Criteria crit = session.createCriteria(JobActivityEntity.class);
 		crit.createAlias("jobId", "job");
 		crit.add(Restrictions.eq("job.jobId", jobId));
+		
 		List rsList = crit.list();
 		int totalHours =0;
 		for(Iterator it=rsList.iterator();it.hasNext();)
@@ -1780,10 +1815,13 @@ public class MySQLRdbHelper {
 		return totalHours;
 	}
 
-	private float getActualHours(int jobId, Session session) {
+	private float getActualHours(int jobId, Session session, int month) {
 		Criteria crit = session.createCriteria(TimeSheet.class);
 		crit.createAlias("jobId", "job");
 		crit.add(Restrictions.eq("job.jobId", jobId));
+		if(month != 0){
+			crit.add(Restrictions.eq("month", month));
+		}
 		List rsList = crit.list();
 		float totalHours = 0;
 		for(Iterator it=rsList.iterator();it.hasNext();)
@@ -1797,7 +1835,7 @@ public class MySQLRdbHelper {
 	}
 	
 	//
-	private float getBudgetedHours(int jobId, Session session, int userId) {
+	private float getBudgetedHoursForUser(int jobId, Session session, int userId) {
 		Criteria crit = session.createCriteria(JobActivityEntity.class);
 		crit.createAlias("jobId", "job");
 		crit.add(Restrictions.eq("job.jobId", jobId));
@@ -1815,7 +1853,7 @@ public class MySQLRdbHelper {
 		return totalHours;
 	}
 
-	private float getActualHours(int jobId, Session session, int userId) {
+	private float getActualHoursForUser(int jobId, Session session, int userId) {
 		Criteria crit = session.createCriteria(TimeSheet.class);
 		crit.createAlias("jobId", "job");
 		crit.add(Restrictions.eq("job.jobId", jobId));
@@ -1833,7 +1871,7 @@ public class MySQLRdbHelper {
 		return totalHours;
 	}
 
-	private void fetchJobWiseReport(HashMap<String, Integer> reportData, String rootDir) {
+	public String fetchJobWiseReport(HashMap<String, Integer> reportData, String rootDir) {
 		Session session = null;
 		try{
 			session = sessionFactory.openSession();
@@ -1842,10 +1880,20 @@ public class MySQLRdbHelper {
 			int jobId =  reportData.get("jobId");   // value from job name listbox
 
 			Job job = (Job) session.get(Job.class, jobId);
+			
+			/*Criteria critJob = session.createCriteria(Job.class);
+			critJob.add(Restrictions.eq("jobId", jobId));
+			if(reportData.get("companyId")  != null && reportData.get("companyId") != 0){  
+				critJob.add(Restrictions.eq("companyId", reportData.get("companyId")));
+			}*/
+			
 
 			Criteria crit = session.createCriteria(JobActivityEntity.class);
 			crit.createAlias("jobId", "job");
 			crit.add(Restrictions.eq("job.jobId", jobId));
+			
+			
+			
 			List rsList = crit.list();
 
 			for(Iterator it=rsList.iterator();it.hasNext();)
@@ -1973,7 +2021,7 @@ public class MySQLRdbHelper {
 			
 		}
 		session.close();
-
+		return "job WIse report generated";
 	}
 
 
@@ -2497,6 +2545,69 @@ public class MySQLRdbHelper {
 			session.close();
 		}
 	}
+
+
+//	public String fetchJobWiseReport(HashMap<String,Integer> map) {
+//
+//			ArrayList<AllJobsReportDTO> jobReports = new ArrayList<AllJobsReportDTO>();
+//			Session session = null;
+//			try{
+//				session = sessionFactory.openSession();
+//				Criteria crit = session.createCriteria(Job.class);
+//				
+//				//send all the listboxes values from clientside in a hashmap HashMap<String, Integer>
+//
+//				if(map.get("jobId")  != null && map.get("jobId") != 0){  // EXAMPLE FOR adding a filter for job name listbox, need to do this for all listboxes.
+//					crit.add(Restrictions.eq("jobId", map.get("jobId")));
+//				}
+////
+////				if(reportData.get("lineOfServiceId")  != null && reportData.get("jobId") != 0){ //Example for line of service
+////					crit.createAlias("lineofServiceId", "lineofService");
+////					crit.add(Restrictions.eq("lineofService.lineofServiceId", reportData.get("lineOfServiceId")));
+////				}
+//				
+//				//Dont add filter for Users here , its already added at bottom..
+//
+//				List rsList = crit.list();
+//
+//				for(Iterator it=rsList.iterator();it.hasNext();)
+//				{
+//					Job job =  (Job)it.next();
+//					AllJobsReportDTO reportDTO = new AllJobsReportDTO();
+//					reportDTO.setJobName(job.getJobName());
+//					reportDTO.setCompanyName(Branches.ALSUHAIMI.name());
+//					reportDTO.setAllocation(Allocations.CHARGEABLE.getName());
+//					reportDTO.setDomain(job.getDomainId().getName());
+//					reportDTO.setLocation(Location.LOCAL.getName());
+//					reportDTO.setLineOfService(job.getLineofServiceId().getName());
+//					reportDTO.setBudgetedHours(getBudgetedHours(job.getJobId(), session));
+//					reportDTO.setHoursWorked(getActualHours(job.getJobId(), session));
+//					reportDTO.setHoursVariance(reportDTO.getBudgetedHours() - reportDTO.getHoursWorked());
+//					jobReports.add(reportDTO);
+//				}
+//
+//				FileOutputStream fileOut = new FileOutputStream(rootDir + "/FullReport/report.xls");
+//				HSSFWorkbook workbook = new HSSFWorkbook();
+//				allJobReport(jobReports, workbook);
+//				
+//				if(reportData.get("userId")  != null){ //Example for line of service
+//					specificUserReport(workbook, reportData.get("userId"), rsList, session);
+//				}
+//				specificUserReport(workbook, 1, rsList, session);
+//
+//				workbook.write(fileOut);
+//				fileOut.flush();
+//				fileOut.close();
+//
+//
+//
+//			}catch(Exception ex){
+//
+//				System.out.println("fail fetchAllReport");
+//			}
+//			session.close();
+//
+//		}
 
 
 

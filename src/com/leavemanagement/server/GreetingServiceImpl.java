@@ -3,11 +3,13 @@ package com.leavemanagement.server;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.jdbc.object.RdbmsOperation;
 
 import com.leavemanagement.client.GreetingService;
 import com.leavemanagement.database.MySQLRdbHelper;
@@ -442,4 +444,24 @@ HttpSession session ;
 		MySQLRdbHelper rdbHelper = (MySQLRdbHelper) ctx.getBean("ManagerExams");
 		return rdbHelper.fetchDomains();
 	}
+
+
+	@Override
+	public String fetchAllReport(HashMap<String, Integer> map) {
+		ApplicationContext ctx = new ClassPathXmlApplicationContext(
+		"applicationContext.xml");
+		MySQLRdbHelper rdbHelper = (MySQLRdbHelper) ctx.getBean("ManagerExams");
+		String rootDir = getServletContext().getRealPath("/");
+		return rdbHelper.fetchAllReport(map, rootDir);
+	}
+
+	@Override
+	public String fetchJobWiseReport(HashMap<String, Integer> map) {
+		ApplicationContext ctx = new ClassPathXmlApplicationContext(
+				"applicationContext.xml");
+		MySQLRdbHelper rdbHelper = (MySQLRdbHelper) ctx.getBean("ManagerExams");
+		String rootDir = getServletContext().getRealPath("/");
+		return rdbHelper.fetchJobWiseReport(map, rootDir);
+	}
+
 }

@@ -2,6 +2,7 @@ package com.leavemanagement.client;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.leavemanagement.shared.AttributeRating;
@@ -75,6 +76,12 @@ public interface GreetingServiceAsync {
 	void fetchjobUserRating(int useId, int jobId, AsyncCallback< ArrayList<AttributeRating>> callback);
 	void fetchAllJobs( AsyncCallback<ArrayList<Job>> callback);
 	void closeJob(int jobId, AsyncCallback<String> callback);
+
+	//void fetchJobWiseReport(HashMap<String, String> map, AsyncCallback<String> callback);
+
+	void fetchJobWiseReport(HashMap<String, Integer> map, AsyncCallback<String> asyncCallback);
+
+	void fetchAllReport(HashMap<String, Integer> map, AsyncCallback<String> asyncCallback);
 	
 }
 
