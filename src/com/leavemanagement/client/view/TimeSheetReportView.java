@@ -5,6 +5,8 @@ import java.util.HashMap;
 
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.FontWeight;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.NumberFormat;
@@ -42,6 +44,8 @@ public class TimeSheetReportView extends MaterialColumn{
 	private MaterialLabel lblLineOfService = new MaterialLabel("Line Of Service");
 	private MaterialLabel lblDomain = new MaterialLabel("Domain");
 	private MaterialLabel lblUser = new MaterialLabel("User");
+	private MaterialLabel lblCompanyJobWise = new MaterialLabel("Company Name");
+	private MaterialLabel lblJobJobWise = new MaterialLabel("Job Name");
 	private MaterialListBox listUsers = new MaterialListBox();
 	private MaterialListBox listJobs = new MaterialListBox();
 	private MaterialListBox listBoxCompany = new MaterialListBox();
@@ -50,9 +54,13 @@ public class TimeSheetReportView extends MaterialColumn{
 	private MaterialListBox listBoxLineOfServices = new MaterialListBox();
 	private MaterialListBox listMonth = new MaterialListBox();
 	private MaterialListBox listJobType = new MaterialListBox();
+	private MaterialListBox listJobForJobWise= new MaterialListBox();
+	private MaterialListBox listCompanyForJobWise = new MaterialListBox();
 	private User loggedInUser = null;
-	private MaterialButton btnSearchAllReport = new MaterialButton("Search");
-	private MaterialButton btnSearchJobWiseReport = new MaterialButton("Search");
+	MaterialLabel lblHeadingTimeReport = new MaterialLabel("Time Report");
+	MaterialLabel lblHeadingJobWise = new MaterialLabel("Job Eficiency Report");
+	private MaterialButton btnSearchAllReport = new MaterialButton("Generate Report");
+	private MaterialButton btnSearchJobWiseReport = new MaterialButton("Generate Report");
 	private MaterialColumn vpnlResult = new MaterialColumn();
 	Column<TimeSheet, String> jobName;
 	Column<TimeSheet, String> jobType;
@@ -64,6 +72,11 @@ public class TimeSheetReportView extends MaterialColumn{
 	
 	public TimeSheetReportView(User loggedInUser){
 		this.loggedInUser = loggedInUser;
+		lblHeadingTimeReport.getElement().getStyle().setFontWeight(FontWeight.BOLD);
+		lblHeadingTimeReport.getElement().getStyle().setMarginLeft(10, Unit.PX);
+		lblHeadingTimeReport.setFontSize(1.5, Unit.EM);
+		lblHeadingJobWise.setFontSize(1.5, Unit.EM);
+		lblHeadingJobWise.getElement().getStyle().setFontWeight(FontWeight.BOLD);
 		listMonth.addItem("0","All Months"  );
 		listMonth.addItem( "1","Jan");
 		listMonth.addItem( "2","Feb");
@@ -107,17 +120,27 @@ public class TimeSheetReportView extends MaterialColumn{
 		
 		
 		flex.setWidget(7,2,btnSearchAllReport);
+		flex.setWidget(8,1,lblHeadingJobWise);
+		flex.setWidget(9,1, lblJobJobWise);
+		flex.setWidget(9,2,listJobForJobWise);
 		
+		//flex.setWidget(10,1, lblCompanyJobWise);
+		//flex.setWidget(10,2,listCompanyForJobWise);
 		
+		flex.setWidget(11,2, btnSearchJobWiseReport);
+	
+		add(lblHeadingTimeReport);
 		add(flex);
 		
 		listBoxAllocation.addItem( "0","All Allocations" );
 		for (Allocations allocations : Allocations.values()) {
 			listBoxAllocation.addItem(allocations.getValue()+"", allocations.getName());
 		}
+		listCompanyForJobWise.addItem("0","All Companies");
 		listBoxCompany.addItem( "0","All Companies" );
 		for (Branches branches : Branches.values()) {
 			listBoxCompany.addItem(branches.getValue()+"", branches.getName());
+			listCompanyForJobWise.addItem(branches.getValue()+"", branches.getName());
 		}
 		add(vpnlResult);
 		
@@ -141,9 +164,12 @@ public class TimeSheetReportView extends MaterialColumn{
 
 
 	private void fetchJobWiseReport() {
+		int selectedJobForJobWise = (Integer.parseInt(listJobForJobWise.getSelectedValue()));
+		int selectedCompanyForJobWise = (Integer.parseInt(listCompanyForJobWise.getSelectedValue()));
 		HashMap<String, Integer> map = new HashMap<String, Integer>();
-		//map.put("jobId", newListboxofjobslistValue)
-		//map.put("companyId", new listBox of Branches Value)
+		map.put("jobId",selectedJobForJobWise);
+		//map.put("companyId", selectedCompanyForJobWise);
+		map.put("companyId", 0);
 		rpcService.fetchJobWiseReport(map, new AsyncCallback<String>() {
 
 			@Override
@@ -154,8 +180,8 @@ public class TimeSheetReportView extends MaterialColumn{
 
 			@Override
 			public void onSuccess(String result) {
-				Window.open("/JobWiseReport/report.xls", "_blank", "");
-				MaterialToast.fireToast("Report Generated !");
+				Window.open("JobWiseReport/report.xls", "_blank", "");
+				MaterialToast.fireToast("Report Downloaded !");
 			}
 		});
 	}
@@ -191,8 +217,8 @@ public class TimeSheetReportView extends MaterialColumn{
 			@Override
 			public void onSuccess(String result) {
 			
-				Window.open("/FullReport/report.xls", "_blank", "");
-				MaterialToast.fireToast("Report Generated !");
+				Window.open("FullReport/report.xls", "_blank", "");
+				MaterialToast.fireToast("Report Downloaded !");
 			}
 		});
 		return map;
@@ -305,11 +331,13 @@ public class TimeSheetReportView extends MaterialColumn{
 			
 			@Override
 			public void onSuccess(ArrayList<Job> result) {
+				
+				listJobForJobWise.clear();
 				listJobs.clear();
 				listJobs.addItem( "0","All Jobs" );
 				for(int i=0; i< result.size(); i++){
 					listJobs.addItem(  result.get(i).getJobId()+"",result.get(i).getJobName());
-					
+					listJobForJobWise.addItem(  result.get(i).getJobId()+"",result.get(i).getJobName());
 				}
 			}
 			
