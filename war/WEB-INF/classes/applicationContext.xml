@@ -47,6 +47,8 @@ http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
 				<value>com.leavemanagement.shared.MonthAllowedHours</value>
 				<value>com.leavemanagement.shared.AttributeRating</value>
 					<value>com.leavemanagement.shared.Domains</value>
+					<value>com.leavemanagement.shared.Activity</value>
+					<value>com.leavemanagement.shared.JobActivityEntity</value>
 			
 			
 			</list>

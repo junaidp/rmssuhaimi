@@ -1,5 +1,6 @@
 package com.leavemanagement.client.view;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -9,6 +10,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import gwt.material.design.addins.client.combobox.MaterialComboBox;
 import gwt.material.design.client.ui.MaterialButton;
 
 import com.google.gwt.user.client.ui.Anchor;
@@ -61,10 +63,11 @@ public class JobCreationView extends MaterialColumn {
 	private MaterialListBox listBoxAllocation = new MaterialListBox();
 	private MaterialListBox listBoxNature = new MaterialListBox();
 	private MaterialListBox listBoxSegment = new MaterialListBox();
+	private MaterialListBox listBoxEmployee = new MaterialListBox();
 	//private MaterialTextBox textPrinicialConsultantHours = new MaterialTextBox();
 	private ArrayList<Phases> phases = new ArrayList<Phases>();
 	JobsListView jobsListView ;
-	//	private MaterialListBox listEmployee1 = new MaterialListBox();
+	//private MaterialListBox listEmployee1 = new MaterialListBox();
 	private Job selectedJob;
 	GreetingServiceAsync rpcService = GWT.create(GreetingService.class);
 	private Label lblCountryName = new Label("Country Name");
@@ -76,13 +79,13 @@ public class JobCreationView extends MaterialColumn {
 	private MaterialColumn containerActivities = new MaterialColumn();
 	private MaterialTextBox txtBoxTotalHours = new MaterialTextBox();
 	private Anchor imgRefresh = new Anchor("calculate total");
-	
+	MaterialComboBox<User> listEmployee1 = new MaterialComboBox<>();
 
 	public JobCreationView(Job job, User loggedInUser, final Runnable runnable){
 		jobsListView= new JobsListView(loggedInUser);
 		this.selectedJob = job;
-
-
+		listEmployee1.setPlaceholder("Select Employee");
+		listEmployee1.setMultiple(true);
 		txtBoxTotalHours.setEnabled(false);
 		for (Allocations allocations : Allocations.values()) {
 			listBoxAllocation.addItem(allocations.getValue()+"", allocations.getName());
@@ -133,6 +136,7 @@ public class JobCreationView extends MaterialColumn {
 		Label lblCompanyName = new Label("Company Name");
 		Label lblSegment = new Label("Segment");
 		Label lblNature = new Label("Nature");
+		Label llblEmployee = new Label("Employee");
 		Label lblLineOfService = new Label("Line of Service");
 		Label lblDomain = new Label("Domain");
 		Label lblClientFee = new Label("Client Fee");
@@ -144,6 +148,7 @@ public class JobCreationView extends MaterialColumn {
 		Label lblAllocation = new Label("Allocation");
 		Label lblClientName = new Label("Client Name");
 		Label lblEmployee = new Label("Assign to");
+		Label lblEmployeeNew = new Label("Employee");
 		Image btnAddEmployee = new Image("add.png");
 		btnAddEmployee.addStyleName("hover");
 
@@ -183,15 +188,16 @@ public class JobCreationView extends MaterialColumn {
 		flex.setWidget(5, 1, listLineOfService);
 		flex.setWidget(6, 0, lblDomain);
 		flex.setWidget(6, 1, listDomain);
-		flex.setWidget(7, 0, lblSegment);
-		flex.setWidget(7, 1, listBoxSegment);
+//		flex.setWidget(7, 0, lblSegment);
+//		flex.setWidget(7, 1, listBoxSegment);
 		//flex.setWidget(7, 2, btnPhase);
-		flex.setWidget(8, 0, lblNature);
-		flex.setWidget(8, 1, listBoxNature);
+//		flex.setWidget(8, 0, lblNature);
+//		flex.setWidget(8, 1, listBoxNature);
 		//	flex.setWidget(8, 2, btnAddEmployee);
 		//	flex.setWidget(10, 1, vpnlEmployees);
-
-
+		flex.setWidget(7, 0, lblEmployeeNew);
+		flex.setWidget(7, 1, listEmployee1);
+		//listEmployee1.setMultipleSelect(true);
 		btnAddEmployee.addClickHandler(new ClickHandler(){
 
 			@Override
@@ -230,8 +236,8 @@ public class JobCreationView extends MaterialColumn {
 		hTotal.add(mcR);
 		hTotal.add(mcH);
 
-		flex.setWidget(13, 1, containerActivities);
-		flex.setWidget(14, 1, hTotal);
+	//	flex.setWidget(13, 1, containerActivities);
+	//	flex.setWidget(14, 1, hTotal);
 		flex.setWidget(15, 1, btnSubmit);
 		//		textPrinicialConsultantHours.setWidth("30px");
 		//		textSupervisorHours.setWidth("30px");
@@ -436,7 +442,7 @@ public class JobCreationView extends MaterialColumn {
 				job.setSegment(Integer.parseInt(listBoxSegment.getSelectedValue()));
 				job.setNature(Integer.parseInt(listBoxNature.getSelectedValue()));
 				job.setLocation(Integer.parseInt(listLocation.getSelectedValue()));
-				
+				job.setUsersList(listEmployee1.getSelectedValues());
 
 
 				//job.setJobPhases(phases);
@@ -471,6 +477,7 @@ public class JobCreationView extends MaterialColumn {
 					JobActivityEntity jobActivityEntity = new JobActivityEntity();
 					jobActivityView.setDataToEntity(jobActivityEntity);
 					jobActivitEntities.add(jobActivityEntity);
+					
 					//job.setJobActivities(jobActivityView.getJobActivities());///// here
 				}
 				job.setJobActivities(jobActivitEntities);
@@ -519,7 +526,21 @@ public class JobCreationView extends MaterialColumn {
 						jobEmployeesList.add(jobSupervisor);
 						jobEmployeesList.add(jobPrinicipalConsultant);
 					 */
-					job.setJobEmployeesList(jobEmployeesList);
+				
+					
+//					listEmployee1.addClickHandler(new ClickHandler() {
+//						
+//						@Override
+//						public void onClick(ClickEvent event) {
+//							// TODO Auto-generated method stub
+//							int h = listBoxEmployee.getSelectedIndex();
+//							Window.alert("i="+h);	
+//						}
+//					});
+//				
+					//job.setJobEmployeesList(listEmployee1.getSelectedIndex());
+				//	job.setJobEmployeesList(jobEmployeesList);
+					
 					
 				}
 
@@ -660,7 +681,12 @@ public class JobCreationView extends MaterialColumn {
 					}});
 
 				for(int i=0; i< result.size(); i++){
-					//					listEmployee1.addItem(result.get(i).getName(), result.get(i).getUserId()+"");
+					
+					listEmployee1.addItem(result.get(i).getName(), result.get(i));
+					listEmployee1.setSelectedIndex(1);
+					listEmployee1.setSelectedIndex(2);
+					listEmployee1.setSelectedIndex(3);
+				//	listEmployee1.addItem(result.get(i).getName(), result.get(i).getUserId()+"");
 					//listSupervisor.addItem( result.get(i).getUserId()+"",result.get(i).getName());
 					if(result.get(i).getRoleId().getRoleId() == 5){
 						//	listPrincipalConsultant.addItem( result.get(i).getUserId()+"",result.get(i).getName());
@@ -688,7 +714,7 @@ public class JobCreationView extends MaterialColumn {
 
 		listCountry.clear();
 		listLineOfService.clear();
-		//listSubLineofService.clear();
+		listEmployee1.clear();
 		listDomain.clear();
 
 		for(int i=0; i< countries.size(); i++){
@@ -705,11 +731,12 @@ public class JobCreationView extends MaterialColumn {
 		}
 
 		for(int i=0; i< users.size(); i++){
-			JobActivities jobActivityView = new JobActivities();
-			containerActivities.add(jobActivityView);
-
-			jobActivityView.getTextBoxUsers().setText(users.get(i).getName());
-			jobActivityView.getTextBoxUsers().setId(users.get(i).getUserId()+"");
+			listEmployee1.addItem(users.get(i).getName(), users.get(i));
+//			JobActivities jobActivityView = new JobActivities();
+//			containerActivities.add(jobActivityView);
+//
+//			jobActivityView.getTextBoxUsers().setText(users.get(i).getName());
+//			jobActivityView.getTextBoxUsers().setId(users.get(i).getUserId()+"");
 			
 
 		}
@@ -864,6 +891,18 @@ public class JobCreationView extends MaterialColumn {
 		listBoxSegment.setSelectedValue(selectedJob.getSegment()+"");
 		listBoxNature.setSelectedValue(selectedJob.getNature()+"");
 		listLocation.setSelectedValue(selectedJob.getLocation()+"");
+		listEmployee1.setSelectedIndex(1);
+		listEmployee1.setSelectedIndex(2);
+		listEmployee1.setSelectedIndex(3);
+//		for (int i = 0; i < selectedJob.getJobEmployeesList().size(); i++) {
+//			
+//		//listEmployee1.setSelectedIndex(selectedJob.getJobEmployeesList().get(i).getEmployeeId().getUserId());
+//			ArrayList<User> usersList = new ArrayList<>();
+//		 User user = listEmployee1.getValues().get(i);
+//	
+//		 usersList.add(user);
+//		 listEmployee1.setValues(usersList);
+//		}
 		//	listLineOfService.setSelectedValue(selectedJob.getLineofServiceId()+"");
 		//listDomain.setSelectedValue(selectedJob.getDomainId()+"");
 		//final	int lineofservice = selectedJob.getLineofServiceId().getLineofServiceId();
@@ -877,7 +916,7 @@ public class JobCreationView extends MaterialColumn {
 		}
 		//jobActivityView.poupulateSavedActivites(selectedJob.getJobActivities());
 
-
+		
 
 		//TODO: set all the data here from saved job like above 2 lines.. (this will show corret saved data when any job will be clicked from job list)
 		//activities is already populating in below line, dont work on them

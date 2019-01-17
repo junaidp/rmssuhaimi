@@ -2,6 +2,7 @@ package com.leavemanagement.shared;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -64,6 +65,8 @@ public class Job   implements Serializable {
 //	@ManyToOne(fetch = FetchType.LAZY)
 //	private User employee1;
 	
+	@Transient
+	private List<User> usersList;
 	
 	@Transient
 	private ArrayList<JobEmployees> jobEmployeesList;
@@ -216,6 +219,14 @@ public class Job   implements Serializable {
 		this.location = location;
 	}
 
-	
+	public List<User> getUsersList() {
+		return usersList;
+	}
+
+	public void setUsersList(List<User> usersList) {
+		this.usersList = usersList;
+	}
+
+
 	
 }

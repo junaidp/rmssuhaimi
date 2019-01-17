@@ -979,18 +979,33 @@ public class MySQLRdbHelper {
 			session.saveOrUpdate(job);
 
 			//saveEmployeeJob(job.getJobEmployeesList(),job.getSupervisorId().getUserId(), job.getPrincipalConsultantId().getUserId(), job.getJobId(), session);
-			ArrayList<JobEmployees> jobEmployeeList = new ArrayList<JobEmployees>();
-			for(int i=0; i< job.getJobActivities().size(); i++){
-				if(job.getJobActivities().get(i).getTotalHours()>0 ){
+		//	ArrayList<JobEmployees> jobEmployeeList = new ArrayList<JobEmployees>();
+			ArrayList<JobEmployees> jobUserList = new ArrayList<JobEmployees>();
+//			for(int i=0; i< job.getJobActivities().size(); i++){
+//				if(job.getJobActivities().get(i).getTotalHours()>0 ){
+//					JobEmployees jobEmployee = new JobEmployees();
+//					jobEmployee.setEmployeeId(job.getJobActivities().get(i).getUserId());
+//					jobEmployee.setJobId(job.getJobId());
+//					jobEmployeeList.add(jobEmployee);
+//					
+//				}
+//			}
+			
+		
+			for(int i=0; i< job.getUsersList().size(); i++){
+//				if(job.getUsersList().get(i).getTotalHours()>0 ){
 					JobEmployees jobEmployee = new JobEmployees();
-					jobEmployee.setEmployeeId(job.getJobActivities().get(i).getUserId());
+					jobEmployee.setEmployeeId(job.getUsersList().get(i));
 					jobEmployee.setJobId(job.getJobId());
-					jobEmployeeList.add(jobEmployee);
-
-				}
+					jobUserList.add(jobEmployee);
+					
+//				}
 			}
-
-			saveEmployeeJob(jobEmployeeList, job.getJobId(), session);
+			
+			
+			//jobUserList.add((JobEmployees) job.getUsersList());
+			//saveEmployeeJob(jobEmployeeList, job.getJobId(), session);
+			saveEmployeeJob(jobUserList, job.getJobId(), session);
 
 			session.flush();
 			setJobActivities(job.getJobActivities(), session, job);
@@ -1074,6 +1089,7 @@ public class MySQLRdbHelper {
 				JobEmployees jobEmployees = jobEmployeesList.get(i);
 				jobEmployees.setJobId(jobId);
 				if(employeeJobAlreadySaved(jobId, jobEmployees.getEmployeeId().getUserId(), session)){
+				System.out.print("a");
 					//session.update(jobEmployees);
 					//session.flush();
 				}else{
@@ -2387,6 +2403,7 @@ public class MySQLRdbHelper {
 				job.setJobEmployeesList(fetchJobEmployees(session, job.getJobId()));
 				job.setJobAttributes(fetchjobAttributes(session, job.getJobId()));
 				job.setTimeSheets(fetchJobTimeSheets(session, job.getJobId(), loggedInUser.getRoleId().getRoleId(), loggedInUser.getUserId()));
+//				job.setUsersList(fetchUserList(session, job.getJobId()));
 				jobs.add(job);
 			}
 

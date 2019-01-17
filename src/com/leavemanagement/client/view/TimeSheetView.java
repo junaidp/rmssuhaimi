@@ -20,6 +20,7 @@ import gwt.material.design.client.ui.MaterialTextBox;
 import gwt.material.design.client.ui.MaterialToast;
 
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import gwt.material.design.client.ui.MaterialColumn;
@@ -47,17 +48,20 @@ public class TimeSheetView extends MaterialColumn{
 	private MaterialListBox listActivities = new MaterialListBox();
 	private MaterialCheckBox chkChargeable = new MaterialCheckBox(Allocations.CHARGEABLE.getName());
 	private boolean chargeable = false;
-
+	ScrollPanel panelScroll = new ScrollPanel();
 
 	public TimeSheetView(User loggedInUser){
 		this.loggedInUser = loggedInUser;
 		
 		btnSave.setEnabled(false);
-		
+		panelScroll.setWidth("1400px");
+		panelScroll.setHeight("400px");
 		MaterialRow hpnl = new MaterialRow();
 		Label lblJob = new Label("Job Name");
 		//		hpnl.add(lblJob);
-		hpnl.add(flex);
+		
+		panelScroll.add(flex);
+		hpnl.add(panelScroll);
 		MaterialRow mRow = new MaterialRow();
 		MaterialColumn mcMonth = new MaterialColumn();
 		MaterialColumn mcChargeable = new MaterialColumn();
