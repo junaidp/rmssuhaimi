@@ -76,7 +76,9 @@ public class Job   implements Serializable {
 	@Transient ArrayList<TimeSheet> timeSheets;
 	//adding new array list
 	@Transient
-	private ArrayList<JobActivityEntity> jobActivities;                     
+	private ArrayList<JobActivityEntity> jobActivities;     
+	@Transient
+	private ArrayList<Activity> activityLists;    
 
 	
 	@Column(name="status")
@@ -225,6 +227,14 @@ public class Job   implements Serializable {
 
 	public void setUsersList(List<User> usersList) {
 		this.usersList = usersList;
+	}
+
+	public ArrayList<Activity> getActivityLists() {
+		return activityLists;
+	}
+
+	public void setActivityLists(ArrayList<Activity> activityLists) {
+		this.activityLists = activityLists;
 	}
 
 

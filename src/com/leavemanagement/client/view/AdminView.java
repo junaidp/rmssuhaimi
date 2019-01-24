@@ -94,7 +94,8 @@ public class AdminView extends MaterialColumn implements IsWidget,Display {
 		tab.getTab6().add(new HTML("&nbsp"));
 		tab.getTab6().add(new RatingView(loggedInUser));
 		tab.getTab7().add(new HTML("&nbsp"));
-		tab.getTab7().add(new TimeSheetView(loggedInUser));
+//		tab.getTab7().add(new TimeSheetView(loggedInUser));
+		tab.getTab7().add(new TimeSheetTree(loggedInUser));
 		tab.getTab8().add(new HTML("&nbsp"));
 		tab.getTab8().add(new TimeSheetReportView(loggedInUser));
 		

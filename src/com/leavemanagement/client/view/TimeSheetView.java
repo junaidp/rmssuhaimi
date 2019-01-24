@@ -112,14 +112,14 @@ public class TimeSheetView extends MaterialColumn{
 			}
 		});
 
-		btnSave.addClickHandler(new ClickHandler(){
-
-			@Override
-			public void onClick(ClickEvent event) {
-				saveTimeSheet();
-			}
-
-		});
+//		btnSave.addClickHandler(new ClickHandler(){
+//
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				saveTimeSheet();
+//			}
+//
+//		});
 
 		//		listMonth.addChangeHandler(new ChangeHandler(){
 		//
@@ -166,8 +166,8 @@ public class TimeSheetView extends MaterialColumn{
 		rpcService.fetchJobsForTimeSheet(loggedInUser, chargeable, new AsyncCallback<ArrayList<Job>>() {
 
 			@Override
-			public void onSuccess(ArrayList<Job> jobs) {
-
+			public void onSuccess(final ArrayList<Job> jobs) {
+				
 				int iIndex = 0;
 
 				for(int i=0; i< jobs.size(); i++){
@@ -182,17 +182,22 @@ public class TimeSheetView extends MaterialColumn{
 						//flex.setWidget(i+1, 1, chkChargable);
 					}
 					else{
-						iIndex = (i+1)+(i*4);
+						iIndex = (i+1)+(i*jobs.get(i).getActivityLists().size());
 						flex.setWidget(iIndex, 0, lblName);
 						//	flex.setWidget(i+5, 1, chkChargable);
 					}
 
-					for(int k =0; k< listActivities.getItemCount(); k++){
+					for(int k =0; k<  job.getActivityLists().size(); k++){
 						if(i == 0){
-							flex.setWidget(k+2, 0, new Label(listActivities.getItemText(k)));
+						//	for (int j = 0; j < job.getActivityLists().size(); j++) {
+								flex.setWidget(k+2, 0, new Label(job.getActivityLists().get(k).getActivityName()));
+						//	}
+						//	flex.setWidget(k+2, 0, new Label(listActivities.getItemText(k)));
+							
 						}
 						else{
-							flex.setWidget(k+(iIndex)+1, 0, new Label(listActivities.getItemText(k)));
+						//	flex.setWidget(k+(iIndex)+1, 0, new Label(listActivities.getItemText(k)));
+							flex.setWidget(k+(iIndex)+1, 0, new Label(job.getActivityLists().get(k).getActivityName()));
 						}
 						for(int j=0; j<31;j++){
 							MaterialTextBox text = new MaterialTextBox();
@@ -205,8 +210,13 @@ public class TimeSheetView extends MaterialColumn{
 							}
 							for(int m=0; m< job.getTimeSheets().size(); m++){
 								TimeSheet timeSheet =  job.getTimeSheets().get(m);
-								if(timeSheet.getMonth() == selectedMonth && timeSheet.getDay() == j+1 && timeSheet.getActivity().getActivityName().equalsIgnoreCase(listActivities.getItemText(k))){
-									text.setText(timeSheet.getHours()+"");
+//								if(timeSheet.getMonth() == selectedMonth && timeSheet.getDay() == j+1 && timeSheet.getActivity().getActivityName().equalsIgnoreCase(listActivities.getItemText(k))){
+							
+								for (int l = 0; l < job.getActivityLists().size(); l++) {
+									if(timeSheet.getMonth() == selectedMonth && timeSheet.getDay() == j+1 && timeSheet.getActivity().getActivityName().equalsIgnoreCase(job.getActivityLists().get(i).getActivityName())){
+
+								}
+								text.setText(timeSheet.getHours()+"");
 								}
 							}
 						}
@@ -222,6 +232,14 @@ public class TimeSheetView extends MaterialColumn{
 
 				}
 				btnSave.setEnabled(true);
+				btnSave.addClickHandler(new ClickHandler(){
+
+					@Override
+					public void onClick(ClickEvent event) {
+						saveTimeSheet(jobs);
+					}
+
+				});
 			}
 
 
@@ -240,6 +258,7 @@ public class TimeSheetView extends MaterialColumn{
 		for(int i=0; i< flex.getRowCount()-1; i++){
 
 			int iIndex = (i+1)+(i*4);
+//			for(int k =0; k< listActivities.getItemCount(); k++){
 			for(int k =0; k< listActivities.getItemCount(); k++){
 				for(int j=0;j<31; j++){
 					MaterialTextBox text ;
@@ -279,13 +298,14 @@ public class TimeSheetView extends MaterialColumn{
 
 	}
 
-	private void saveTimeSheet() {
+	private void saveTimeSheet(ArrayList<Job> jobs) {
 		float totalHours =0;
 		ArrayList<TimeSheet> timeSheetList = new ArrayList<TimeSheet>();
 		try{
 		for(int i=0; i< flex.getRowCount()-1; i++){
 			int iIndex = (i+1)+(i*4);
-			for(int k =0; k< listActivities.getItemCount(); k++){
+//			for(int k =0; k< listActivities.getItemCount(); k++){
+			for(int k =0; k< jobs.get(i).getActivityLists().size(); k++){
 				for(int j=0;j<31; j++){
 					MaterialTextBox text ;
 					if(i == 0){
@@ -298,7 +318,8 @@ public class TimeSheetView extends MaterialColumn{
 						timeSheet.setDay(j+1);
 						timeSheet.setHours(Float.parseFloat(text.getText()));
 						Activity activity = new Activity();
-						activity.setActivityId(Integer.parseInt(listActivities.getValue(k)));
+						activity.setActivityId(jobs.get(i).getActivityLists().get(k).getActivityId());
+//						activity.setActivityId(Integer.parseInt(listActivities.getValue(k)));
 						timeSheet.setActivity(activity);
 						totalHours =totalHours +timeSheet.getHours();
 						timeSheet.setMonth(selectedMonth);

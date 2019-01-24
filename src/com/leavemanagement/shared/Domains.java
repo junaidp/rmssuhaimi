@@ -27,10 +27,7 @@ public class Domains   implements Serializable {
 	@Column(name="name")
 	private String name;
 	
-	@JoinColumn(name = "lineofServiceId")
-	@ManyToOne(fetch = FetchType.LAZY)
-	private LineofService lineofServiceId;
-	
+
 	
 	public Domains(){}
 
@@ -63,16 +60,16 @@ public class Domains   implements Serializable {
 
 
 
-	public LineofService getLineofServiceId() {
-		return lineofServiceId;
-	}
-
-
-
-
-	public void setLineofServiceId(LineofService lineofServiceId) {
-		this.lineofServiceId = lineofServiceId;
-	}
+//	public LineofService getLineofServiceId() {
+//		return lineofServiceId;
+//	}
+//
+//
+//
+//
+//	public void setLineofServiceId(LineofService lineofServiceId) {
+//		this.lineofServiceId = lineofServiceId;
+//	}
 
 
 	

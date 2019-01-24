@@ -30,6 +30,7 @@ import org.hibernate.criterion.Restrictions;
 import org.w3c.dom.Attr;
 
 import com.leavemanagement.client.view.JobCreationView;
+import com.leavemanagement.shared.Activity;
 import com.leavemanagement.shared.AllJobsReportDTO;
 import com.leavemanagement.shared.Allocations;
 import com.leavemanagement.shared.AttributeRating;
@@ -830,6 +831,7 @@ public class MySQLRdbHelper {
 		try{
 			session = sessionFactory.openSession();
 			Criteria crit = session.createCriteria(LineofService.class);
+			crit.createAlias("domainId", "domain");
 			List rsList = crit.list();
 
 			for(Iterator it=rsList.iterator();it.hasNext();)
@@ -858,7 +860,7 @@ public class MySQLRdbHelper {
 			session = sessionFactory.openSession();
 			Criteria crit = session.createCriteria(SubLineofService.class);
 			crit.createAlias("domainId", "domain");
-			crit.createAlias("domain.lineofServiceId", "domainline");
+		//	crit.createAlias("domain.lineofServiceId", "domainline");
 			crit.add(Restrictions.eq("domain.domainId", domainId));
 			List rsList = crit.list();
 
@@ -941,7 +943,7 @@ public class MySQLRdbHelper {
 		try{
 			session = sessionFactory.openSession();
 			Criteria crit = session.createCriteria(Domains.class);
-			crit.createAlias("lineofServiceId", "lineofService");
+			///crit.createAlias("lineofServiceId", "lineofService");
 			////////////crit.add(Restrictions.eq("lineofService.lineofServiceId", lineofServiceId));
 			List rsList = crit.list();
 
@@ -1148,7 +1150,7 @@ public class MySQLRdbHelper {
 			//crit.createAlias("sublineDomain.lineofServiceId", "ddomainlineofservice");
 
 			crit.createAlias("domainId", "domain");
-			crit.createAlias("domain.lineofServiceId", "domainlineofservice");
+			crit.createAlias("lineofService.domainId", "domainlineofservice");
 			//			crit.createAlias("sublineDomain.lineofServiceId", "subdomainlineofservice");
 
 			crit.createAlias("countryId", "count");
@@ -1226,7 +1228,7 @@ public class MySQLRdbHelper {
 			//			crit.createAlias("sublineDomain.lineofServiceId", "ddomainlineofservice");
 
 			crit.createAlias("domainId", "domain");
-			crit.createAlias("domain.lineofServiceId", "domainlineofservice");
+			crit.createAlias("lineofService.domainId", "domainlineofservice");
 			//			crit.createAlias("sublineDomain.lineofServiceId", "subdomainlineofservice");
 
 			crit.createAlias("countryId", "count");
@@ -1266,10 +1268,12 @@ public class MySQLRdbHelper {
 			for(Iterator it=rsList.iterator();it.hasNext();)
 			{
 				Job job =  (Job)it.next();
+				job.setActivityLists(fetchActivities(session,job, loggedInUser.getRoleId().getRoleId(), loggedInUser.getUserId()));
 				//	job.setJobPhases(fetchJobPhases(job.getJobId()));
 				job.setJobEmployeesList(fetchJobEmployees(session, job.getJobId()));
 				job.setJobAttributes(fetchjobAttributes(session, job.getJobId()));
 				job.setTimeSheets(fetchJobTimeSheets(session, job.getJobId(), loggedInUser.getRoleId().getRoleId(), loggedInUser.getUserId()));
+				
 				jobs.add(job);
 			}
 
@@ -1285,6 +1289,36 @@ public class MySQLRdbHelper {
 		}
 	}
 
+
+	private ArrayList<Activity> fetchActivities(Session session, Job job, int roleId, int userId) throws Exception {
+		ArrayList<Activity> listActivities = new ArrayList<Activity>();
+		try{
+			session = sessionFactory.openSession();
+		
+		
+			Criteria crit = session.createCriteria(Activity.class);
+			//crit.createAlias("activityId", "activity");
+			crit.createAlias("lineofServiceId", "lineOfService");
+			crit.createAlias("lineOfService.domainId", "domainId");
+			crit.add(Restrictions.eq("lineOfService.lineofServiceId", job.getLineofServiceId().getLineofServiceId()));
+//			crit.add(Restrictions.eq("domainId", job.getLineofServiceId().getDomainId().getDomainId()));
+
+			
+			List rsList = crit.list();
+
+			for(Iterator it=rsList.iterator();it.hasNext();)
+			{
+				Activity activity =  (Activity)it.next();
+				activity.setTimeSheets(fetchActivityTimeSheets(session, activity.getActivityId(), roleId, userId));
+				
+				listActivities.add(activity);
+			}
+			return listActivities;	
+		}catch(Exception ex){
+			System.out.println("fail : fetchActivities: "+ ex);
+			throw ex;
+		}
+	}
 
 	private ArrayList<JobActivityEntity> fetchJobActivities(Session session, int jobId) throws Exception {
 		ArrayList<JobActivityEntity> listJobActivity = new ArrayList<JobActivityEntity>();
@@ -1328,6 +1362,48 @@ public class MySQLRdbHelper {
 			crit.add(Restrictions.eq("job.jobId", jobId));
 			crit.add(Restrictions.eq("user.userId", userId));
 			crit.add(Restrictions.ne("activity.activityId", 0));
+
+			if(roleId==5){
+				//				crit.add(Restrictions.eq("status", 1));
+			}
+
+			crit.addOrder(Order.asc("activity.activityId"));
+
+			List rsList = crit.list();
+
+			for(Iterator it=rsList.iterator();it.hasNext();)
+			{
+				TimeSheet timeSheet =  (TimeSheet)it.next();
+				listTimeSheet.add(timeSheet);
+			}
+			return listTimeSheet;
+		}catch(Exception ex){
+			logger.warn(String.format("Exception occured in fetchJobTimeSheets", ex.getMessage()), ex);
+			System.out.println("Exception occured in fetchJobTimeSheets"+ ex.getMessage());
+
+			throw new Exception("Exception occured in fetchJobTimeSheets");
+		}
+	}
+	
+	//
+	private ArrayList<TimeSheet> fetchActivityTimeSheets(Session session, int activityId, int roleId, int userId)throws Exception {
+		ArrayList<TimeSheet> listTimeSheet = new ArrayList<TimeSheet>();
+		try{
+			Criteria crit = session.createCriteria(TimeSheet.class);
+			crit.createAlias("userId", "user");
+			crit.createAlias("user.roleId", "role");
+			crit.createAlias("user.companyId", "company");
+			crit.createAlias("jobId", "job");
+			crit.createAlias("job.lineofServiceId", "lineofService1");
+			//crit.createAlias("job.subLineofServiceId", "subLineofService1");
+			//crit.createAlias("job.supervisorId", "supervisor");
+			crit.createAlias("job.domainId", "domain1");
+			crit.createAlias("job.countryId", "count1");
+			crit.createAlias("activity", "activity");
+			//crit.createAlias("job.principalConsultantId", "principalConsultant");
+			//crit.add(Restrictions.eq("job.jobId", jobId));
+			crit.add(Restrictions.eq("user.userId", userId));
+			crit.add(Restrictions.ne("activity.activityId", activityId));
 
 			if(roleId==5){
 				//				crit.add(Restrictions.eq("status", 1));
@@ -1575,6 +1651,7 @@ public class MySQLRdbHelper {
 			deletePreviousTimeSheet(timeSheet.get(0).getMonth(), timeSheet.get(0).getUserId().getUserId(), session);
 
 			for(int i=0; i< timeSheet.size(); i++){
+				timeSheet.get(i).setActivity(timeSheet.get(i).getActivity());
 				session.saveOrUpdate(timeSheet.get(i));
 				session.flush();
 			}
@@ -2431,7 +2508,7 @@ public class MySQLRdbHelper {
 			//crit.createAlias("subLineofService.domainId", "sublineDomain");
 			//crit.createAlias("sublineDomain.lineofServiceId", "ddomainlineofservice");
 			crit.createAlias("domainId", "domain");
-			crit.createAlias("domain.lineofServiceId", "domainlineofservice");
+			crit.createAlias("lineofService.domainId", "domainlineofservice");
 			crit.createAlias("countryId", "count");
 			//crit.createAlias("supervisorId", "supervisor");
 			//crit.createAlias("supervisor.roleId", "roles");
@@ -2538,7 +2615,7 @@ public class MySQLRdbHelper {
 			//			crit.createAlias("sublineDomain.lineofServiceId", "ddomainlineofservice");
 
 			crit.createAlias("domainId", "domain");
-			crit.createAlias("domain.lineofServiceId", "domainlineofservice");
+			crit.createAlias("lineofService.domainId", "domainlineofservice");
 			//			crit.createAlias("sublineDomain.lineofServiceId", "subdomainlineofservice");
 
 			crit.createAlias("countryId", "count");

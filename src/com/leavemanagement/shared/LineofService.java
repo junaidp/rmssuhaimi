@@ -27,6 +27,9 @@ public class LineofService   implements Serializable {
 	@Column(name="name")
 	private String name;
 	
+	@JoinColumn(name = "domainId")
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Domains domainId;
 	
 	public LineofService(){}
 
@@ -48,6 +51,16 @@ public class LineofService   implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+
+	public Domains getDomainId() {
+		return domainId;
+	}
+
+
+	public void setDomainId(Domains domainId) {
+		this.domainId = domainId;
 	}
 
 

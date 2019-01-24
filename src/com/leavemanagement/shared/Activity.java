@@ -1,13 +1,18 @@
 package com.leavemanagement.shared;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 
@@ -24,6 +29,12 @@ public class Activity   implements Serializable {
 	@Column(name="activityName")
 	private String activityName;
 	
+	@JoinColumn(name = "lineofserviceId")
+	@ManyToOne(fetch = FetchType.LAZY)
+	private LineofService lineofServiceId;
+	
+	
+	@Transient ArrayList<TimeSheet> timeSheets;
 	
 	
 	public Activity(){}
@@ -53,5 +64,28 @@ public class Activity   implements Serializable {
 	}
 
 
-	
+
+	public LineofService getLineofServiceId() {
+		return lineofServiceId;
+	}
+
+
+
+	public void setLineofServiceId(LineofService lineofServiceId) {
+		this.lineofServiceId = lineofServiceId;
+	}
+
+
+
+	public ArrayList<TimeSheet> getTimeSheets() {
+		return timeSheets;
+	}
+
+
+
+	public void setTimeSheets(ArrayList<TimeSheet> timeSheets) {
+		this.timeSheets = timeSheets;
+	}
+
+
 }
