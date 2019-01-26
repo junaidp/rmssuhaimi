@@ -29,12 +29,8 @@ public class TimeSheetTableView extends MaterialColumn {
 	private int selectedMonth = 0;
 
 	public TimeSheetTableView(final Job job, User loggedInUser2, MaterialListBox listMonth) {
-		// this.selectedMonth =
-		// Integer.parseInt(listMonth.getValue(listMonth.getSelectedIndex()));
-		selectedMonth = listMonth.getSelectedIndex();
+		selectedMonth = Integer.parseInt(listMonth.getSelectedValue());
 
-		listMonth.setSelectedIndex(selectedMonth);
-		// listMonth.setEnabled(false);
 		this.loggedInUser = loggedInUser2;
 		MaterialButton btnSave = new MaterialButton("Save");
 		final FlexTable flex = new FlexTable();
@@ -42,7 +38,6 @@ public class TimeSheetTableView extends MaterialColumn {
 
 			Label heading = new Label(k + 1 + "");
 			heading.addStyleName("blueBold");
-			// flex.setWidget(0, k+2, heading);
 			flex.setWidget(0, k + 1, heading);
 			flex.getFlexCellFormatter().setHorizontalAlignment(0, k + 1, HasHorizontalAlignment.ALIGN_CENTER);
 
@@ -58,17 +53,17 @@ public class TimeSheetTableView extends MaterialColumn {
 			for (int j = 0; j < 31; j++) {
 
 				MaterialTextBox text = new MaterialTextBox();
-				// text.setText(job.getActivityLists().get(i).getActivityId()+"");
 				text.setWidth("30px");
 				flex.setWidget(i + 1, j + 1, text);
 				for (int m = 0; m < activity.getTimeSheets().size(); m++) {
 					TimeSheet timeSheet = activity.getTimeSheets().get(m);
 					if (timeSheet.getMonth() == selectedMonth && timeSheet.getDay() == j + 1
-							&& timeSheet.getActivity().getActivityId() == activity.getActivityId()) {
+							&& job.getJobId() == timeSheet.getJobId().getJobId()) {
 						text.setText(timeSheet.getHours() + "");
 					}
 				}
 			}
+
 			Label lblActicityId = new Label();
 			lblActicityId.setText(job.getActivityLists().get(i).getActivityId() + "");
 			lblActicityId.setStyleName("white");
@@ -76,7 +71,6 @@ public class TimeSheetTableView extends MaterialColumn {
 
 		}
 
-		// columnFlex.add(flex);
 		add(flex);
 		add(btnSave);
 

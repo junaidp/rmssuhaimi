@@ -76,7 +76,7 @@ public class JobCreationView extends MaterialColumn {
 	private MaterialColumn containerActivities = new MaterialColumn();
 	private MaterialTextBox txtBoxTotalHours = new MaterialTextBox();
 	private Anchor imgRefresh = new Anchor("calculate total");
-	MaterialComboBox<User> listEmployee1 = new MaterialComboBox<>();
+	MaterialComboBox<User> listEmployee1 = new MaterialComboBox<User>();
 
 	public JobCreationView(Job job, User loggedInUser, final Runnable runnable) {
 		jobsListView = new JobsListView(loggedInUser);
@@ -287,7 +287,7 @@ public class JobCreationView extends MaterialColumn {
 			panel.add(vpnlJobCreation, "Job Creation");
 		}
 		panel.add(jobsListView, "Jobs List");
-
+		panel.setWidth("800px");
 		add(panel);
 
 		costWidget.getImgRefresh().addClickHandler(new ClickHandler() {
@@ -448,6 +448,7 @@ public class JobCreationView extends MaterialColumn {
 				job.setSegment(Integer.parseInt(listBoxSegment.getSelectedValue()));
 				job.setNature(Integer.parseInt(listBoxNature.getSelectedValue()));
 				job.setLocation(Integer.parseInt(listLocation.getSelectedValue()));
+
 				job.setUsersList(listEmployee1.getSelectedValues());
 
 				// job.setJobPhases(phases);
@@ -690,10 +691,9 @@ public class JobCreationView extends MaterialColumn {
 
 				for (int i = 0; i < result.size(); i++) {
 
-					listEmployee1.addItem(result.get(i).getName(), result.get(i));
-					listEmployee1.setSelectedIndex(1);
-					listEmployee1.setSelectedIndex(2);
-					listEmployee1.setSelectedIndex(3);
+					// listEmployee1.addItem(result.get(i).getName(),
+					// result.get(i));
+
 					// listEmployee1.addItem(result.get(i).getName(),
 					// result.get(i).getUserId()+"");
 					// listSupervisor.addItem(
@@ -744,11 +744,6 @@ public class JobCreationView extends MaterialColumn {
 
 		for (int i = 0; i < users.size(); i++) {
 			listEmployee1.addItem(users.get(i).getName(), users.get(i));
-			// JobActivities jobActivityView = new JobActivities();
-			// containerActivities.add(jobActivityView);
-			//
-			// jobActivityView.getTextBoxUsers().setText(users.get(i).getName());
-			// jobActivityView.getTextBoxUsers().setId(users.get(i).getUserId()+"");
 
 		}
 
@@ -901,24 +896,7 @@ public class JobCreationView extends MaterialColumn {
 		listBoxSegment.setSelectedValue(selectedJob.getSegment() + "");
 		listBoxNature.setSelectedValue(selectedJob.getNature() + "");
 		listLocation.setSelectedValue(selectedJob.getLocation() + "");
-		listEmployee1.setSelectedIndex(1);
-		listEmployee1.setSelectedIndex(2);
-		listEmployee1.setSelectedIndex(3);
-		// for (int i = 0; i < selectedJob.getJobEmployeesList().size(); i++) {
-		//
-		// //listEmployee1.setSelectedIndex(selectedJob.getJobEmployeesList().get(i).getEmployeeId().getUserId());
-		// ArrayList<User> usersList = new ArrayList<>();
-		// User user = listEmployee1.getValues().get(i);
-		//
-		// usersList.add(user);
-		// listEmployee1.setValues(usersList);
-		// }
-		// listLineOfService.setSelectedValue(selectedJob.getLineofServiceId()+"");
-		// listDomain.setSelectedValue(selectedJob.getDomainId()+"");
-		// final int lineofservice =
-		// selectedJob.getLineofServiceId().getLineofServiceId();
 
-		// fetchDomains(lineofservice);
 		for (int i = 0; i < containerActivities.getWidgetCount(); i++) {
 			JobActivities jobActivityView = (JobActivities) containerActivities.getWidget(i);
 
@@ -963,6 +941,14 @@ public class JobCreationView extends MaterialColumn {
 
 	public MaterialTextBox getTxtBoxTotalHours() {
 		return txtBoxTotalHours;
+	}
+
+	public MaterialComboBox<User> getListEmployee1() {
+		return listEmployee1;
+	}
+
+	public void setListEmployee1(MaterialComboBox<User> listEmployee1) {
+		this.listEmployee1 = listEmployee1;
 	}
 
 }
