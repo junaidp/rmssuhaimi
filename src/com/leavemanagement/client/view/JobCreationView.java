@@ -86,6 +86,7 @@ public class JobCreationView extends MaterialColumn {
 		txtBoxTotalHours.setEnabled(false);
 		for (Allocations allocations : Allocations.values()) {
 			listBoxAllocation.addItem(allocations.getValue() + "", allocations.getName());
+
 		}
 		for (Location location : Location.values()) {
 			listLocation.addItem(location.getValue() + "", location.getName());
@@ -180,10 +181,11 @@ public class JobCreationView extends MaterialColumn {
 		flex.setWidget(3, 1, txtJobName);
 		flex.setWidget(4, 0, lblAllocation);
 		flex.setWidget(4, 1, listBoxAllocation);
-		flex.setWidget(5, 0, lblLineOfService);
-		flex.setWidget(5, 1, listLineOfService);
-		flex.setWidget(6, 0, lblDomain);
-		flex.setWidget(6, 1, listDomain);
+		flex.setWidget(5, 0, lblDomain);
+		flex.setWidget(5, 1, listDomain);
+		flex.setWidget(6, 0, lblLineOfService);
+		flex.setWidget(6, 1, listLineOfService);
+
 		// flex.setWidget(7, 0, lblSegment);
 		// flex.setWidget(7, 1, listBoxSegment);
 		// flex.setWidget(7, 2, btnPhase);
@@ -558,13 +560,16 @@ public class JobCreationView extends MaterialColumn {
 					@Override
 					public void onSuccess(String result) {
 						MaterialToast.fireToast(result);
-						jobsListView.fetchJobs();
+
 						if (loadingPopup != null) {
 							loadingPopup.remove();
 						}
 						if (runnable != null) {
 							runnable.run();
 						}
+
+						jobsListView.fetchJobs();
+						populateJobCreationView();
 					}
 
 					@Override
@@ -611,6 +616,20 @@ public class JobCreationView extends MaterialColumn {
 	//
 	// }});
 	// }
+
+	private void populateJobCreationView() {
+		listBoxAllocation.setSelectedIndex(0);
+		listLocation.setSelectedIndex(0);
+		listBoxSegment.setSelectedIndex(0);
+		listBoxCompanyName.setSelectedIndex(0);
+
+		listBoxNature.setSelectedIndex(0);
+		listDomain.setSelectedIndex(0);
+		listLineOfService.setSelectedIndex(0);
+
+		txtJobName.clear();
+		// fetchDomains();
+	}
 
 	public void calculateTotalHours() {
 		int hours = 0;

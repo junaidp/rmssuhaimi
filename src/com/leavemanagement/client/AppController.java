@@ -1,6 +1,5 @@
 package com.leavemanagement.client;
 
-
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
@@ -27,23 +26,23 @@ import com.leavemanagement.client.view.AddCompanyView;
 import com.leavemanagement.client.view.AddUserView;
 import com.leavemanagement.client.view.AdminView;
 import com.leavemanagement.client.view.ChangePasswordView;
+import com.leavemanagement.client.view.HeaderView;
 import com.leavemanagement.client.view.LeaveHistoryView;
 import com.leavemanagement.client.view.LoginMaterial;
 import com.leavemanagement.client.view.MainView;
 import com.leavemanagement.shared.User;
-import com.leavemanagement.client.view.HeaderView;
 
 public class AppController implements Presenter, ValueChangeHandler<String> {
 	private final HandlerManager eventBus;
 
-	private final GreetingServiceAsync rpcService; 
+	private final GreetingServiceAsync rpcService;
 	private HasWidgets container;
 	private User loggedInUser;
-	//private MaterialColumn centerPanel;
-	private HasWidgets mainContainer,  headerContainer;
-	Presenter presenter = null;  
+	// private MaterialColumn centerPanel;
+	private HasWidgets mainContainer, headerContainer;
+	Presenter presenter = null;
 	private HeaderView headerView;
-	//private VerticalPanel PcenterPanel;
+	// private VerticalPanel PcenterPanel;
 
 	private int jobId;
 	private String callingFrom;
@@ -56,12 +55,10 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 		bind();
 	}
 
-
 	private void bind() {
 		History.addValueChangeHandler(this);
 
-		eventBus.addHandler(MainEvent.TYPE,
-				new MainEventHandler() {
+		eventBus.addHandler(MainEvent.TYPE, new MainEventHandler() {
 			public void onMain(MainEvent event) {
 				loggedInUser = event.getLoggedInUser();
 				selectedYear = event.getSelectedYear();
@@ -69,36 +66,32 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 				History.newItem("main");
 			}
 
-		}); 
+		});
 
-		eventBus.addHandler(AdminEvent.TYPE,
-				new AdminEventHandler() {
+		eventBus.addHandler(AdminEvent.TYPE, new AdminEventHandler() {
 			public void onAdmin(AdminEvent event) {
 				loggedInUser = event.getLoggedInUser();
 
 				History.newItem("admin");
 
 			}
-		}); 
+		});
 
-		eventBus.addHandler(LeaveHistoryEvent.TYPE,
-				new LeaveHistoryEventHandler() {
+		eventBus.addHandler(LeaveHistoryEvent.TYPE, new LeaveHistoryEventHandler() {
 			public void onLeaveHistory(LeaveHistoryEvent event) {
 				loggedInUser = event.getLoggedInUser();
 
 				History.newItem("leaveHistory");
 
 			}
-		}); 
+		});
 
-		eventBus.addHandler(ChangePasswordEvent.TYPE,
-				new ChangePasswordEventHandler() {
+		eventBus.addHandler(ChangePasswordEvent.TYPE, new ChangePasswordEventHandler() {
 			public void onChangePassword(ChangePasswordEvent event) {
 				loggedInUser = event.getLoggedInUser();
 				History.newItem("changePassword");
 			}
-		}); 
-
+		});
 
 	}
 
@@ -106,24 +99,19 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 		this.container = container;
 		this.mainContainer = container;
 		this.headerContainer = headerContainer;
-		//		if (centerPanel == null) {
-		//			centerPanel = new MaterialColumn();
-		//		}
-
-
+		// if (centerPanel == null) {
+		// centerPanel = new MaterialColumn();
+		// }
 
 		if ("".equals(History.getToken())) {
 			History.newItem("login");
-		}
-		else {
+		} else {
 			History.fireCurrentHistoryState();
 		}
 	}
 
 	public void onValueChange(ValueChangeEvent<String> event) {
 		String token = event.getValue();
-
-
 
 		if (token != null) {
 			presenter = null;
@@ -135,22 +123,20 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 					presenter.go(container);
 				}
 
-
 			}
 
 			if (token.equals("main")) {
-				if(headerView == null)
-				headerView = new HeaderView();
+				if (headerView == null)
+					headerView = new HeaderView();
 				headerView.userView();
-				presenter = new HeaderPresenter(rpcService, eventBus, headerView , loggedInUser);
+				presenter = new HeaderPresenter(rpcService, eventBus, headerView, loggedInUser);
 				presenter.go(headerContainer);
-				
+
 				presenter = new MainPresenter(rpcService, eventBus, new MainView(), loggedInUser);
 				if (presenter != null) {
 					this.container = mainContainer;
 					presenter.go(container);
 				}
-			
 
 			}
 
@@ -160,11 +146,11 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 					this.container = mainContainer;
 					presenter.go(container);
 				}
-				if(headerView == null)
+				if (headerView == null)
 					headerView = new HeaderView();
-					headerView.adminView();
-					presenter = new HeaderPresenter(rpcService, eventBus, headerView , loggedInUser);
-					presenter.go(headerContainer);
+				headerView.adminView();
+				presenter = new HeaderPresenter(rpcService, eventBus, headerView, loggedInUser);
+				presenter.go(headerContainer);
 			}
 
 			if (token.equals("leaveHistory")) {
@@ -183,8 +169,6 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 				}
 			}
 
-
-
 			if (token.equals("changePassword")) {
 				presenter = new ChangePasswordPresenter(rpcService, eventBus, new ChangePasswordView(), loggedInUser);
 				if (presenter != null) {
@@ -192,8 +176,6 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 					presenter.go(container);
 				}
 			}
-
-
 
 			if (token.equals("addUser")) {
 				presenter = new AddUserPresenter(rpcService, eventBus, new AddUserView(), loggedInUser);
@@ -204,12 +186,12 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 			}
 
 		}
-	} 
+	}
+
 	private void setContainer(HasWidgets container) {
 		this.container = container;
 		this.container.clear();
 	}
-
 
 	@Override
 	public void go(HasWidgets container) {

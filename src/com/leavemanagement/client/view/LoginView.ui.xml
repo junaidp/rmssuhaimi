@@ -26,9 +26,9 @@
 	</ui:style>
 
 	<g:HTMLPanel  >
-		<div class="header">
+		<!-- <div class="header">
 			<!-- <g:Label text="APPLICATION NAME " styleName="heading" /> -->
-		</div>
+		
 
 		<div class="loginArea" ui:field="loginArea">
 			<m:MaterialRow height="150px"  addStyleNames="{style.row}"  >
