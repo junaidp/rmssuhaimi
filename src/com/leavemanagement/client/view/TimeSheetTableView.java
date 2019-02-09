@@ -53,9 +53,9 @@ public class TimeSheetTableView extends MaterialColumn {
 			vpHeading.add(heading);
 			vpHeading.add(lblSum);
 			flex.setWidget(0, k + 1, vpHeading);
-			// flex.setWidget(1, k + 1, textTotalHour);
+			flex.setWidget(0, 0, new Label("Total Hours:"));
 			flex.getFlexCellFormatter().setHorizontalAlignment(0, k + 1, HasHorizontalAlignment.ALIGN_CENTER);
-
+			flex.getFlexCellFormatter().setColSpan(0, 0, 0);
 			// lblTotalHour.setText(sum + "");
 
 			// }
