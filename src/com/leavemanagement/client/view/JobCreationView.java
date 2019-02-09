@@ -344,6 +344,17 @@ public class JobCreationView extends MaterialColumn {
 				}
 			}
 		});
+
+		listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				// fetchSubLineofServices();
+				fetchLineOFService();
+
+			}
+		});
+		//
 		listLocation.addValueChangeHandler(new ValueChangeHandler<String>() {
 
 			@Override
@@ -357,7 +368,7 @@ public class JobCreationView extends MaterialColumn {
 				}
 			}
 		});
-		// listLineOfService.addValueChangeHandler(new
+		// listDomain.addValueChangeHandler(new
 		// ValueChangeHandler<String>() {
 		//
 		// @Override
@@ -365,14 +376,7 @@ public class JobCreationView extends MaterialColumn {
 		// fetchDomains();
 		// }
 		// });
-		// listDomain.addValueChangeHandler(new ValueChangeHandler<String>() {
-		//
-		// @Override
-		// public void onValueChange(ValueChangeEvent<String> event) {
-		// //fetchSubLineofServices();
-		// }
-		// });
-		//
+
 		// @Override
 		// public void onChange(ChangeEvent event) {
 		// if(listLocation.getSelectedIndex()==1){
@@ -412,6 +416,7 @@ public class JobCreationView extends MaterialColumn {
 
 			@Override
 			public void onClick(ClickEvent event) {
+
 				// if(selectedJob==null && phases.size()<1){
 				// Window.alert("Please add at least 1 phase for this job");
 				// }else{
@@ -625,7 +630,7 @@ public class JobCreationView extends MaterialColumn {
 
 		listBoxNature.setSelectedIndex(0);
 		listDomain.setSelectedIndex(0);
-		listLineOfService.setSelectedIndex(0);
+		listLineOfService.clear();
 
 		txtJobName.clear();
 		// fetchDomains();
@@ -652,10 +657,32 @@ public class JobCreationView extends MaterialColumn {
 			@Override
 			public void onSuccess(ArrayList<Domains> result) {
 				listDomain.clear();
-				for (int i = 0; i < result.size(); i++) {
+
+				for (int i = 1; i < result.size(); i++) {
+
 					listDomain.addItem(result.get(i).getDomainId() + "", result.get(i).getName());
 				}
 				// fetchSubLineofServices();
+			}
+		});
+	}
+
+	private void fetchLineOFService() {
+		int domainId = Integer.parseInt(listDomain.getValue(listDomain.getSelectedIndex()));
+		rpcService.fetchLineOfService(domainId, new AsyncCallback<ArrayList<LineofService>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("fail fetch LineOfService");
+			}
+
+			@Override
+			public void onSuccess(ArrayList<LineofService> result) {
+				listLineOfService.clear();
+				for (int i = 0; i < result.size(); i++) {
+					listLineOfService.addItem(result.get(i).getLineofServiceId() + "", result.get(i).getName());
+				}
+
 			}
 		});
 	}
@@ -751,13 +778,16 @@ public class JobCreationView extends MaterialColumn {
 			listCountry.addItem(countries.get(i).getCountryId() + "", countries.get(i).getName());
 		}
 		for (int i = 0; i < lineofServices.size(); i++) {
-			listLineOfService.addItem(lineofServices.get(i).getLineofServiceId() + "", lineofServices.get(i).getName());
+			// listLineOfService.addItem(lineofServices.get(i).getLineofServiceId()
+			// + "", lineofServices.get(i).getName());
 		}
 		// for(int i=0; i< sublineofServices.size(); i++){
 		// listSubLineofService.addItem(
 		// sublineofServices.get(i).getSubLineofServiceId()+"",sublineofServices.get(i).getName());
 		// }
+		listDomain.addItem("0", "Select Domain");
 		for (int i = 0; i < domains.size(); i++) {
+
 			listDomain.addItem(domains.get(i).getDomainId() + "", domains.get(i).getName());
 		}
 

@@ -1725,7 +1725,8 @@ public class MySQLRdbHelper {
 		Session session = null;
 		try {
 			session = sessionFactory.openSession();
-			deletePreviousTimeSheet(timeSheet.get(0).getMonth(), timeSheet.get(0).getUserId().getUserId(), session);
+			deletePreviousTimeSheet(timeSheet.get(0).getMonth(), timeSheet.get(0).getUserId().getUserId(),
+					timeSheet.get(0).getJobId().getJobId(), session);
 
 			for (int i = 0; i < timeSheet.size(); i++) {
 				timeSheet.get(i).setActivity(timeSheet.get(i).getActivity());
@@ -1742,12 +1743,14 @@ public class MySQLRdbHelper {
 
 	}
 
-	private void deletePreviousTimeSheet(int month, int userId, Session session) {
+	private void deletePreviousTimeSheet(int month, int userId, int job, Session session) {
 		try {
 			Criteria crit = session.createCriteria(TimeSheet.class);
 			crit.createAlias("userId", "user");
+			crit.createAlias("jobId", "job");
 			crit.add(Restrictions.eq("user.userId", userId));
 			crit.add(Restrictions.eq("month", month));
+			crit.add(Restrictions.eq("job.jobId", job));
 			List rsList = crit.list();
 
 			for (Iterator it = rsList.iterator(); it.hasNext();) {
@@ -2753,6 +2756,32 @@ public class MySQLRdbHelper {
 		}
 	}
 
+	public ArrayList<LineofService> fetchLineOfService(int domainId) throws Exception {
+		ArrayList<LineofService> listLineOfService = new ArrayList<LineofService>();
+		Session session = null;
+		try {
+			session = sessionFactory.openSession();
+			Criteria crit = session.createCriteria(LineofService.class);
+			crit.createAlias("domainId", "domain");
+			crit.add(Restrictions.eq("domain.domainId", domainId));
+			List rsList = crit.list();
+
+			for (Iterator it = rsList.iterator(); it.hasNext();) {
+				LineofService lineOfService = (LineofService) it.next();
+				listLineOfService.add(lineOfService);
+			}
+
+			return listLineOfService;
+		} catch (Exception ex) {
+			logger.warn(String.format("Exception occured in getLineOfService", ex.getMessage()), ex);
+			System.out.println("Exception occured in getLineOfService" + ex.getMessage());
+
+			throw new Exception("Exception occured in getLineOfService");
+		} finally {
+
+		}
+
+	}
 	// public String fetchJobWiseReport(HashMap<String,Integer> map) {
 	//
 	// ArrayList<AllJobsReportDTO> jobReports = new

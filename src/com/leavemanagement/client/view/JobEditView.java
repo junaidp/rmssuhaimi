@@ -11,6 +11,7 @@ import com.leavemanagement.client.GreetingService;
 import com.leavemanagement.client.GreetingServiceAsync;
 import com.leavemanagement.shared.Job;
 import com.leavemanagement.shared.JobAttributesDTO;
+import com.leavemanagement.shared.LineofService;
 import com.leavemanagement.shared.Phases;
 import com.leavemanagement.shared.User;
 
@@ -100,24 +101,46 @@ public class JobEditView extends MaterialColumn {
 		});
 	}
 
-	private void selectFields(Job selectedJob) {
+	private void selectFields(final Job selectedJob) {
+
+		rpcService.fetchLineOfService(selectedJob.getDomainId().getDomainId(),
+				new AsyncCallback<ArrayList<LineofService>>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void onSuccess(ArrayList<LineofService> result) {
+						jobCreationView.getListLineOfService().clear();
+						for (int i = 0; i < result.size(); i++) {
+							jobCreationView.getListLineOfService().addItem(result.get(i).getLineofServiceId() + "",
+									result.get(i).getName());
+						}
+
+						for (int i = 0; i < jobCreationView.getListLineOfService().getItemCount(); i++) {
+							if (jobCreationView.getListLineOfService().getValue(i)
+									.equals(selectedJob.getLineofServiceId().getLineofServiceId() + "")) {
+								jobCreationView.getListLineOfService().setSelectedIndex(i);
+								break;
+							}
+						}
+					}
+				});
+
 		for (int i = 0; i < jobCreationView.getListCountry().getItemCount(); i++) {
 			if (jobCreationView.getListCountry().getValue(i).equals(selectedJob.getCountryId().getCountryId() + "")) {
 				jobCreationView.getListCountry().setSelectedIndex(i);
 				break;
 			}
 		}
+
 		for (int i = 0; i < jobCreationView.getListDomain().getItemCount(); i++) {
 			if (jobCreationView.getListDomain().getValue(i).equals(selectedJob.getDomainId().getDomainId() + "")) {
 				jobCreationView.getListDomain().setSelectedIndex(i);
-				break;
-			}
-		}
 
-		for (int i = 0; i < jobCreationView.getListLineOfService().getItemCount(); i++) {
-			if (jobCreationView.getListLineOfService().getValue(i)
-					.equals(selectedJob.getLineofServiceId().getLineofServiceId() + "")) {
-				jobCreationView.getListLineOfService().setSelectedIndex(i);
 				break;
 			}
 		}
@@ -138,24 +161,6 @@ public class JobEditView extends MaterialColumn {
 
 		jobCreationView.listEmployee1.setValues(usersList);
 
-		// for (int i = 0; i <
-		// jobCreationView.getListEmployee1().getWidgetCount(); i++) {
-		// if (jobCreationView.getListEmployee1().getValues()
-		// .equals(selectedJob.getUsersList().get(i).getUserId() + "")) {
-		// jobCreationView.getListEmployee1().setSelectedIndex(i);
-		// break;
-		// }
-		// }
-
-		// for (int i = 0; i <
-		// jobCreationView.getListEmployee1().getWidgetCount(); i++) {
-		// if (jobCreationView.getListEmployee1().getValues()
-		// .equals(selectedJob.getUsersList().get(i).getUserId() + "")) {
-		// jobCreationView.getListEmployee1().setSelectedIndex(i);
-		// break;
-		// }
-		// }
-
 		for (int i = 0; i < jobCreationView.getContainerActivities().getWidgetCount(); i++) {
 
 			JobActivities jobActivites = (JobActivities) jobCreationView.getContainerActivities().getWidget(i);
@@ -167,14 +172,6 @@ public class JobEditView extends MaterialColumn {
 		// i<jobCreationView.getListSubLineofService().getItemCount(); i++ ){
 		// if(jobCreationView.getListSubLineofService().getValue(i).equals(selectedJob.getSubLineofServiceId().getSubLineofServiceId()+"")){
 		// jobCreationView.getListSubLineofService().setSelectedIndex(i);
-		// break;
-		// }
-		// }
-
-		// for(int i=0; i<jobCreationView.getListEmployees().getItemCount(); i++
-		// ){
-		// if(jobCreationView.getListEmployees().getValue(i).equals(selectedJob.employee1().getUserId()+"")){
-		// jobCreationView.getListEmployees().setSelectedIndex(i);
 		// break;
 		// }
 		// }

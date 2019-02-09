@@ -76,6 +76,8 @@ public interface GreetingService extends RemoteService {
 
 	ArrayList<Domains> fetchDomains(int lineOfServiceId) throws Exception;
 
+	ArrayList<LineofService> fetchLineOfService(int domainId) throws Exception;
+
 	ArrayList<Domains> fetchDomains() throws Exception;
 
 	ArrayList<SubLineofService> fetchSublineofServices(int domainId) throws Exception;

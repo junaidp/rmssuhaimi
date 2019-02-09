@@ -416,4 +416,11 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 		return user;
 	}
 
+	@Override
+	public ArrayList<LineofService> fetchLineOfService(int domainId) throws Exception {
+		ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+		MySQLRdbHelper rdbHelper = (MySQLRdbHelper) ctx.getBean("ManagerExams");
+		return rdbHelper.fetchLineOfService(domainId);
+	}
+
 }

@@ -125,4 +125,6 @@ public interface GreetingServiceAsync {
 
 	void fetchLoggedInUser(AsyncCallback<User> asyncCallback);
 
+	void fetchLineOfService(int domainId, AsyncCallback<ArrayList<LineofService>> callback);
+
 }

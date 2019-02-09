@@ -12,7 +12,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.leavemanagement.client.GreetingService;
 import com.leavemanagement.client.GreetingServiceAsync;
@@ -35,7 +34,7 @@ public class TimeSheetTree extends Composite {
 	MaterialColumn rowMonth;
 
 	MaterialColumn c1 = new MaterialColumn();
-	ScrollPanel p1 = new ScrollPanel();
+	// ScrollPanel p1 = new ScrollPanel();
 	private boolean chargeable = false;
 	MaterialListBox listMonth = new MaterialListBox();
 	MaterialCheckBox chkChargeable = new MaterialCheckBox();
@@ -126,11 +125,12 @@ public class TimeSheetTree extends Composite {
 			final MaterialListBox listMonth) {
 
 		c1.clear();
-		p1.clear();
-		p1.setHeight("400px");
-		p1.setWidth("1360px");
-		p1.add(c1);
-		treeItem1.add(p1);
+		// p1.clear();
+		// p1.setHeight("400px");
+		// p1.setWidth("1360px");
+		// p1.add(c1);
+		// treeItem1.add(p1);
+		treeItem1.add(c1);
 		final TimeSheetTableView timeSheetTable = new TimeSheetTableView(job, loggedInUser, listMonth);
 		c1.add(timeSheetTable);
 	}
