@@ -12,8 +12,8 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.leavemanagement.client.GreetingService;
 import com.leavemanagement.client.GreetingServiceAsync;
@@ -26,6 +26,8 @@ import gwt.material.design.client.ui.MaterialButton;
 import gwt.material.design.client.ui.MaterialColumn;
 import gwt.material.design.client.ui.MaterialLabel;
 import gwt.material.design.client.ui.MaterialListBox;
+import gwt.material.design.client.ui.MaterialLoader;
+import gwt.material.design.client.ui.MaterialRow;
 import gwt.material.design.client.ui.MaterialTextBox;
 
 public class TimeSheetTableView extends MaterialColumn {
@@ -34,46 +36,78 @@ public class TimeSheetTableView extends MaterialColumn {
 
 	private int selectedMonth = 0;
 
-	public TimeSheetTableView(final Job job, User loggedInUser2, MaterialListBox listMonth) {
+	public TimeSheetTableView(final Job job, User loggedInUser2, MaterialListBox listMonth, final boolean chargeable2) {
 		selectedMonth = Integer.parseInt(listMonth.getSelectedValue());
-
+		MaterialRow columnMain = new MaterialRow();
+		ScrollPanel scrollPanelWidth = new ScrollPanel();
+		// columnMain.setWidth("1200px");
 		this.loggedInUser = loggedInUser2;
+		ScrollPanel scrollPanel = new ScrollPanel();
+
 		MaterialButton btnSave = new MaterialButton("Save");
 		final FlexTable flex = new FlexTable();
-		for (int k = 0; k < 31; k++) {
+		final FlexTable flex1 = new FlexTable();
+		// Window.alert("start ");
 
+		setHandler(job, flex, flex1);
+		// Window.alert("before adding anything ");
+		scrollPanel.setHeight("400px");
+		scrollPanel.setWidth("1900px");
+		scrollPanel.add(flex1);
+		// Window.alert("adding flex1 in scrollpanel");
+		ScrollPanel sc = new ScrollPanel();
+		sc.setHeight("600px");
+		sc.setWidth("1285px");
+		// Window.alert("createed sc");
+		columnMain.add(flex);
+		// Window.alert("added flex in column main ");
+		// add(flex);
+		// add(scrollPanel);
+		// add(btnSave);
+		columnMain.add(scrollPanel);
+		// Window.alert("added scrollpanel in column main");
+		columnMain.add(btnSave);
+		sc.add(columnMain);
+		// Window.alert("adding cloumn main oto sc ");
+		add(sc);
+
+		saveHandler(job, chargeable2, btnSave, flex1, flex);
+	}
+
+	private void setHandler(final Job job, final FlexTable flex, final FlexTable flex1) {
+		for (int k = 0; k < 31; k++) {
+			// Window.alert("in loop k");
 			VerticalPanel vpHeading = new VerticalPanel();
 			final MaterialLabel lblSum = new MaterialLabel("0");
 			final Data data = new Data();
 			lblSum.setWidth("30px");
 
 			Label heading = new Label(k + 1 + "");
-
+			// Window.alert("after adding lbl heading");
 			heading.addStyleName("blueBold");
 			vpHeading.add(heading);
+			heading.setWidth("30px");
 			vpHeading.add(lblSum);
 			flex.setWidget(0, k + 1, vpHeading);
-			flex.setWidget(0, 0, new Label("Total Hours:"));
-			flex.getFlexCellFormatter().setHorizontalAlignment(0, k + 1, HasHorizontalAlignment.ALIGN_CENTER);
-			flex.getFlexCellFormatter().setColSpan(0, 0, 0);
-			// lblTotalHour.setText(sum + "");
-
-			// }
-
+			// Window.alert("lbltotal before");
+			Label lblTotalHour = new Label("Total Hours:");
+			lblTotalHour.setWidth("300px");
+			flex.setWidget(0, 0, lblTotalHour);
 			for (int i = 0; i < job.getActivityLists().size(); i++) {
 				Activity activity = job.getActivityLists().get(i);
 				Label lblName = new Label(activity.getActivityName());
+				// Window.alert("lbname");
+				lblName.setWidth("250px");
 				lblName.setWordWrap(false);
 
-				flex.setWidget(i + 1, 0, lblName);
+				flex1.setWidget(i + 1, 0, lblName);
 
-				// for (int j = 0; j < 31; j++) {
-
+				// Window.alert("after adding lblname");
 				final MaterialTextBox text = new MaterialTextBox();
 				text.setText("0");
 				text.setWidth("30px");
-				flex.setWidget(i + 1, k + 1, text);
-
+				flex1.setWidget(i + 1, k + 1, text);
+				// Window.alert("befotre adding text");
 				for (int m = 0; m < activity.getTimeSheets().size(); m++) {
 					TimeSheet timeSheet = activity.getTimeSheets().get(m);
 					if (timeSheet.getMonth() == selectedMonth && timeSheet.getDay() == k + 1
@@ -83,16 +117,11 @@ public class TimeSheetTableView extends MaterialColumn {
 					}
 				}
 
-				///////////////
 				try {
 
-					// VerticalPanel vpHeading = (VerticalPanel)
-					// flex.getWidget(0, j + 1);
-					// final MaterialLabel lblSum = (MaterialLabel)
-					// vpHeading.getWidget(1);
 					data.setSum(data.getSum() + Float.parseFloat(text.getValue()));
 					lblSum.setText(data.getSum() + "");
-
+					// Window.alert("try data sum");
 					text.addKeyPressHandler(new KeyPressHandler() {
 
 						@Override
@@ -130,25 +159,26 @@ public class TimeSheetTableView extends MaterialColumn {
 				Label lblActicityId = new Label();
 				lblActicityId.setText(job.getActivityLists().get(i).getActivityId() + "");
 				lblActicityId.setStyleName("white");
-				flex.setWidget(i + 1, 32, lblActicityId);
+				flex1.setWidget(i + 1, 32, lblActicityId);
 
 			}
 		}
-		add(flex);
-		add(btnSave);
+	}
 
+	private void saveHandler(final Job job, final boolean chargeable2, MaterialButton btnSave, final FlexTable flex1,
+			final FlexTable flex) {
 		btnSave.addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
 
-				saveTimeSheet(job, flex);
+				saveTimeSheet(job, flex1, chargeable2, flex);
 			}
 
 		});
 	}
 
-	private void saveTimeSheet(Job job, FlexTable flex) {
+	private void saveTimeSheet(Job job, FlexTable flex, boolean chargeable2, FlexTable flex2) {
 		float totalHours = 0;
 		ArrayList<TimeSheet> timeSheetList = new ArrayList<TimeSheet>();
 		for (int i = 0; i < flex.getRowCount() - 1; i++) {
@@ -176,20 +206,55 @@ public class TimeSheetTableView extends MaterialColumn {
 			}
 
 		}
-		saveTimeSheetToDb(timeSheetList);
+
+		saveTimeSheetToDb(timeSheetList, chargeable2, job, flex, flex2);
 	}
 
-	private void saveTimeSheetToDb(ArrayList<TimeSheet> timeSheetList) {
+	private void saveTimeSheetToDb(ArrayList<TimeSheet> timeSheetList, final boolean chargeable2, final Job job,
+			final FlexTable flex, final FlexTable flex2) {
+		// final LoadingPopup loadingPopup = new LoadingPopup();
+		// loadingPopup.display();
+		MaterialLoader.loading(true);
 		rpcService.saveTimeSheet(timeSheetList, new AsyncCallback<String>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
 				Window.alert("fail savetime");
+				// if (loadingPopup != null) {
+				// loadingPopup.remove();
+				// }
+				MaterialLoader.loading(false);
 			}
 
 			@Override
 			public void onSuccess(String result) {
 				Window.alert("time sheet saved");
+				MaterialLoader.loading(false);
+				// if (loadingPopup != null) {
+				// loadingPopup.remove();
+				// }
+				// rpcService.fetchJobsForTimeSheet(loggedInUser, chargeable2,
+				// new AsyncCallback<ArrayList<Job>>() {
+				//
+				// @Override
+				// public void onFailure(Throwable caught) {
+				// // TODO Auto-generated method stub
+				//
+				// }
+				//
+				// @Override
+				// public void onSuccess(ArrayList<Job> result) {
+				// // for (int j = 0; j < result.size(); j++) {
+				// // final Job job1 = result.get(j);
+				// // flex.clear();
+				// // flex2.clear();
+				// // setHandler(job, flex2, flex);
+				// // }
+				//
+				// }
+				//
+				// });
+
 			}
 		});
 	}

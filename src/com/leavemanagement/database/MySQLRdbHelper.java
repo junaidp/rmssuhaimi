@@ -998,7 +998,9 @@ public class MySQLRdbHelper {
 
 			for (Iterator it = rsList.iterator(); it.hasNext();) {
 				Domains domain = (Domains) it.next();
-				domains.add(domain);
+				if (domain.getDomainId() != 6) {
+					domains.add(domain);
+				}
 			}
 
 			return domains;
@@ -1025,7 +1027,10 @@ public class MySQLRdbHelper {
 
 			for (Iterator it = rsList.iterator(); it.hasNext();) {
 				Domains domain = (Domains) it.next();
-				domains.add(domain);
+				if (domain.getDomainId() != 6) {
+					domains.add(domain);
+				}
+
 			}
 
 			return domains;
@@ -1120,6 +1125,7 @@ public class MySQLRdbHelper {
 
 	private void setJobActivities(ArrayList<JobActivityEntity> jobActivityList, Session session, Job job) {
 		try {
+			// ArrayList<Activity> default = new ArrayList<>(Activity);
 			for (int i = 0; i < jobActivityList.size(); i++) {
 
 				JobActivityEntity jobActivity = jobActivityList.get(i);
@@ -1135,6 +1141,7 @@ public class MySQLRdbHelper {
 				 * jobActivity.setReporting(jobActivityList.get(i).getReporting(
 				 * ));
 				 */
+
 				jobActivity.setJobId(job);
 				session.saveOrUpdate(jobActivity);
 				session.flush();
@@ -1359,15 +1366,21 @@ public class MySQLRdbHelper {
 
 			for (Iterator it = rsList.iterator(); it.hasNext();) {
 				Job job = (Job) it.next();
+				if (job.getJobId() == 281) {
+					jobs.set(0, job);
+				}
+
 				job.setActivityLists(
 						fetchActivities(session, job, loggedInUser.getRoleId().getRoleId(), loggedInUser.getUserId()));
 				// job.setJobPhases(fetchJobPhases(job.getJobId()));
+				// job.setFetchDefaultActivityList(fetchActivitiesDefault(session));
 				job.setJobEmployeesList(fetchJobEmployees(session, job.getJobId()));
 				job.setJobAttributes(fetchjobAttributes(session, job.getJobId()));
 				job.setTimeSheets(fetchJobTimeSheets(session, job.getJobId(), loggedInUser.getRoleId().getRoleId(),
 						loggedInUser.getUserId()));
-
-				jobs.add(job);
+				if (job.getJobId() != 281) {
+					jobs.add(job);
+				}
 			}
 
 			return jobs;
@@ -1385,12 +1398,13 @@ public class MySQLRdbHelper {
 		ArrayList<Activity> listActivities = new ArrayList<Activity>();
 		try {
 			session = sessionFactory.openSession();
-
+			int line = 74;
 			Criteria crit = session.createCriteria(Activity.class);
 			// crit.createAlias("activityId", "activity");
 			crit.createAlias("lineofServiceId", "lineOfService");
 			crit.createAlias("lineOfService.domainId", "domainId");
 			crit.add(Restrictions.eq("lineOfService.lineofServiceId", job.getLineofServiceId().getLineofServiceId()));
+			// crit.add(Restrictions.eq("lineOfService.lineofServiceId", line));
 			// crit.add(Restrictions.eq("domainId",
 			// job.getLineofServiceId().getDomainId().getDomainId()));
 
@@ -1398,9 +1412,45 @@ public class MySQLRdbHelper {
 
 			for (Iterator it = rsList.iterator(); it.hasNext();) {
 				Activity activity = (Activity) it.next();
+
 				activity.setTimeSheets(fetchActivityTimeSheets(session, activity.getActivityId(), roleId, userId));
 
 				listActivities.add(activity);
+			}
+			return listActivities;
+		} catch (Exception ex) {
+			System.out.println("fail : fetchActivities: " + ex);
+			throw ex;
+		}
+	}
+
+	private ArrayList<Activity> fetchActivitiesDefault(Session session) throws Exception {
+		ArrayList<Activity> listActivities = new ArrayList<Activity>();
+		try {
+			session = sessionFactory.openSession();
+			int line = 74;
+			Criteria crit = session.createCriteria(Activity.class);
+			// crit.createAlias("activityId", "activity");
+			// crit.createAlias("lineofServiceId", "lineOfService");
+			// crit.createAlias("lineOfService.domainId", "domainId");
+			// crit.add(Restrictions.eq("lineOfService.lineofServiceId",
+			// job.getLineofServiceId().getLineofServiceId()));
+			// // crit.add(Restrictions.eq("lineOfService.lineofServiceId",
+			// line));
+			// // crit.add(Restrictions.eq("domainId",
+			// // job.getLineofServiceId().getDomainId().getDomainId()));
+
+			List rsList = crit.list();
+
+			for (Iterator it = rsList.iterator(); it.hasNext();) {
+				Activity activity = (Activity) it.next();
+				// if (activity.getActivityId() == 254)
+				// {
+				// listActivities.add(activity);
+				// }
+				if (activity.getLineofServiceId().getLineofServiceId() == 74) {
+					listActivities.add(activity);
+				}
 			}
 			return listActivities;
 		} catch (Exception ex) {

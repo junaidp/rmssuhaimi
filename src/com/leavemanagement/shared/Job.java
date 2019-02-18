@@ -17,74 +17,77 @@ import javax.persistence.Transient;
 
 @Entity
 
-@Table(name="job")
-public class Job   implements Serializable {
+@Table(name = "job")
+public class Job implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Id 
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="jobId")
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "jobId")
 	private int jobId;
-	
-	@Column(name="jobName")
+
+	@Column(name = "jobName")
 	private String jobName;
-	
-	//@Column(name="client")
-	//private String client;
-	
-	@Column(name="segment")
+
+	// @Column(name="client")
+	// private String client;
+
+	@Column(name = "segment")
 	private int segment;
-	
-	@Column(name="allocation")
+
+	@Column(name = "allocation")
 	private int allocation;
-	
-	@Column(name="location")
+
+	@Column(name = "location")
 	private int location;
-	
-	@Column(name="nature")
+
+	@Column(name = "nature")
 	private int nature;
-	
-	@Column(name="company")
+
+	@Column(name = "company")
 	private int company;
-	
-	
+
 	@JoinColumn(name = "lineofServiceId")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private LineofService lineofServiceId;
-	
+
 	@JoinColumn(name = "domainId")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Domains domainId;
-	
+
 	@JoinColumn(name = "countryId")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Countries countryId;
-	
-//	@JoinColumn(name = "employee1")
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	private User employee1;
-	
+
+	// @JoinColumn(name = "employee1")
+	// @ManyToOne(fetch = FetchType.LAZY)
+	// private User employee1;
+
 	@Transient
 	private List<User> usersList;
-	
+
 	@Transient
 	private ArrayList<JobEmployees> jobEmployeesList;
-	
-	@Transient ArrayList<JobAttributes> jobAttributes;
-	
-	@Transient ArrayList<TimeSheet> timeSheets;
-	//adding new array list
-	@Transient
-	private ArrayList<JobActivityEntity> jobActivities;     
-	@Transient
-	private ArrayList<Activity> activityLists;    
 
-	
-	@Column(name="status")
+	@Transient
+	ArrayList<JobAttributes> jobAttributes;
+
+	@Transient
+	ArrayList<TimeSheet> timeSheets;
+	// adding new array list
+	@Transient
+	private ArrayList<JobActivityEntity> jobActivities;
+	@Transient
+	private ArrayList<Activity> activityLists;
+	@Transient
+	private ArrayList<Activity> fetchDefaultActivityList;
+
+	@Column(name = "status")
 	private String status;
-	
-	public Job(){}
+
+	public Job() {
+	}
 
 	public int getJobId() {
 		return jobId;
@@ -102,8 +105,6 @@ public class Job   implements Serializable {
 		this.jobName = jobName;
 	}
 
-	
-
 	public LineofService getLineofServiceId() {
 		return lineofServiceId;
 	}
@@ -120,8 +121,6 @@ public class Job   implements Serializable {
 		this.domainId = domainId;
 	}
 
-
-
 	public Countries getCountryId() {
 		return countryId;
 	}
@@ -130,14 +129,13 @@ public class Job   implements Serializable {
 		this.countryId = countryId;
 	}
 
-//	public User employee1() {
-//		return employee1;
-//	}
-//
-//	public void setUserId(User userId) {
-//		this.employee1 = userId;
-//	}
-
+	// public User employee1() {
+	// return employee1;
+	// }
+	//
+	// public void setUserId(User userId) {
+	// this.employee1 = userId;
+	// }
 
 	public ArrayList<JobEmployees> getJobEmployeesList() {
 		return jobEmployeesList;
@@ -195,8 +193,6 @@ public class Job   implements Serializable {
 		this.allocation = allocation;
 	}
 
-	
-
 	public int getCompany() {
 		return company;
 	}
@@ -237,6 +233,12 @@ public class Job   implements Serializable {
 		this.activityLists = activityLists;
 	}
 
+	public ArrayList<Activity> getFetchDefaultActivityList() {
+		return fetchDefaultActivityList;
+	}
 
-	
+	public void setFetchDefaultActivityList(ArrayList<Activity> fetchDefaultActivityList) {
+		this.fetchDefaultActivityList = fetchDefaultActivityList;
+	}
+
 }

@@ -5,10 +5,17 @@
 	<ui:style>
 	
 	</ui:style>
-	<g:HTMLPanel>
+
+	<d:MaterialRow>
+	<d:MaterialRow>
 	<d:MaterialColumn ui:field="rowMonth"></d:MaterialColumn>
+</d:MaterialRow>
+	<d:MaterialRow ui:field="rowTotal"></d:MaterialRow>
+
 	<t:MaterialTree ui:field="tree">
 	<!-- <t:MaterialTreeItem iconType="FOLDER" text="Jobs" ui:field="treeItem"></t:MaterialTreeItem> -->
 	</t:MaterialTree>
-	</g:HTMLPanel>
+
+</d:MaterialRow>
+
 </ui:UiBinder> 

@@ -1,6 +1,7 @@
 package com.leavemanagement.client.view;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
@@ -12,11 +13,14 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.leavemanagement.client.GreetingService;
 import com.leavemanagement.client.GreetingServiceAsync;
 import com.leavemanagement.shared.Allocations;
 import com.leavemanagement.shared.Job;
+import com.leavemanagement.shared.TimeSheet;
 import com.leavemanagement.shared.User;
 
 import gwt.material.design.addins.client.tree.MaterialTree;
@@ -24,7 +28,9 @@ import gwt.material.design.addins.client.tree.MaterialTreeItem;
 import gwt.material.design.client.constants.IconType;
 import gwt.material.design.client.ui.MaterialCheckBox;
 import gwt.material.design.client.ui.MaterialColumn;
+import gwt.material.design.client.ui.MaterialLabel;
 import gwt.material.design.client.ui.MaterialListBox;
+import gwt.material.design.client.ui.MaterialRow;
 
 public class TimeSheetTree extends Composite {
 	int selectedMonth = 0;
@@ -32,9 +38,11 @@ public class TimeSheetTree extends Composite {
 	MaterialTree tree;
 	@UiField
 	MaterialColumn rowMonth;
-
+	@UiField
+	MaterialRow rowTotal;
+	Label heading;
 	MaterialColumn c1 = new MaterialColumn();
-	// ScrollPanel p1 = new ScrollPanel();
+	ScrollPanel panelScroll = new ScrollPanel();
 	private boolean chargeable = false;
 	MaterialListBox listMonth = new MaterialListBox();
 	MaterialCheckBox chkChargeable = new MaterialCheckBox();
@@ -50,6 +58,7 @@ public class TimeSheetTree extends Composite {
 
 		rowMonth.add(listMonth);
 		rowMonth.add(chkChargeable);
+
 		chkChargeable.setText(Allocations.CHARGEABLE.getName());
 		listMonth.addItem("0", "Select Month");
 		listMonth.addItem("1", "Jan");
@@ -64,7 +73,8 @@ public class TimeSheetTree extends Composite {
 		listMonth.addItem("10", "Oct");
 		listMonth.addItem("11", "Nov");
 		listMonth.addItem("12", "Dec");
-
+		// panelScroll.setHeight("800px");
+		// panelScroll.add(tree);
 		listMonth.addValueChangeHandler(new ValueChangeHandler<String>() {
 
 			@Override
@@ -93,6 +103,11 @@ public class TimeSheetTree extends Composite {
 			@Override
 			public void onSuccess(final ArrayList<Job> result) {
 
+				// start
+				rowTotal.clear();
+				// tree.clear();
+				calculateTotalHoursForTimeSheet(result, listMonth, loggedInUser);
+				// end
 				for (int i = 0; i < result.size(); i++) {
 					final Job job = result.get(i);
 					final MaterialTreeItem treeItem1 = new MaterialTreeItem();
@@ -100,14 +115,33 @@ public class TimeSheetTree extends Composite {
 
 					treeItem1.setText(result.get(i).getJobName());
 					tree.add(treeItem1);
-
+					//
 					treeItem1.addDoubleClickHandler(new DoubleClickHandler() {
 
 						@Override
 						public void onDoubleClick(DoubleClickEvent event) {
-							displayInTree(loggedInUser, job, treeItem1, listMonth);
+							// tree.clear();
+							// selectedMonth =
+							// Integer.parseInt(listMonth.getValue(listMonth.getSelectedIndex()));
+							// fetchJobs(loggedInUser);
+							displayInTree(loggedInUser, job, treeItem1, listMonth, chargeable);
+
 						}
+
 					});
+					// treeItem1.addClickHandler(new ClickHandler() {
+					//
+					// @Override
+					// public void onClick(ClickEvent event) {
+					// // tree.clear();
+					// selectedMonth =
+					// Integer.parseInt(listMonth.getValue(listMonth.getSelectedIndex()));
+					// // fetchJobs(loggedInUser);
+					// displayInTree(loggedInUser, job, treeItem1, listMonth,
+					// chargeable);
+					//
+					// }
+					// });
 
 				}
 
@@ -121,8 +155,50 @@ public class TimeSheetTree extends Composite {
 		});
 	}
 
+	private void calculateTotalHoursForTimeSheet(List<Job> result, MaterialListBox listMonth, User loggedInUser) {
+
+		for (int k = 1; k < 32; k++) {
+
+			MaterialColumn vpHeading = new MaterialColumn();
+			MaterialLabel lblSum = new MaterialLabel("0");
+
+			lblSum.setWidth("20px");
+			Data data = new Data();
+			data.setSum(0);
+
+			heading = new Label(k + "");
+			// Window.alert("after adding lbl heading");
+			heading.addStyleName("blueBold");
+			vpHeading.add(heading);
+			vpHeading.add(lblSum);
+
+			rowTotal.add(vpHeading);
+			for (int i = 0; i < result.size(); i++) {
+				hoursCalculate(k, result.get(i).getTimeSheets(), data, lblSum, listMonth, loggedInUser);
+			}
+
+			lblSum.setText(data.getSum() + "");
+		}
+
+	}
+
+	private void hoursCalculate(int k, ArrayList<TimeSheet> timeSheets, Data data, MaterialLabel lblSum,
+			MaterialListBox listMonth2, User loggedInUser) {
+
+		for (int i = 0; i < timeSheets.size(); i++) {
+			selectedMonth = Integer.parseInt(listMonth.getValue(listMonth.getSelectedIndex()));
+			if (k == timeSheets.get(i).getDay() && (selectedMonth == timeSheets.get(i).getMonth())) {
+				float total = timeSheets.get(i).getHours();
+				data.setSum(data.getSum() + total);
+				// fetchJobs(loggedInUser);
+			}
+
+		}
+
+	}
+
 	private void displayInTree(final User loggedInUser, final Job job, final MaterialTreeItem treeItem1,
-			final MaterialListBox listMonth) {
+			final MaterialListBox listMonth, boolean chargeable2) {
 
 		c1.clear();
 		// p1.clear();
@@ -131,7 +207,7 @@ public class TimeSheetTree extends Composite {
 		// p1.add(c1);
 		// treeItem1.add(p1);
 		treeItem1.add(c1);
-		final TimeSheetTableView timeSheetTable = new TimeSheetTableView(job, loggedInUser, listMonth);
+		final TimeSheetTableView timeSheetTable = new TimeSheetTableView(job, loggedInUser, listMonth, chargeable2);
 		c1.add(timeSheetTable);
 	}
 
