@@ -33,11 +33,16 @@ import gwt.material.design.client.ui.MaterialTextBox;
 public class TimeSheetTableView extends MaterialColumn {
 	private GreetingServiceAsync rpcService = GWT.create(GreetingService.class);
 	private User loggedInUser = null;
+	private TimeSheetTree timeSheetTree;
 
 	private int selectedMonth = 0;
 
-	public TimeSheetTableView(final Job job, User loggedInUser2, MaterialListBox listMonth, final boolean chargeable2) {
+	public TimeSheetTableView(final Job job, User loggedInUser2, MaterialListBox listMonth, final boolean chargeable2,
+			TimeSheetTree timeSheetTree) {
 		selectedMonth = Integer.parseInt(listMonth.getSelectedValue());
+
+		this.timeSheetTree = timeSheetTree;
+
 		MaterialRow columnMain = new MaterialRow();
 		ScrollPanel scrollPanelWidth = new ScrollPanel();
 		// columnMain.setWidth("1200px");
@@ -49,7 +54,7 @@ public class TimeSheetTableView extends MaterialColumn {
 		final FlexTable flex1 = new FlexTable();
 		// Window.alert("start ");
 
-		setHandler(job, flex, flex1);
+		setHandler(job, flex, flex1, listMonth);
 		// Window.alert("before adding anything ");
 		scrollPanel.setHeight("400px");
 		scrollPanel.setWidth("1900px");
@@ -74,7 +79,7 @@ public class TimeSheetTableView extends MaterialColumn {
 		saveHandler(job, chargeable2, btnSave, flex1, flex);
 	}
 
-	private void setHandler(final Job job, final FlexTable flex, final FlexTable flex1) {
+	private void setHandler(final Job job, final FlexTable flex, final FlexTable flex1, MaterialListBox listMonth) {
 		for (int k = 0; k < 31; k++) {
 			// Window.alert("in loop k");
 			VerticalPanel vpHeading = new VerticalPanel();
@@ -114,6 +119,7 @@ public class TimeSheetTableView extends MaterialColumn {
 							&& job.getJobId() == timeSheet.getJobId().getJobId()) {
 						text.setValue(timeSheet.getHours() + "");
 						// break; //TODO
+
 					}
 				}
 
@@ -126,12 +132,15 @@ public class TimeSheetTableView extends MaterialColumn {
 
 						@Override
 						public void onKeyPress(KeyPressEvent event) {
+
 							if (!text.getText().isEmpty()) {
 								data.setOldValue(text.getValue().isEmpty() ? 0 : Float.parseFloat(text.getValue()));
 							}
 						}
 
 					});
+					// timeSheetTree.hoursCalculate(k, timeSheets, data, lblSum,
+					// listMonth2, loggedInUser);
 
 					text.addKeyUpHandler(new KeyUpHandler() {
 
@@ -230,6 +239,8 @@ public class TimeSheetTableView extends MaterialColumn {
 			public void onSuccess(String result) {
 				Window.alert("time sheet saved");
 				MaterialLoader.loading(false);
+				// timeSheetTree.calculateTotalHoursForTimeSheet(result,
+				// loggedInUser);
 				// if (loadingPopup != null) {
 				// loadingPopup.remove();
 				// }

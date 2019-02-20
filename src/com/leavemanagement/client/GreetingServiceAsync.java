@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.leavemanagement.shared.Activity;
 import com.leavemanagement.shared.AttributeRating;
 import com.leavemanagement.shared.Company;
 import com.leavemanagement.shared.Domains;
@@ -126,5 +127,10 @@ public interface GreetingServiceAsync {
 	void fetchLoggedInUser(AsyncCallback<User> asyncCallback);
 
 	void fetchLineOfService(int domainId, AsyncCallback<ArrayList<LineofService>> callback);
+
+	void fetchActivityReport(int lineOfServiceId, AsyncCallback<ArrayList<Activity>> callback);
+
+	void fetchSelectedJobForTimeSheet(User loggedInUser, boolean chargeable, int jobId,
+			AsyncCallback<ArrayList<Job>> callback);
 
 }

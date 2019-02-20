@@ -1394,6 +1394,60 @@ public class MySQLRdbHelper {
 		}
 	}
 
+	public ArrayList<Job> fetchSelectedJobForTimeSheet(User loggedInUser, boolean chargeable, int jobId)
+			throws Exception {
+		ArrayList<Job> jobs = new ArrayList<Job>();
+		Session session = null;
+		try {
+			session = sessionFactory.openSession();
+			Criteria crit = session.createCriteria(Job.class);
+			crit.createAlias("lineofServiceId", "lineofService");
+			crit.createAlias("domainId", "domain");
+			crit.createAlias("lineofService.domainId", "domainlineofservice");
+			crit.createAlias("countryId", "count");
+
+			crit.add(Restrictions.ne("status", "InActive"));
+			crit.add(Restrictions.ne("status", "Closed"));
+			if (chargeable) {
+				crit.add(Restrictions.eq("allocation", 1));
+			}
+			// crit.add(Restrictions.ne("client", "office"));
+
+			crit.add(Restrictions.eq("jobId", jobId));
+
+			// }
+			List rsList = crit.list();
+
+			for (Iterator it = rsList.iterator(); it.hasNext();) {
+				Job job = (Job) it.next();
+				// if (job.getJobId() == 281) {
+				// // jobs.set(0, job);
+				// }
+
+				job.setActivityLists(
+						fetchActivities(session, job, loggedInUser.getRoleId().getRoleId(), loggedInUser.getUserId()));
+				// job.setJobPhases(fetchJobPhases(job.getJobId()));
+				// job.setFetchDefaultActivityList(fetchActivitiesDefault(session));
+				job.setJobEmployeesList(fetchJobEmployees(session, job.getJobId()));
+				job.setJobAttributes(fetchjobAttributes(session, job.getJobId()));
+				job.setTimeSheets(fetchJobTimeSheets(session, job.getJobId(), loggedInUser.getRoleId().getRoleId(),
+						loggedInUser.getUserId()));
+				// if (job.getJobId() != 281) {
+				jobs.add(job);
+				// }
+			}
+
+			return jobs;
+		} catch (Exception ex) {
+			logger.warn(String.format("Exception occured in fetchJobs", ex.getMessage()), ex);
+			System.out.println("Exception occured in fetchJobs" + ex.getMessage());
+
+			throw new Exception("Exception occured in fetchJobs");
+		} finally {
+			session.close();
+		}
+	}
+
 	private ArrayList<Activity> fetchActivities(Session session, Job job, int roleId, int userId) throws Exception {
 		ArrayList<Activity> listActivities = new ArrayList<Activity>();
 		try {
@@ -1835,7 +1889,7 @@ public class MySQLRdbHelper {
 		try {
 			session = sessionFactory.openSession();
 			Criteria crit = session.createCriteria(Job.class);
-			int month = 0;
+			int month = 1;
 
 			// send all the listboxes values from clientside in a hashmap
 			// HashMap<String, Integer>
@@ -1908,12 +1962,35 @@ public class MySQLRdbHelper {
 						reportDTO.setLocation(location.getName());
 					}
 				}
-
+				float totalHours = 0;
 				reportDTO.setDomain(job.getDomainId().getName());
 				reportDTO.setLineOfService(job.getLineofServiceId().getName());
-				reportDTO.setBudgetedHours(getBudgetedHours(job.getJobId(), session, month));
-				reportDTO.setHoursWorked(getActualHours(job.getJobId(), session, month));
+				// reportDTO.setBudgetedHours(getBudgetedHours(job.getJobId(),
+				// session, month));
+				// reportDTO.setHoursWorked(getActualHours(job.getJobId(),
+				// session, month));
+				for (int i = 0; i < getActualHours(job.getJobId(), session, month).size(); i++) {
+					reportDTO.setActivity(
+
+							getActualHours(job.getJobId(), session, month).get(i).getActivity().getActivityName());
+
+					totalHours = totalHours + getActualHours(job.getJobId(), session, month).get(i).getHours();
+
+					reportDTO.setUser(getActualHours(job.getJobId(), session, month).get(i).getUserId().getName());
+					// budhethours is being used for month
+					reportDTO.setBudgetedHours(getActualHours(job.getJobId(), session, month).get(i).getMonth());
+				}
+				reportDTO.setTotalHours(totalHours);
 				reportDTO.setHoursVariance(reportDTO.getBudgetedHours() - reportDTO.getHoursWorked());
+				// for (int i = 0; i < job.getUsersList().size(); i++) {
+				// reportDTO.setUser(job.getUsersList().get(i).getName());
+				// }
+				// reportDTO.setActivity(job.getActivityLists().toString());
+				// reportDTO.setUser(job.getJobEmployeesList().toString());
+				// for (int i = 0; i < job.getActivityLists().size(); i++) {
+				//
+				// reportDTO.setActivity(job.getActivityLists().get(i).getActivityName());
+				// }
 				jobReports.add(reportDTO);
 			}
 
@@ -1951,24 +2028,36 @@ public class MySQLRdbHelper {
 		rowHeading.createCell((short) 0).setCellValue("Sr.");
 		rowHeading.createCell((short) 1).setCellValue("Job Name");
 		rowHeading.createCell((short) 2).setCellValue("Company Name");
-		rowHeading.createCell((short) 3).setCellValue("Hours Worked");
-		rowHeading.createCell((short) 4).setCellValue("Budgeted Hours");
-		rowHeading.createCell((short) 5).setCellValue("Hours variance");
+		// rowHeading.createCell((short) 3).setCellValue("Hours Worked");
+		// rowHeading.createCell((short) 4).setCellValue("Budgeted Hours");
+		rowHeading.createCell((short) 4).setCellValue("Month");
+		// rowHeading.createCell((short) 5).setCellValue("Hours variance");
 		rowHeading.createCell((short) 6).setCellValue("Allocation");
 		rowHeading.createCell((short) 7).setCellValue("Line Of Service");
-		rowHeading.createCell((short) 8).setCellValue("Domain");
+		rowHeading.createCell((short) 9).setCellValue("Domain");
+		rowHeading.createCell((short) 11).setCellValue("Usere");
+		rowHeading.createCell((short) 12).setCellValue("Activity");
+		rowHeading.createCell((short) 13).setCellValue("Total Hours");
+		for (int j = 14; j < jobReports.size(); j++) {
+			rowHeading.createCell((short) j).setCellValue(jobReports.get(j).getUser());
+		}
 
 		for (int i = 0; i < jobReports.size(); i++) {
 			HSSFRow row = worksheet.createRow((short) i + 2);
 			row.createCell((short) 0).setCellValue(i + 1 + "");
 			row.createCell((short) 1).setCellValue(jobReports.get(i).getJobName());
 			row.createCell((short) 2).setCellValue(jobReports.get(i).getCompanyName());
-			row.createCell((short) 3).setCellValue(jobReports.get(i).getHoursWorked());
+			// row.createCell((short)
+			// 3).setCellValue(jobReports.get(i).getHoursWorked());
 			row.createCell((short) 4).setCellValue(jobReports.get(i).getBudgetedHours());
-			row.createCell((short) 5).setCellValue(jobReports.get(i).getHoursVariance());
+			// row.createCell((short)
+			// 5).setCellValue(jobReports.get(i).getHoursVariance());
 			row.createCell((short) 6).setCellValue(jobReports.get(i).getAllocation());
 			row.createCell((short) 7).setCellValue(jobReports.get(i).getLineOfService());
-			row.createCell((short) 8).setCellValue(jobReports.get(i).getDomain());
+			row.createCell((short) 9).setCellValue(jobReports.get(i).getDomain());
+			row.createCell((short) 11).setCellValue(jobReports.get(i).getUser());
+			row.createCell((short) 12).setCellValue(jobReports.get(i).getActivity());
+			row.createCell((short) 13).setCellValue(jobReports.get(i).getTotalHours());
 		}
 	}
 
@@ -2066,8 +2155,9 @@ public class MySQLRdbHelper {
 		return totalHours;
 	}
 
-	private float getActualHours(int jobId, Session session, int month) {
+	private ArrayList<TimeSheet> getActualHours(int jobId, Session session, int month) {
 		Criteria crit = session.createCriteria(TimeSheet.class);
+		ArrayList<TimeSheet> listTimeSheet = new ArrayList<TimeSheet>();
 		crit.createAlias("jobId", "job");
 		crit.add(Restrictions.eq("job.jobId", jobId));
 		if (month != 0) {
@@ -2079,9 +2169,13 @@ public class MySQLRdbHelper {
 
 			TimeSheet timeSheet = (TimeSheet) it.next();
 			totalHours = totalHours + timeSheet.getHours();
+			if (!(totalHours == 0)) {
+				listTimeSheet.add(timeSheet);
+			}
 
 		}
-		return totalHours;
+		// listTimeSheet.add(totalHours);
+		return listTimeSheet;
 	}
 
 	//
@@ -2900,5 +2994,37 @@ public class MySQLRdbHelper {
 	// session.close();
 	//
 	// }
+
+	public ArrayList<Activity> fetchActivityReport(int lineOfServiceId) {
+		ArrayList<Activity> listActivities = new ArrayList<Activity>();
+		Session session = null;
+		try {
+			session = sessionFactory.openSession();
+
+			Criteria crit = session.createCriteria(Activity.class);
+			// crit.createAlias("activityId", "activity");
+			crit.createAlias("lineofServiceId", "lineOfService");
+			crit.createAlias("lineOfService.domainId", "domainId");
+			crit.add(Restrictions.eq("lineOfService.lineofServiceId", lineOfServiceId));
+			// crit.add(Restrictions.eq("lineOfService.lineofServiceId", line));
+			// crit.add(Restrictions.eq("domainId",
+			// job.getLineofServiceId().getDomainId().getDomainId()));
+
+			List rsList = crit.list();
+
+			for (Iterator it = rsList.iterator(); it.hasNext();) {
+				Activity activity = (Activity) it.next();
+
+				// activity.setTimeSheets(fetchActivityTimeSheets(session,
+				// activity.getActivityId(), roleId, userId));
+
+				listActivities.add(activity);
+			}
+			return listActivities;
+		} catch (Exception ex) {
+			System.out.println("fail : fetchActivities: " + ex);
+			throw ex;
+		}
+	}
 
 }

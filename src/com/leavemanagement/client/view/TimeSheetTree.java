@@ -47,6 +47,7 @@ public class TimeSheetTree extends Composite {
 	MaterialListBox listMonth = new MaterialListBox();
 	MaterialCheckBox chkChargeable = new MaterialCheckBox();
 	private static TimeSheetTreeUiBinder uiBinder = GWT.create(TimeSheetTreeUiBinder.class);
+
 	private GreetingServiceAsync rpcService = GWT.create(GreetingService.class);
 
 	interface TimeSheetTreeUiBinder extends UiBinder<Widget, TimeSheetTree> {
@@ -106,12 +107,15 @@ public class TimeSheetTree extends Composite {
 				// start
 				rowTotal.clear();
 				// tree.clear();
-				calculateTotalHoursForTimeSheet(result, listMonth, loggedInUser);
+				calculateTotalHoursForTimeSheet(result, loggedInUser);
 				// end
 				for (int i = 0; i < result.size(); i++) {
 					final Job job = result.get(i);
 					final MaterialTreeItem treeItem1 = new MaterialTreeItem();
 					treeItem1.setIconType(IconType.FOLDER_SHARED);
+
+					final Data data = new Data();
+					data.setDataDisplayed(false);
 
 					treeItem1.setText(result.get(i).getJobName());
 					tree.add(treeItem1);
@@ -124,24 +128,15 @@ public class TimeSheetTree extends Composite {
 							// selectedMonth =
 							// Integer.parseInt(listMonth.getValue(listMonth.getSelectedIndex()));
 							// fetchJobs(loggedInUser);
-							displayInTree(loggedInUser, job, treeItem1, listMonth, chargeable);
+
+							fetchSelectedJobForTimeSheet(loggedInUser, job, treeItem1);
+
+							// displayInTree(loggedInUser, job, treeItem1,
+							// listMonth, chargeable);
 
 						}
 
 					});
-					// treeItem1.addClickHandler(new ClickHandler() {
-					//
-					// @Override
-					// public void onClick(ClickEvent event) {
-					// // tree.clear();
-					// selectedMonth =
-					// Integer.parseInt(listMonth.getValue(listMonth.getSelectedIndex()));
-					// // fetchJobs(loggedInUser);
-					// displayInTree(loggedInUser, job, treeItem1, listMonth,
-					// chargeable);
-					//
-					// }
-					// });
 
 				}
 
@@ -155,7 +150,27 @@ public class TimeSheetTree extends Composite {
 		});
 	}
 
-	private void calculateTotalHoursForTimeSheet(List<Job> result, MaterialListBox listMonth, User loggedInUser) {
+	private void fetchSelectedJobForTimeSheet(final User loggedInUser, Job job, final MaterialTreeItem treeItem1) {
+
+		rpcService.fetchSelectedJobForTimeSheet(loggedInUser, chargeable, job.getJobId(),
+				new AsyncCallback<ArrayList<Job>>() {
+
+					@Override
+					public void onSuccess(ArrayList<Job> job) {
+						displayInTree(loggedInUser, job.get(0), treeItem1, listMonth, chargeable);
+
+					}
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert("faile fetch selectedd job" + caught.getLocalizedMessage());
+
+					}
+				});
+
+	}
+
+	public void calculateTotalHoursForTimeSheet(List<Job> result, User loggedInUser) {
 
 		for (int k = 1; k < 32; k++) {
 
@@ -182,7 +197,7 @@ public class TimeSheetTree extends Composite {
 
 	}
 
-	private void hoursCalculate(int k, ArrayList<TimeSheet> timeSheets, Data data, MaterialLabel lblSum,
+	public void hoursCalculate(int k, ArrayList<TimeSheet> timeSheets, Data data, MaterialLabel lblSum,
 			MaterialListBox listMonth2, User loggedInUser) {
 
 		for (int i = 0; i < timeSheets.size(); i++) {
@@ -207,7 +222,8 @@ public class TimeSheetTree extends Composite {
 		// p1.add(c1);
 		// treeItem1.add(p1);
 		treeItem1.add(c1);
-		final TimeSheetTableView timeSheetTable = new TimeSheetTableView(job, loggedInUser, listMonth, chargeable2);
+		final TimeSheetTableView timeSheetTable = new TimeSheetTableView(job, loggedInUser, listMonth, chargeable2,
+				this);
 		c1.add(timeSheetTable);
 	}
 

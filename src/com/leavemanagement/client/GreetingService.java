@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.leavemanagement.shared.Activity;
 import com.leavemanagement.shared.AttributeRating;
 import com.leavemanagement.shared.Company;
 import com.leavemanagement.shared.Domains;
@@ -122,5 +123,9 @@ public interface GreetingService extends RemoteService {
 	String logOut();
 
 	User fetchLoggedInUser();
+
+	ArrayList<Activity> fetchActivityReport(int lineOfServiceId) throws Exception;
+
+	ArrayList<Job> fetchSelectedJobForTimeSheet(User loggedInUser, boolean chargeable, int jobId) throws Exception;
 
 }

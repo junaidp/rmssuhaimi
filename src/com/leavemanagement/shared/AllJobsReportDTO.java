@@ -2,8 +2,8 @@ package com.leavemanagement.shared;
 
 import java.io.Serializable;
 
-public class AllJobsReportDTO implements Serializable{
-	
+public class AllJobsReportDTO implements Serializable {
+
 	private String jobName;
 	private String companyName;
 	private float hoursWorked;
@@ -14,10 +14,12 @@ public class AllJobsReportDTO implements Serializable{
 	private String lineOfService;
 	private String domain;
 	private String month;
-	
-	public AllJobsReportDTO()
-	{
-		
+	private float totalHours;
+	private String activity;
+	private String user;
+
+	public AllJobsReportDTO() {
+
 	}
 
 	public String getJobName() {
@@ -98,6 +100,30 @@ public class AllJobsReportDTO implements Serializable{
 
 	public void setMonth(String month) {
 		this.month = month;
+	}
+
+	public float getTotalHours() {
+		return totalHours;
+	}
+
+	public void setTotalHours(float totalHours) {
+		this.totalHours = totalHours;
+	}
+
+	public String getActivity() {
+		return activity;
+	}
+
+	public void setActivity(String activity) {
+		this.activity = activity;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
 	}
 
 }

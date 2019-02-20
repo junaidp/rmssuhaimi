@@ -13,6 +13,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.leavemanagement.client.GreetingService;
 import com.leavemanagement.database.MySQLRdbHelper;
+import com.leavemanagement.shared.Activity;
 import com.leavemanagement.shared.AttributeRating;
 import com.leavemanagement.shared.Company;
 import com.leavemanagement.shared.Domains;
@@ -421,6 +422,21 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 		ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
 		MySQLRdbHelper rdbHelper = (MySQLRdbHelper) ctx.getBean("ManagerExams");
 		return rdbHelper.fetchLineOfService(domainId);
+	}
+
+	@Override
+	public ArrayList<Activity> fetchActivityReport(int lineOfServiceId) throws Exception {
+		ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+		MySQLRdbHelper rdbHelper = (MySQLRdbHelper) ctx.getBean("ManagerExams");
+		return rdbHelper.fetchActivityReport(lineOfServiceId);
+	}
+
+	@Override
+	public ArrayList<Job> fetchSelectedJobForTimeSheet(User loggedInUser, boolean chargeable, int jobId)
+			throws Exception {
+		ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+		MySQLRdbHelper rdbHelper = (MySQLRdbHelper) ctx.getBean("ManagerExams");
+		return rdbHelper.fetchSelectedJobForTimeSheet(loggedInUser, chargeable, jobId);
 	}
 
 }
