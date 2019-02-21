@@ -1889,7 +1889,7 @@ public class MySQLRdbHelper {
 		try {
 			session = sessionFactory.openSession();
 			Criteria crit = session.createCriteria(Job.class);
-			int month = 1;
+			int month = 4;
 
 			// send all the listboxes values from clientside in a hashmap
 			// HashMap<String, Integer>
@@ -1967,8 +1967,9 @@ public class MySQLRdbHelper {
 				reportDTO.setLineOfService(job.getLineofServiceId().getName());
 				// reportDTO.setBudgetedHours(getBudgetedHours(job.getJobId(),
 				// session, month));
-				// reportDTO.setHoursWorked(getActualHours(job.getJobId(),
+				// reportDTO.setHoursWorked(getAcitualHours(job.getJobId(),
 				// session, month));
+				reportDTO.setListTimeSheet(getActualHours(job.getJobId(), session, month));
 				for (int i = 0; i < getActualHours(job.getJobId(), session, month).size(); i++) {
 					reportDTO.setActivity(
 
@@ -1979,6 +1980,8 @@ public class MySQLRdbHelper {
 					reportDTO.setUser(getActualHours(job.getJobId(), session, month).get(i).getUserId().getName());
 					// budhethours is being used for month
 					reportDTO.setBudgetedHours(getActualHours(job.getJobId(), session, month).get(i).getMonth());
+					// reportDTO.setListTimeSheet(getActualHours(job.getJobId(),
+					// session, month).get(i));
 				}
 				reportDTO.setTotalHours(totalHours);
 				reportDTO.setHoursVariance(reportDTO.getBudgetedHours() - reportDTO.getHoursWorked());
@@ -2038,26 +2041,36 @@ public class MySQLRdbHelper {
 		rowHeading.createCell((short) 11).setCellValue("Usere");
 		rowHeading.createCell((short) 12).setCellValue("Activity");
 		rowHeading.createCell((short) 13).setCellValue("Total Hours");
-		for (int j = 14; j < jobReports.size(); j++) {
-			rowHeading.createCell((short) j).setCellValue(jobReports.get(j).getUser());
-		}
+		// for (int j = 14; j < jobReports.size(); j++) {
+		// rowHeading.createCell((short)
+		// j).setCellValue(jobReports.get(j).getUser());
+		// }
 
+		int rowNum = 0;
 		for (int i = 0; i < jobReports.size(); i++) {
-			HSSFRow row = worksheet.createRow((short) i + 2);
-			row.createCell((short) 0).setCellValue(i + 1 + "");
-			row.createCell((short) 1).setCellValue(jobReports.get(i).getJobName());
-			row.createCell((short) 2).setCellValue(jobReports.get(i).getCompanyName());
-			// row.createCell((short)
-			// 3).setCellValue(jobReports.get(i).getHoursWorked());
-			row.createCell((short) 4).setCellValue(jobReports.get(i).getBudgetedHours());
-			// row.createCell((short)
-			// 5).setCellValue(jobReports.get(i).getHoursVariance());
-			row.createCell((short) 6).setCellValue(jobReports.get(i).getAllocation());
-			row.createCell((short) 7).setCellValue(jobReports.get(i).getLineOfService());
-			row.createCell((short) 9).setCellValue(jobReports.get(i).getDomain());
-			row.createCell((short) 11).setCellValue(jobReports.get(i).getUser());
-			row.createCell((short) 12).setCellValue(jobReports.get(i).getActivity());
-			row.createCell((short) 13).setCellValue(jobReports.get(i).getTotalHours());
+			for (int j = 0; j < jobReports.get(i).getListTimeSheet().size(); j++) {
+				TimeSheet timeSheet = jobReports.get(i).getListTimeSheet().get(j);
+				if (timeSheet.getHours() > 0) {
+					rowNum = rowNum + 1;
+					HSSFRow row = worksheet.createRow((short) rowNum == 1 ? 2 : rowNum == 2 ? 3 : rowNum);
+					row.createCell((short) 0).setCellValue(i + 1 + "");
+					row.createCell((short) 1).setCellValue(jobReports.get(i).getJobName());
+					row.createCell((short) 2).setCellValue(jobReports.get(i).getCompanyName());
+					// row.createCell((short)
+					// 3).setCellValue(jobReports.get(i).getHoursWorked());
+					row.createCell((short) 4).setCellValue(jobReports.get(i).getTotalHours());
+					// row.createCell((short)
+					// 5).setCellValue(jobReports.get(i).getHoursVariance());
+					row.createCell((short) 6).setCellValue(jobReports.get(i).getAllocation());
+					row.createCell((short) 7).setCellValue(jobReports.get(i).getLineOfService());
+					row.createCell((short) 9).setCellValue(jobReports.get(i).getDomain());
+					row.createCell((short) 11).setCellValue(jobReports.get(i).getUser());
+
+					row.createCell((short) 12).setCellValue(timeSheet.getActivity().getActivityName());
+
+					row.createCell((short) 13).setCellValue(jobReports.get(i).getTotalHours());
+				}
+			}
 		}
 	}
 
@@ -2160,9 +2173,9 @@ public class MySQLRdbHelper {
 		ArrayList<TimeSheet> listTimeSheet = new ArrayList<TimeSheet>();
 		crit.createAlias("jobId", "job");
 		crit.add(Restrictions.eq("job.jobId", jobId));
-		if (month != 0) {
-			crit.add(Restrictions.eq("month", month));
-		}
+		// if (month != 0) {
+		// crit.add(Restrictions.eq("month", month));
+		// }
 		List rsList = crit.list();
 		float totalHours = 0;
 		for (Iterator it = rsList.iterator(); it.hasNext();) {
