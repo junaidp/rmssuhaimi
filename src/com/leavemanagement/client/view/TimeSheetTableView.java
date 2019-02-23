@@ -85,6 +85,7 @@ public class TimeSheetTableView extends MaterialColumn {
 			VerticalPanel vpHeading = new VerticalPanel();
 			final MaterialLabel lblSum = new MaterialLabel("0");
 			final Data data = new Data();
+			data.setDay(k);
 			lblSum.setWidth("30px");
 
 			Label heading = new Label(k + 1 + "");
@@ -152,6 +153,10 @@ public class TimeSheetTableView extends MaterialColumn {
 								data.setSum(data.getSum() + Float.parseFloat(text.getValue()));
 
 								lblSum.setText(data.getSum() + "");
+
+								// Uncomment this to test TotalHours
+								 timeSheetTree.updateTotalHours(data.getDay(),	 data.getOldValue(),Float.parseFloat(text.getValue()));
+
 								data.setOldValue(Float.parseFloat(text.getValue()));
 							}
 						}

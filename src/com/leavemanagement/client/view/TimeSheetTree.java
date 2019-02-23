@@ -197,6 +197,22 @@ public class TimeSheetTree extends Composite {
 
 	}
 
+	// on keyup
+	protected void updateTotalHours(int day, float currentHours, float newHours) {
+
+		try {
+			MaterialColumn vpHeading = (MaterialColumn) rowTotal.getWidget(day);
+			MaterialLabel lblSum = (MaterialLabel) vpHeading.getWidget(1);
+			float oldHours = Float.parseFloat(lblSum.getText());
+			float totalHours = oldHours - currentHours;
+			totalHours = totalHours + newHours;
+
+			lblSum.setText(totalHours + "");
+		} catch (Exception ex) {
+			System.out.println("error in update Total Hours(TimeSheetTree");
+		}
+	}
+
 	public void hoursCalculate(int k, ArrayList<TimeSheet> timeSheets, Data data, MaterialLabel lblSum,
 			MaterialListBox listMonth2, User loggedInUser) {
 
