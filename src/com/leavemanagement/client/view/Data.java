@@ -5,6 +5,7 @@ public class Data {
 	private float oldValue;
 	private float sum = 0;
 	private boolean dataDisplayed;
+	private int day;
 
 	public float getOldValue() {
 		return oldValue;
@@ -28,6 +29,14 @@ public class Data {
 
 	public void setDataDisplayed(boolean dataDisplayed) {
 		this.dataDisplayed = dataDisplayed;
+	}
+
+	public int getDay() {
+		return day;
+	}
+
+	public void setDay(int day) {
+		this.day = day;
 	}
 
 }

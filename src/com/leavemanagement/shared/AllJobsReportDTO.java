@@ -1,6 +1,7 @@
 package com.leavemanagement.shared;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class AllJobsReportDTO implements Serializable {
 
@@ -16,6 +17,7 @@ public class AllJobsReportDTO implements Serializable {
 	private String month;
 	private float totalHours;
 	private String activity;
+	private ArrayList<TimeSheet> listTimeSheet;
 	private String user;
 
 	public AllJobsReportDTO() {
@@ -124,6 +126,14 @@ public class AllJobsReportDTO implements Serializable {
 
 	public void setUser(String user) {
 		this.user = user;
+	}
+
+	public ArrayList<TimeSheet> getListTimeSheet() {
+		return listTimeSheet;
+	}
+
+	public void setListTimeSheet(ArrayList<TimeSheet> listTimeSheet) {
+		this.listTimeSheet = listTimeSheet;
 	}
 
 }

@@ -20,7 +20,6 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.leavemanagement.client.GreetingService;
 import com.leavemanagement.client.GreetingServiceAsync;
-import com.leavemanagement.shared.Activity;
 import com.leavemanagement.shared.Allocations;
 import com.leavemanagement.shared.Branches;
 import com.leavemanagement.shared.Domains;
@@ -34,6 +33,7 @@ import gwt.material.design.client.ui.MaterialButton;
 import gwt.material.design.client.ui.MaterialColumn;
 import gwt.material.design.client.ui.MaterialLabel;
 import gwt.material.design.client.ui.MaterialListBox;
+import gwt.material.design.client.ui.MaterialLoader;
 import gwt.material.design.client.ui.MaterialToast;
 
 public class TimeSheetReportView extends MaterialColumn {
@@ -48,7 +48,7 @@ public class TimeSheetReportView extends MaterialColumn {
 	private MaterialLabel lblUser = new MaterialLabel("User");
 	private MaterialLabel lblCompanyJobWise = new MaterialLabel("Company Name");
 	private MaterialLabel lblJobJobWise = new MaterialLabel("Job Name");
-	private MaterialLabel lblActivities = new MaterialLabel("Activities");
+	// private MaterialLabel lblActivities = new MaterialLabel("Activities");
 	private MaterialListBox listUsers = new MaterialListBox();
 	private MaterialListBox listJobs = new MaterialListBox();
 	private MaterialListBox listBoxCompany = new MaterialListBox();
@@ -59,7 +59,7 @@ public class TimeSheetReportView extends MaterialColumn {
 	private MaterialListBox listJobType = new MaterialListBox();
 	private MaterialListBox listJobForJobWise = new MaterialListBox();
 	private MaterialListBox listCompanyForJobWise = new MaterialListBox();
-	private MaterialListBox listBoxActivities = new MaterialListBox();
+	// private MaterialListBox listBoxActivities = new MaterialListBox();
 	private User loggedInUser = null;
 	MaterialLabel lblHeadingTimeReport = new MaterialLabel("Time Report");
 	MaterialLabel lblHeadingJobWise = new MaterialLabel("Job Eficiency Report");
@@ -76,6 +76,7 @@ public class TimeSheetReportView extends MaterialColumn {
 
 	public TimeSheetReportView(User loggedInUser) {
 		this.loggedInUser = loggedInUser;
+		fetchJobs();
 		lblHeadingTimeReport.getElement().getStyle().setFontWeight(FontWeight.BOLD);
 		lblHeadingTimeReport.getElement().getStyle().setMarginLeft(10, Unit.PX);
 		lblHeadingTimeReport.setFontSize(1.5, Unit.EM);
@@ -95,7 +96,6 @@ public class TimeSheetReportView extends MaterialColumn {
 		listMonth.addItem("11", "Nov");
 		listMonth.addItem("12", "Dec");
 
-		fetchJobs();
 		fetchUsers();
 		fetchDomain();
 		// fetchJobType();
@@ -119,21 +119,21 @@ public class TimeSheetReportView extends MaterialColumn {
 		flex.setWidget(5, 1, lblLineOfService);
 		flex.setWidget(5, 2, listJobType);
 
-		flex.setWidget(6, 1, lblActivities);
-		flex.setWidget(6, 2, listBoxActivities);
+		// flex.setWidget(6, 1, lblActivities);
+		// flex.setWidget(6, 2, listBoxActivities);
 
-		flex.setWidget(7, 1, lblUser);
-		flex.setWidget(7, 2, listUsers);
+		flex.setWidget(6, 1, lblUser);
+		flex.setWidget(6, 2, listUsers);
 
-		flex.setWidget(8, 2, btnSearchAllReport);
-		flex.setWidget(9, 1, lblHeadingJobWise);
-		flex.setWidget(10, 1, lblJobJobWise);
-		flex.setWidget(10, 2, listJobForJobWise);
+		flex.setWidget(7, 2, btnSearchAllReport);
+		flex.setWidget(8, 1, lblHeadingJobWise);
+		flex.setWidget(9, 1, lblJobJobWise);
+		flex.setWidget(9, 2, listJobForJobWise);
 
 		// flex.setWidget(10,1, lblCompanyJobWise);
 		// flex.setWidget(10,2,listCompanyForJobWise);
 
-		flex.setWidget(11, 2, btnSearchJobWiseReport);
+		flex.setWidget(10, 2, btnSearchJobWiseReport);
 
 		add(lblHeadingTimeReport);
 		add(flex);
@@ -147,15 +147,15 @@ public class TimeSheetReportView extends MaterialColumn {
 
 			}
 		});
-		listJobType.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-			@Override
-			public void onValueChange(ValueChangeEvent<String> event) {
-
-				// fetchSubLineofServices();
-				fetchActivities();
-			}
-		});
+		// listJobType.addValueChangeHandler(new ValueChangeHandler<String>() {
+		//
+		// @Override
+		// public void onValueChange(ValueChangeEvent<String> event) {
+		//
+		// // fetchSubLineofServices();
+		// fetchActivities();
+		// }
+		// });
 		listBoxAllocation.addItem("0", "All Allocations");
 		for (Allocations allocations : Allocations.values()) {
 			listBoxAllocation.addItem(allocations.getValue() + "", allocations.getName());
@@ -210,6 +210,7 @@ public class TimeSheetReportView extends MaterialColumn {
 	}
 
 	private HashMap<String, Integer> fetchAllReport() {
+		MaterialLoader.loading(true);
 		int selectedJob = (Integer.parseInt(listJobs.getSelectedValue()));
 		int selectedCompany = (Integer.parseInt(listBoxCompany.getSelectedValue()));
 		int selectedMonth = (Integer.parseInt(listMonth.getSelectedValue()));
@@ -217,7 +218,8 @@ public class TimeSheetReportView extends MaterialColumn {
 		int selectedLineOfService = (Integer.parseInt(listJobType.getSelectedValue()));
 		int selectedDomain = (Integer.parseInt(listBoxDomain.getSelectedValue()));
 		int selectedUser = (Integer.parseInt(listUsers.getSelectedValue()));
-		int selectedActivity = (Integer.parseInt(listBoxActivities.getSelectedValue()));
+		// int selectedActivity =
+		// (Integer.parseInt(listBoxActivities.getSelectedValue()));
 
 		HashMap<String, Integer> map = new HashMap<String, Integer>();
 		map.put("jobId", selectedJob);
@@ -227,13 +229,14 @@ public class TimeSheetReportView extends MaterialColumn {
 		map.put("lineOfServiceId", selectedLineOfService);
 		map.put("domainId", selectedDomain);
 		map.put("userId", selectedUser);
-		map.put("activityId", selectedActivity);
+		// map.put("activityId", selectedActivity);
 
 		rpcService.fetchAllReport(map, new AsyncCallback<String>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
 				Window.alert("fetchAllReport failed" + caught.getLocalizedMessage());
+				MaterialLoader.loading(false);
 			}
 
 			@Override
@@ -241,6 +244,8 @@ public class TimeSheetReportView extends MaterialColumn {
 
 				Window.open("FullReport/report.xls", "_blank", "");
 				MaterialToast.fireToast("Report Downloaded !");
+
+				MaterialLoader.loading(false);
 			}
 		});
 		return map;
@@ -308,6 +313,7 @@ public class TimeSheetReportView extends MaterialColumn {
 	}
 
 	private void fetchTimeReport() {
+		MaterialLoader.progress(true);
 		int selectedMonth = Integer.parseInt(listMonth.getValue(listMonth.getSelectedIndex()));
 
 		int selecteduser = Integer.parseInt(listUsers.getValue(listUsers.getSelectedIndex()));
@@ -320,6 +326,7 @@ public class TimeSheetReportView extends MaterialColumn {
 					@Override
 					public void onFailure(Throwable caught) {
 						Window.alert("fail: fetchTimeReport");
+						MaterialLoader.progress(false);
 					}
 
 					@Override
@@ -340,6 +347,7 @@ public class TimeSheetReportView extends MaterialColumn {
 							timeSheetReportWidget.getFee().setText(result.get(i).getFee() + "");
 							timeSheetReportWidget.getTimeCost().setText(result.get(i).getTimeCost() + "");
 							vpnlResult.add(timeSheetReportWidget);
+							MaterialLoader.progress(false);
 						}
 						// Label lbl = new Label(result);
 						// lbl.setStyleName("blue");
@@ -433,26 +441,29 @@ public class TimeSheetReportView extends MaterialColumn {
 		});
 	}
 
-	private void fetchActivities() {
-
-		int lineOfServiceId = Integer.parseInt(listJobType.getValue(listJobType.getSelectedIndex()));
-		rpcService.fetchActivityReport(lineOfServiceId, new AsyncCallback<ArrayList<Activity>>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				Window.alert("fail fetchActivities");
-
-			}
-
-			@Override
-			public void onSuccess(ArrayList<Activity> result) {
-				listBoxActivities.clear();
-				listBoxActivities.addItem("0", "All Activities");
-				for (int i = 0; i < result.size(); i++) {
-					listBoxActivities.addItem(result.get(i).getActivityId() + "", result.get(i).getActivityName());
-
-				}
-			}
-		});
-	}
+	// private void fetchActivities() {
+	//
+	// int lineOfServiceId =
+	// Integer.parseInt(listJobType.getValue(listJobType.getSelectedIndex()));
+	// rpcService.fetchActivityReport(lineOfServiceId, new
+	// AsyncCallback<ArrayList<Activity>>() {
+	//
+	// @Override
+	// public void onFailure(Throwable caught) {
+	// Window.alert("fail fetchActivities");
+	//
+	// }
+	//
+	// @Override
+	// public void onSuccess(ArrayList<Activity> result) {
+	// listBoxActivities.clear();
+	// listBoxActivities.addItem("0", "All Activities");
+	// for (int i = 0; i < result.size(); i++) {
+	// listBoxActivities.addItem(result.get(i).getActivityId() + "",
+	// result.get(i).getActivityName());
+	//
+	// }
+	// }
+	// });
+	// }
 }

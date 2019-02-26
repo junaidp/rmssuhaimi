@@ -1921,6 +1921,7 @@ public class MySQLRdbHelper {
 				crit.createAlias("lineofServiceId", "lineofService");
 				crit.add(Restrictions.eq("lineofService.lineofServiceId", reportData.get("lineOfServiceId")));
 			}
+
 			if (reportData.get("companyId") != null && reportData.get("companyId") != 0) {
 				crit.add(Restrictions.eq("companyId", reportData.get("companyId")));
 			}
@@ -1936,6 +1937,11 @@ public class MySQLRdbHelper {
 				crit.createAlias("domainId", "domain");
 				crit.add(Restrictions.eq("domain.domainId", reportData.get("domainId")));
 			}
+			if (reportData.get("activityId") != null && reportData.get("activityId") != 0) {
+				crit.createAlias("activityId", "activity");
+				crit.add(Restrictions.eq("activity.activityId", reportData.get("activityId")));
+			}
+
 			// Dont add filter for Users here , its already added at bottom..
 
 			List rsList = crit.list();
@@ -1965,47 +1971,47 @@ public class MySQLRdbHelper {
 				float totalHours = 0;
 				reportDTO.setDomain(job.getDomainId().getName());
 				reportDTO.setLineOfService(job.getLineofServiceId().getName());
-				// reportDTO.setBudgetedHours(getBudgetedHours(job.getJobId(),
-				// session, month));
-				// reportDTO.setHoursWorked(getAcitualHours(job.getJobId(),
-				// session, month));
-				reportDTO.setListTimeSheet(getActualHours(job.getJobId(), session, month));
-				for (int i = 0; i < getActualHours(job.getJobId(), session, month).size(); i++) {
+
+				reportDTO.setListTimeSheet(
+						getActualHours(job.getJobId(), session, reportData.get("monthId"), reportData.get("userId")));
+				for (int i = 0; i < getActualHours(job.getJobId(), session, reportData.get("monthId"),
+						reportData.get("userId")).size(); i++) {
 					reportDTO.setActivity(
 
-							getActualHours(job.getJobId(), session, month).get(i).getActivity().getActivityName());
+							getActualHours(job.getJobId(), session, reportData.get("monthId"), reportData.get("userId"))
+									.get(i).getActivity().getActivityName());
 
-					totalHours = totalHours + getActualHours(job.getJobId(), session, month).get(i).getHours();
+					totalHours = totalHours + getActualHours(job.getJobId(), session, reportData.get("monthId"),
+							reportData.get("userId")).get(i).getHours();
 
-					reportDTO.setUser(getActualHours(job.getJobId(), session, month).get(i).getUserId().getName());
+					reportDTO.setUser(
+							getActualHours(job.getJobId(), session, reportData.get("monthId"), reportData.get("userId"))
+									.get(i).getUserId().getName());
 					// budhethours is being used for month
-					reportDTO.setBudgetedHours(getActualHours(job.getJobId(), session, month).get(i).getMonth());
-					// reportDTO.setListTimeSheet(getActualHours(job.getJobId(),
-					// session, month).get(i));
+					reportDTO.setBudgetedHours(
+							getActualHours(job.getJobId(), session, reportData.get("monthId"), reportData.get("userId"))
+									.get(i).getMonth());
+
 				}
 				reportDTO.setTotalHours(totalHours);
 				reportDTO.setHoursVariance(reportDTO.getBudgetedHours() - reportDTO.getHoursWorked());
-				// for (int i = 0; i < job.getUsersList().size(); i++) {
-				// reportDTO.setUser(job.getUsersList().get(i).getName());
-				// }
-				// reportDTO.setActivity(job.getActivityLists().toString());
-				// reportDTO.setUser(job.getJobEmployeesList().toString());
-				// for (int i = 0; i < job.getActivityLists().size(); i++) {
-				//
-				// reportDTO.setActivity(job.getActivityLists().get(i).getActivityName());
-				// }
+
 				jobReports.add(reportDTO);
+
+				// }
+
 			}
 
 			FileOutputStream fileOut = new FileOutputStream(rootDir + "/FullReport/report.xls");
 			HSSFWorkbook workbook = new HSSFWorkbook();
 			allJobReport(jobReports, workbook);
 
-			if (reportData.get("userId") != null) { // Example for line of
-													// service
-				specificUserReport(workbook, reportData.get("userId"), rsList, session);
-			}
-			specificUserReport(workbook, 1, rsList, session);
+			// if (reportData.get("userId") != null) { // Example for line of
+			// // service
+			// specificUserReport(workbook, reportData.get("userId"), rsList,
+			// session);
+			// }
+			// specificUserReport(workbook, 1, rsList, session);
 
 			workbook.write(fileOut);
 			fileOut.flush();
@@ -2040,35 +2046,38 @@ public class MySQLRdbHelper {
 		rowHeading.createCell((short) 9).setCellValue("Domain");
 		rowHeading.createCell((short) 11).setCellValue("Usere");
 		rowHeading.createCell((short) 12).setCellValue("Activity");
-		rowHeading.createCell((short) 13).setCellValue("Total Hours");
+		rowHeading.createCell((short) 13).setCellValue("Hours Worked");
+		rowHeading.createCell((short) 14).setCellValue("Total Hours");
 		// for (int j = 14; j < jobReports.size(); j++) {
 		// rowHeading.createCell((short)
 		// j).setCellValue(jobReports.get(j).getUser());
 		// }
 
-		int rowNum = 0;
+		int rowNum = 1;
 		for (int i = 0; i < jobReports.size(); i++) {
 			for (int j = 0; j < jobReports.get(i).getListTimeSheet().size(); j++) {
 				TimeSheet timeSheet = jobReports.get(i).getListTimeSheet().get(j);
 				if (timeSheet.getHours() > 0) {
-					rowNum = rowNum + 1;
+					rowNum = rowNum + 2;
 					HSSFRow row = worksheet.createRow((short) rowNum == 1 ? 2 : rowNum == 2 ? 3 : rowNum);
 					row.createCell((short) 0).setCellValue(i + 1 + "");
 					row.createCell((short) 1).setCellValue(jobReports.get(i).getJobName());
 					row.createCell((short) 2).setCellValue(jobReports.get(i).getCompanyName());
 					// row.createCell((short)
 					// 3).setCellValue(jobReports.get(i).getHoursWorked());
-					row.createCell((short) 4).setCellValue(jobReports.get(i).getTotalHours());
+					row.createCell((short) 4).setCellValue(jobReports.get(i).getBudgetedHours());
 					// row.createCell((short)
 					// 5).setCellValue(jobReports.get(i).getHoursVariance());
 					row.createCell((short) 6).setCellValue(jobReports.get(i).getAllocation());
 					row.createCell((short) 7).setCellValue(jobReports.get(i).getLineOfService());
 					row.createCell((short) 9).setCellValue(jobReports.get(i).getDomain());
-					row.createCell((short) 11).setCellValue(jobReports.get(i).getUser());
-
+					// row.createCell((short)
+					// 11).setCellValue(jobReports.get(i).getUser());
+					row.createCell((short) 11).setCellValue(timeSheet.getUserId().getName());
 					row.createCell((short) 12).setCellValue(timeSheet.getActivity().getActivityName());
+					row.createCell((short) 13).setCellValue(timeSheet.getHours());
+					row.createCell((short) 14).setCellValue(jobReports.get(i).getTotalHours());
 
-					row.createCell((short) 13).setCellValue(jobReports.get(i).getTotalHours());
 				}
 			}
 		}
@@ -2099,7 +2108,36 @@ public class MySQLRdbHelper {
 						reportDTO.setLocation(location.getName());
 					}
 				}
-
+				int month = 0;
+				float totalHours = 0;
+				// reportDTO.setDomain(job.getDomainId().getName());
+				// reportDTO.setLineOfService(job.getLineofServiceId().getName());
+				// reportDTO.setBudgetedHours(getBudgetedHours(job.getJobId(),
+				// session, month));
+				// reportDTO.setHoursWorked(getAcitualHours(job.getJobId(),
+				// session, month));
+				// reportDTO.setListTimeSheet(getActualHours(job.getJobId(),
+				// session, month));
+				// for (int i = 0; i < getActualHours(job.getJobId(), session,
+				// month).size(); i++) {
+				// reportDTO.setActivity(
+				//
+				// getActualHours(job.getJobId(), session,
+				// month).get(i).getActivity().getActivityName());
+				//
+				// totalHours = totalHours + getActualHours(job.getJobId(),
+				// session, month).get(i).getHours();
+				// // totalHours = getActualHours(job.getJobId(), session,
+				// // month).get(i).getHours();
+				//
+				// reportDTO.setUser(getActualHours(job.getJobId(), session,
+				// month).get(i).getUserId().getName());
+				// // budhethours is being used for month
+				// reportDTO.setBudgetedHours(getActualHours(job.getJobId(),
+				// session, month).get(i).getMonth());
+				// // reportDTO.setListTimeSheet(getActualHours(job.getJobId(),
+				// // session, month).get(i));
+				// }
 				// reportDTO.setCompanyName(Branches.ALSUHAIMI.name());
 				// reportDTO.setAllocation(Allocations.CHARGEABLE.getName());
 				reportDTO.setDomain(job.getDomainId().getName());
@@ -2131,6 +2169,23 @@ public class MySQLRdbHelper {
 			rowHeading.createCell((short) 8).setCellValue("Line Of Service");
 			rowHeading.createCell((short) 9).setCellValue("Domain");
 
+			// rowHeading.createCell((short) 0).setCellValue("Sr.");
+			// rowHeading.createCell((short) 1).setCellValue("Job Name");
+			// rowHeading.createCell((short) 2).setCellValue("Company Name");
+			// // rowHeading.createCell((short) 3).setCellValue("Hours Worked");
+			// // rowHeading.createCell((short) 4).setCellValue("Budgeted
+			// Hours");
+			// rowHeading.createCell((short) 4).setCellValue("Month");
+			// // rowHeading.createCell((short) 5).setCellValue("Hours
+			// variance");
+			// rowHeading.createCell((short) 6).setCellValue("Allocation");
+			// rowHeading.createCell((short) 7).setCellValue("Line Of Service");
+			// rowHeading.createCell((short) 9).setCellValue("Domain");
+			// rowHeading.createCell((short) 11).setCellValue("Usere");
+			// rowHeading.createCell((short) 12).setCellValue("Activity");
+			// rowHeading.createCell((short) 13).setCellValue("Hours Worked");
+			// rowHeading.createCell((short) 14).setCellValue("Total Hours");
+
 			for (int i = 0; i < jobReports.size(); i++) {
 				HSSFRow row = worksheet.createRow((short) i + 2);
 				row.createCell((short) 0).setCellValue(i + 1 + "");
@@ -2146,6 +2201,47 @@ public class MySQLRdbHelper {
 				row.createCell((short) 8).setCellValue(jobReports.get(i).getLineOfService());
 				row.createCell((short) 9).setCellValue(jobReports.get(i).getDomain());
 			}
+
+			// int rowNum = 1;
+			// for (int i = 0; i < jobReports.size(); i++) {
+			// for (int j = 0; j < jobReports.get(i).getListTimeSheet().size();
+			// j++) {
+			// TimeSheet timeSheet =
+			// jobReports.get(i).getListTimeSheet().get(j);
+			// if (timeSheet.getHours() > 0) {
+			// rowNum = rowNum + 2;
+			// HSSFRow row = worksheet.createRow((short) rowNum == 1 ? 2 :
+			// rowNum == 2 ? 3 : rowNum);
+			// row.createCell((short) 0).setCellValue(i + 1 + "");
+			// row.createCell((short)
+			// 1).setCellValue(jobReports.get(i).getJobName());
+			// row.createCell((short)
+			// 2).setCellValue(jobReports.get(i).getCompanyName());
+			// // row.createCell((short)
+			// // 3).setCellValue(jobReports.get(i).getHoursWorked());
+			// row.createCell((short)
+			// 4).setCellValue(jobReports.get(i).getBudgetedHours());
+			// // row.createCell((short)
+			// // 5).setCellValue(jobReports.get(i).getHoursVariance());
+			// row.createCell((short)
+			// 6).setCellValue(jobReports.get(i).getAllocation());
+			// row.createCell((short)
+			// 7).setCellValue(jobReports.get(i).getLineOfService());
+			// row.createCell((short)
+			// 9).setCellValue(jobReports.get(i).getDomain());
+			// // row.createCell((short)
+			// // 11).setCellValue(jobReports.get(i).getUser());
+			// row.createCell((short)
+			// 11).setCellValue(timeSheet.getUserId().getName());
+			// row.createCell((short)
+			// 12).setCellValue(timeSheet.getActivity().getActivityName());
+			// row.createCell((short) 13).setCellValue(timeSheet.getHours());
+			// row.createCell((short)
+			// 14).setCellValue(jobReports.get(i).getTotalHours());
+			//
+			// }
+			// }
+			// }
 		} catch (Exception ex) {
 			System.out.println("fail specific user report" + ex.getLocalizedMessage());
 		}
@@ -2168,11 +2264,24 @@ public class MySQLRdbHelper {
 		return totalHours;
 	}
 
-	private ArrayList<TimeSheet> getActualHours(int jobId, Session session, int month) {
+	private ArrayList<TimeSheet> getActualHours(int jobId, Session session, int month, int userId) {
 		Criteria crit = session.createCriteria(TimeSheet.class);
 		ArrayList<TimeSheet> listTimeSheet = new ArrayList<TimeSheet>();
 		crit.createAlias("jobId", "job");
+		crit.createAlias("userId", "user");
+		// crit.createAlias("month", "month");
 		crit.add(Restrictions.eq("job.jobId", jobId));
+
+		/// for specific user
+		if (userId != 0) {
+			crit.add(Restrictions.eq("user.userId", userId));
+		}
+		if (month != 0) {
+			crit.add(Restrictions.eq("month", month));
+		}
+
+		///
+
 		// if (month != 0) {
 		// crit.add(Restrictions.eq("month", month));
 		// }
