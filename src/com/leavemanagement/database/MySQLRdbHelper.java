@@ -84,6 +84,9 @@ public class MySQLRdbHelper {
 			for (Iterator it = rsList.iterator(); it.hasNext();) {
 				users = (User) it.next();
 				System.out.println(users.getName() + " Signed In on" + new Date());
+
+		//		logger.info(String.format(
+			//			"inside Getting Authentication LOG MSG-->" + users.getName() + " Signed In on" + new Date()));
 			}
 
 		} catch (Exception ex) {

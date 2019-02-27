@@ -155,7 +155,8 @@ public class TimeSheetTableView extends MaterialColumn {
 								lblSum.setText(data.getSum() + "");
 
 								// Uncomment this to test TotalHours
-								 timeSheetTree.updateTotalHours(data.getDay(),	 data.getOldValue(),Float.parseFloat(text.getValue()));
+								timeSheetTree.updateTotalHours(data.getDay(), data.getOldValue(),
+										Float.parseFloat(text.getValue()));
 
 								data.setOldValue(Float.parseFloat(text.getValue()));
 							}
@@ -214,7 +215,8 @@ public class TimeSheetTableView extends MaterialColumn {
 					user.setUserId(loggedInUser.getUserId());
 					timeSheet.setUserId(user);
 					timeSheet.setStatus(0);
-					timeSheetList.add(timeSheet);
+					if (timeSheet.getHours() > 0)
+						timeSheetList.add(timeSheet);
 
 				}
 			}
