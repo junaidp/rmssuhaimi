@@ -61,7 +61,7 @@ import com.leavemanagement.shared.UserReportDTO;
 public class MySQLRdbHelper {
 
 	private SessionFactory sessionFactory;
-	Logger logger;
+	private final static Logger logger = Logger.getLogger("MySQLRdbHelper");
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
@@ -71,6 +71,7 @@ public class MySQLRdbHelper {
 
 		User users = null;
 		Session session = null;
+
 		try {
 			session = sessionFactory.openSession();
 
@@ -85,8 +86,8 @@ public class MySQLRdbHelper {
 				users = (User) it.next();
 				System.out.println(users.getName() + " Signed In on" + new Date());
 
-		//		logger.info(String.format(
-			//			"inside Getting Authentication LOG MSG-->" + users.getName() + " Signed In on" + new Date()));
+				logger.info(
+						"inside Getting Authentication LOG MSG-->" + users.getName() + " Signed In on" + new Date());
 			}
 
 		} catch (Exception ex) {
@@ -1926,7 +1927,7 @@ public class MySQLRdbHelper {
 			}
 
 			if (reportData.get("companyId") != null && reportData.get("companyId") != 0) {
-				crit.add(Restrictions.eq("companyId", reportData.get("companyId")));
+				crit.add(Restrictions.eq("company", reportData.get("companyId")));
 			}
 			if (reportData.get("monthId") != null && reportData.get("monthId") != 0) {
 				month = reportData.get("monthId");
@@ -2007,7 +2008,7 @@ public class MySQLRdbHelper {
 
 			FileOutputStream fileOut = new FileOutputStream(rootDir + "/FullReport/report.xls");
 			HSSFWorkbook workbook = new HSSFWorkbook();
-			allJobReport(jobReports, workbook);
+			allJobReport(jobReports, workbook, reportData.get("userId"), reportData.get("jobId"));
 
 			// if (reportData.get("userId") != null) { // Example for line of
 			// // service
@@ -2029,13 +2030,31 @@ public class MySQLRdbHelper {
 
 	}
 
-	private void allJobReport(ArrayList<AllJobsReportDTO> jobReports, HSSFWorkbook workbook) {
+	private void allJobReport(ArrayList<AllJobsReportDTO> jobReports, HSSFWorkbook workbook, Integer userId,
+			Integer jobId) {
 		HSSFSheet worksheet = workbook.createSheet("All Jobs Report");
 
 		HSSFRow rowUserName = worksheet.createRow((short) 0);
 		HSSFRow rowHeading = worksheet.createRow((short) 1);
 
-		rowUserName.createCell((short) 0).setCellValue("Report For All Jobs");
+		if (userId != 0) {
+			User user;
+			try {
+				user = fetchUser(userId);
+				if (jobId != 0) {
+					rowUserName.createCell((short) 0).setCellValue(
+							"Report For " + user.getName() + "For Job    " + jobReports.get(0).getJobName());
+				} else {
+					rowUserName.createCell((short) 0).setCellValue("    Report For " + user.getName());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if (jobId != 0) {
+			rowUserName.createCell((short) 0).setCellValue("Report For " + jobReports.get(0).getJobName());
+		} else {
+			rowUserName.createCell((short) 0).setCellValue("Report For All Jobs  Report For All Users");
+		}
 
 		rowHeading.createCell((short) 0).setCellValue("Sr.");
 		rowHeading.createCell((short) 1).setCellValue("Job Name");
@@ -2056,12 +2075,15 @@ public class MySQLRdbHelper {
 		// j).setCellValue(jobReports.get(j).getUser());
 		// }
 
-		int rowNum = 1;
+		int rowNum = 2;
 		for (int i = 0; i < jobReports.size(); i++) {
-			for (int j = 0; j < jobReports.get(i).getListTimeSheet().size(); j++) {
-				TimeSheet timeSheet = jobReports.get(i).getListTimeSheet().get(j);
+			// for (int j = 0; j < jobReports.get(i).getListTimeSheet().size();
+			// j++) {
+			for (TimeSheet timeSheet : jobReports.get(i).getListTimeSheet()) {
+				// TimeSheet timeSheet =
+				// jobReports.get(i).getListTimeSheet().get(j);
 				if (timeSheet.getHours() > 0) {
-					rowNum = rowNum + 2;
+					rowNum = rowNum + 1;
 					HSSFRow row = worksheet.createRow((short) rowNum == 1 ? 2 : rowNum == 2 ? 3 : rowNum);
 					row.createCell((short) 0).setCellValue(i + 1 + "");
 					row.createCell((short) 1).setCellValue(jobReports.get(i).getJobName());
@@ -3115,6 +3137,7 @@ public class MySQLRdbHelper {
 	// }catch(Exception ex){
 	//
 	// System.out.println("fail fetchAllReport");
+
 	// }
 	// session.close();
 	//
@@ -3150,6 +3173,77 @@ public class MySQLRdbHelper {
 			System.out.println("fail : fetchActivities: " + ex);
 			throw ex;
 		}
+	}
+
+	public ArrayList<Job> fetchJobsWithStatus(String status) throws Exception {
+
+		ArrayList<Job> jobs = new ArrayList<Job>();
+		Session session = null;
+		try {
+			session = sessionFactory.openSession();
+			Criteria crit = session.createCriteria(Job.class);
+			// crit.createAlias("lineofServiceId", "lineofService");
+			// // crit.createAlias("subLineofServiceId", "subLineofService");
+			// // crit.createAlias("subLineofService.domainId",
+			// "sublineDomain");
+			// // crit.createAlias("sublineDomain.lineofServiceId",
+			// // "ddomainlineofservice");
+			//
+			// crit.createAlias("domainId", "domain");
+			// crit.createAlias("lineofService.domainId",
+			// "domainlineofservice");
+			// // crit.createAlias("sublineDomain.lineofServiceId",
+			// // "subdomainlineofservice");
+			//
+			// crit.createAlias("countryId", "count");
+			// crit.createAlias("userId", "user");
+			// crit.createAlias("user.roleId", "role");
+			// crit.createAlias("user.companyId", "company");
+
+			// crit.createAlias("supervisorId", "supervisor");
+			// crit.createAlias("supervisor.roleId", "roles");
+			// crit.createAlias("supervisor.companyId", "companys");
+			//
+			//
+			// crit.createAlias("principalConsultantId", "principalConsultant");
+			// crit.createAlias("principalConsultant.roleId", "rolep");
+			// crit.createAlias("principalConsultant.companyId", "companyp");
+
+			// crit.add(Restrictions.ne("status", "InActive"));
+			// crit.add(Restrictions.ne("client", "office"));
+
+			List rsList = crit.list();
+
+			for (Iterator it = rsList.iterator(); it.hasNext();) {
+				Job job = (Job) it.next();
+
+				HibernateDetachUtility.nullOutUninitializedFields(job,
+						HibernateDetachUtility.SerializationType.SERIALIZATION);
+				// job.setJobPhases(fetchJobPhases(job.getJobId()));
+				// job.setJobEmployeesList(fetchJobEmployees(session,
+				// job.getJobId()));
+				// job.setJobAttributes(fetchjobAttributes(session,
+				// job.getJobId()));
+				// // job.setTimeSheets(fetchJobTimeSheets(session,
+				// job.getJobId(),
+				// // loggedInUser.getRoleId().getRoleId()));
+				// HibernateDetachUtility.nullOutUninitializedFields(job,
+				// HibernateDetachUtility.SerializationType.SERIALIZATION);
+				if (job.getStatus().equalsIgnoreCase(status)) {
+					jobs.add(job);
+				}
+			}
+
+			return jobs;
+		} catch (Exception ex) {
+			logger.warn(String.format("Exception occured in fetchJobs", ex.getMessage()), ex);
+			System.out.println("Exception occured in fetchJobs" + ex.getMessage());
+
+			throw new Exception("Exception occured in fetchAllJobs");
+		} finally {
+			session.close();
+		}
+
 	}
 
 }

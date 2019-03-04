@@ -16,6 +16,9 @@ public class LeaveManagement implements EntryPoint {
 		AppController appViewer = new AppController(rpcService, eventBus);
 		appViewer.go(RootPanel.get("bodyContainer"), RootPanel.get("headerContainer"));
 
-		GWT.log("TEST");
+		GWT.log("TEST Fom OnModule Load");
+
+		Logging.console("testing logsss");
+
 	}
 }

@@ -439,4 +439,11 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 		return rdbHelper.fetchSelectedJobForTimeSheet(loggedInUser, chargeable, jobId);
 	}
 
+	@Override
+	public ArrayList<Job> fetchJobsWithStatus(String status) throws Exception {
+		ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+		MySQLRdbHelper rdbHelper = (MySQLRdbHelper) ctx.getBean("ManagerExams");
+		return rdbHelper.fetchJobsWithStatus(status);
+	}
+
 }

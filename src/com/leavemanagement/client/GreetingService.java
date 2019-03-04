@@ -128,4 +128,5 @@ public interface GreetingService extends RemoteService {
 
 	ArrayList<Job> fetchSelectedJobForTimeSheet(User loggedInUser, boolean chargeable, int jobId) throws Exception;
 
+	ArrayList<Job> fetchJobsWithStatus(String status) throws Exception;
 }

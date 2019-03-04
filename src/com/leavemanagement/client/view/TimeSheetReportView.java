@@ -76,7 +76,7 @@ public class TimeSheetReportView extends MaterialColumn {
 
 	public TimeSheetReportView(User loggedInUser) {
 		this.loggedInUser = loggedInUser;
-		fetchJobs();
+
 		lblHeadingTimeReport.getElement().getStyle().setFontWeight(FontWeight.BOLD);
 		lblHeadingTimeReport.getElement().getStyle().setMarginLeft(10, Unit.PX);
 		lblHeadingTimeReport.setFontSize(1.5, Unit.EM);
@@ -95,7 +95,7 @@ public class TimeSheetReportView extends MaterialColumn {
 		listMonth.addItem("10", "Oct");
 		listMonth.addItem("11", "Nov");
 		listMonth.addItem("12", "Dec");
-
+		fetchJobs();
 		fetchUsers();
 		fetchDomain();
 		// fetchJobType();
@@ -126,14 +126,14 @@ public class TimeSheetReportView extends MaterialColumn {
 		flex.setWidget(6, 2, listUsers);
 
 		flex.setWidget(7, 2, btnSearchAllReport);
-		flex.setWidget(8, 1, lblHeadingJobWise);
-		flex.setWidget(9, 1, lblJobJobWise);
-		flex.setWidget(9, 2, listJobForJobWise);
+		// flex.setWidget(8, 1, lblHeadingJobWise);
+		// flex.setWidget(9, 1, lblJobJobWise);
+		// flex.setWidget(9, 2, listJobForJobWise);
 
 		// flex.setWidget(10,1, lblCompanyJobWise);
 		// flex.setWidget(10,2,listCompanyForJobWise);
 
-		flex.setWidget(10, 2, btnSearchJobWiseReport);
+		// flex.setWidget(10, 2, btnSearchJobWiseReport);
 
 		add(lblHeadingTimeReport);
 		add(flex);
@@ -357,11 +357,32 @@ public class TimeSheetReportView extends MaterialColumn {
 	}
 
 	private void fetchJobs() {
-		rpcService.fetchAllJobs(new AsyncCallback<ArrayList<Job>>() {
+		// rpcService.fetchAllJobs(new AsyncCallback<ArrayList<Job>>() {
+		//
+		// @Override
+		// public void onSuccess(ArrayList<Job> result) {
+		//
+		// listJobForJobWise.clear();
+		// listJobs.clear();
+		// listJobs.addItem("0", "All Jobs");
+		// for (int i = 0; i < result.size(); i++) {
+		// listJobs.addItem(result.get(i).getJobId() + "",
+		// result.get(i).getJobName());
+		// listJobForJobWise.addItem(result.get(i).getJobId() + "",
+		// result.get(i).getJobName());
+		// }
+		// }
+		//
+		// @Override
+		// public void onFailure(Throwable caught) {
+		// Window.alert("fail fetch jobs");
+		// }
+		// });
+		String status = "Active";
+		rpcService.fetchJobsWithStatus(status, new AsyncCallback<ArrayList<Job>>() {
 
 			@Override
 			public void onSuccess(ArrayList<Job> result) {
-
 				listJobForJobWise.clear();
 				listJobs.clear();
 				listJobs.addItem("0", "All Jobs");
@@ -369,13 +390,16 @@ public class TimeSheetReportView extends MaterialColumn {
 					listJobs.addItem(result.get(i).getJobId() + "", result.get(i).getJobName());
 					listJobForJobWise.addItem(result.get(i).getJobId() + "", result.get(i).getJobName());
 				}
+
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert("fail fetch jobs");
+				Window.alert("fail fetch jobswithstatus");
+
 			}
 		});
+
 	}
 
 	public void fetchUsers() {
@@ -432,7 +456,7 @@ public class TimeSheetReportView extends MaterialColumn {
 			public void onSuccess(ArrayList<LineofService> result) {
 				listJobType.clear();
 
-				listJobType.addItem("0", "All LineOfServices");
+				listJobType.addItem("0", "All Line Of Services");
 				for (int i = 0; i < result.size(); i++) {
 					listJobType.addItem(result.get(i).getLineofServiceId() + "", result.get(i).getName());
 				}

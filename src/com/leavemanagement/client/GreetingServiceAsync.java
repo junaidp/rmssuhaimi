@@ -133,4 +133,6 @@ public interface GreetingServiceAsync {
 	void fetchSelectedJobForTimeSheet(User loggedInUser, boolean chargeable, int jobId,
 			AsyncCallback<ArrayList<Job>> callback);
 
+	void fetchJobsWithStatus(String status, AsyncCallback<ArrayList<Job>> callback);
+
 }
