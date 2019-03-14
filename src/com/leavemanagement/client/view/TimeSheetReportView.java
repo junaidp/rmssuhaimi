@@ -63,7 +63,8 @@ public class TimeSheetReportView extends MaterialColumn {
 	private User loggedInUser = null;
 	MaterialLabel lblHeadingTimeReport = new MaterialLabel("Time Report");
 	MaterialLabel lblHeadingJobWise = new MaterialLabel("Job Eficiency Report");
-	private MaterialButton btnSearchAllReport = new MaterialButton("Generate Report");
+	private MaterialButton btnSearchAllReport = new MaterialButton("Generate Report Excel");
+	private MaterialButton btnSearchAllReportPDF = new MaterialButton("Generate Report PDF");
 	private MaterialButton btnSearchJobWiseReport = new MaterialButton("Generate Report");
 	private MaterialColumn vpnlResult = new MaterialColumn();
 	Column<TimeSheet, String> jobName;
@@ -119,21 +120,11 @@ public class TimeSheetReportView extends MaterialColumn {
 		flex.setWidget(5, 1, lblLineOfService);
 		flex.setWidget(5, 2, listJobType);
 
-		// flex.setWidget(6, 1, lblActivities);
-		// flex.setWidget(6, 2, listBoxActivities);
-
 		flex.setWidget(6, 1, lblUser);
 		flex.setWidget(6, 2, listUsers);
 
 		flex.setWidget(7, 2, btnSearchAllReport);
-		// flex.setWidget(8, 1, lblHeadingJobWise);
-		// flex.setWidget(9, 1, lblJobJobWise);
-		// flex.setWidget(9, 2, listJobForJobWise);
-
-		// flex.setWidget(10,1, lblCompanyJobWise);
-		// flex.setWidget(10,2,listCompanyForJobWise);
-
-		// flex.setWidget(10, 2, btnSearchJobWiseReport);
+		flex.setWidget(7, 3, btnSearchAllReportPDF);
 
 		add(lblHeadingTimeReport);
 		add(flex);
@@ -147,15 +138,7 @@ public class TimeSheetReportView extends MaterialColumn {
 
 			}
 		});
-		// listJobType.addValueChangeHandler(new ValueChangeHandler<String>() {
-		//
-		// @Override
-		// public void onValueChange(ValueChangeEvent<String> event) {
-		//
-		// // fetchSubLineofServices();
-		// fetchActivities();
-		// }
-		// });
+
 		listBoxAllocation.addItem("0", "All Allocations");
 		for (Allocations allocations : Allocations.values()) {
 			listBoxAllocation.addItem(allocations.getValue() + "", allocations.getName());
@@ -175,7 +158,13 @@ public class TimeSheetReportView extends MaterialColumn {
 				fetchAllReport();
 			}
 		});
+		btnSearchAllReportPDF.addClickHandler(new ClickHandler() {
 
+			@Override
+			public void onClick(ClickEvent event) {
+				fetchAllReportPDf();
+			}
+		});
 		btnSearchJobWiseReport.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -184,6 +173,92 @@ public class TimeSheetReportView extends MaterialColumn {
 			}
 		});
 
+	}
+
+	private void fetchJobs() {
+
+		String status = "Active";
+		rpcService.fetchJobsWithStatus(status, new AsyncCallback<ArrayList<Job>>() {
+
+			@Override
+			public void onSuccess(ArrayList<Job> result) {
+				listJobForJobWise.clear();
+				listJobs.clear();
+				listJobs.addItem("0", "All Jobs");
+				for (int i = 0; i < result.size(); i++) {
+					listJobs.addItem(result.get(i).getJobId() + "", result.get(i).getJobName());
+					listJobForJobWise.addItem(result.get(i).getJobId() + "", result.get(i).getJobName());
+				}
+
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("fail fetch jobswithstatus");
+
+			}
+		});
+
+	}
+
+	public void fetchUsers() {
+		rpcService.fetchAllUsers(new AsyncCallback<ArrayList<User>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("fail fetch users");
+			}
+
+			@Override
+			public void onSuccess(ArrayList<User> result) {
+				listUsers.clear();
+				listUsers.addItem("0", "All users");
+				for (int i = 0; i < result.size(); i++) {
+					listUsers.addItem(result.get(i).getUserId() + "", result.get(i).getName());
+				}
+			}
+		});
+	}
+
+	private void fetchDomain() {
+		rpcService.fetchDomains(new AsyncCallback<ArrayList<Domains>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("fetch domain failed" + caught.getMessage());
+			}
+
+			@Override
+			public void onSuccess(ArrayList<Domains> result) {
+				listBoxDomain.addItem("0", "All Domains");
+				for (int i = 0; i < result.size(); i++) {
+					listBoxDomain.addItem(result.get(i).getDomainId() + "", result.get(i).getName());
+				}
+
+			}
+		});
+	}
+
+	private void fetchLineOFService() {
+		int domainId = Integer.parseInt(listBoxDomain.getValue(listBoxDomain.getSelectedIndex()));
+		rpcService.fetchLineOfService(domainId, new AsyncCallback<ArrayList<LineofService>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("fail fetch LineOfService");
+			}
+
+			@Override
+			public void onSuccess(ArrayList<LineofService> result) {
+				listJobType.clear();
+
+				listJobType.addItem("0", "All Line Of Services");
+				for (int i = 0; i < result.size(); i++) {
+					listJobType.addItem(result.get(i).getLineofServiceId() + "", result.get(i).getName());
+				}
+
+			}
+		});
 	}
 
 	private void fetchJobWiseReport() {
@@ -249,25 +324,6 @@ public class TimeSheetReportView extends MaterialColumn {
 			}
 		});
 		return map;
-	}
-
-	private void fetchDomain() {
-		rpcService.fetchDomains(new AsyncCallback<ArrayList<Domains>>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				Window.alert("fetch domain failed" + caught.getMessage());
-			}
-
-			@Override
-			public void onSuccess(ArrayList<Domains> result) {
-				listBoxDomain.addItem("0", "All Domains");
-				for (int i = 0; i < result.size(); i++) {
-					listBoxDomain.addItem(result.get(i).getDomainId() + "", result.get(i).getName());
-				}
-
-			}
-		});
 	}
 
 	private void setTable() {
@@ -349,145 +405,50 @@ public class TimeSheetReportView extends MaterialColumn {
 							vpnlResult.add(timeSheetReportWidget);
 							MaterialLoader.progress(false);
 						}
-						// Label lbl = new Label(result);
-						// lbl.setStyleName("blue");
 
 					}
 				});
 	}
 
-	private void fetchJobs() {
-		// rpcService.fetchAllJobs(new AsyncCallback<ArrayList<Job>>() {
-		//
-		// @Override
-		// public void onSuccess(ArrayList<Job> result) {
-		//
-		// listJobForJobWise.clear();
-		// listJobs.clear();
-		// listJobs.addItem("0", "All Jobs");
-		// for (int i = 0; i < result.size(); i++) {
-		// listJobs.addItem(result.get(i).getJobId() + "",
-		// result.get(i).getJobName());
-		// listJobForJobWise.addItem(result.get(i).getJobId() + "",
-		// result.get(i).getJobName());
-		// }
-		// }
-		//
-		// @Override
-		// public void onFailure(Throwable caught) {
-		// Window.alert("fail fetch jobs");
-		// }
-		// });
-		String status = "Active";
-		rpcService.fetchJobsWithStatus(status, new AsyncCallback<ArrayList<Job>>() {
+	private HashMap<String, Integer> fetchAllReportPDf() {
+		MaterialLoader.loading(true);
+		int selectedJob = (Integer.parseInt(listJobs.getSelectedValue()));
+		int selectedCompany = (Integer.parseInt(listBoxCompany.getSelectedValue()));
+		int selectedMonth = (Integer.parseInt(listMonth.getSelectedValue()));
+		int selectedAllocation = (Integer.parseInt(listBoxAllocation.getSelectedValue()));
+		int selectedLineOfService = (Integer.parseInt(listJobType.getSelectedValue()));
+		int selectedDomain = (Integer.parseInt(listBoxDomain.getSelectedValue()));
+		int selectedUser = (Integer.parseInt(listUsers.getSelectedValue()));
+		// int selectedActivity =
+		// (Integer.parseInt(listBoxActivities.getSelectedValue()));
 
-			@Override
-			public void onSuccess(ArrayList<Job> result) {
-				listJobForJobWise.clear();
-				listJobs.clear();
-				listJobs.addItem("0", "All Jobs");
-				for (int i = 0; i < result.size(); i++) {
-					listJobs.addItem(result.get(i).getJobId() + "", result.get(i).getJobName());
-					listJobForJobWise.addItem(result.get(i).getJobId() + "", result.get(i).getJobName());
-				}
+		HashMap<String, Integer> map = new HashMap<String, Integer>();
+		map.put("jobId", selectedJob);
+		map.put("companyId", selectedCompany);
+		map.put("monthId", selectedMonth);
+		map.put("allocationId", selectedAllocation);
+		map.put("lineOfServiceId", selectedLineOfService);
+		map.put("domainId", selectedDomain);
+		map.put("userId", selectedUser);
+		// map.put("activityId", selectedActivity);
 
-			}
+		rpcService.fetchAllReportPDF(map, new AsyncCallback<String>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert("fail fetch jobswithstatus");
+				Window.alert("fetchAllReport failed" + caught.getLocalizedMessage());
+				MaterialLoader.loading(false);
+			}
 
+			@Override
+			public void onSuccess(String result) {
+
+				Window.open("FullReport/report.pdf", "_blank", "");
+				MaterialToast.fireToast("Report Downloaded !");
+
+				MaterialLoader.loading(false);
 			}
 		});
-
+		return map;
 	}
-
-	public void fetchUsers() {
-		rpcService.fetchAllUsers(new AsyncCallback<ArrayList<User>>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				Window.alert("fail fetch users");
-			}
-
-			@Override
-			public void onSuccess(ArrayList<User> result) {
-				listUsers.clear();
-				listUsers.addItem("0", "All users");
-				for (int i = 0; i < result.size(); i++) {
-					listUsers.addItem(result.get(i).getUserId() + "", result.get(i).getName());
-				}
-			}
-		});
-	}
-
-	// public void fetchJobType() {
-	// rpcService.getLineOfServices(new
-	// AsyncCallback<ArrayList<LineofService>>() {
-	//
-	// @Override
-	// public void onFailure(Throwable caught) {
-	// Window.alert("fail fetch users");
-	// }
-	//
-	// @Override
-	// public void onSuccess(ArrayList<LineofService> result) {
-	// listJobType.clear();
-	// listJobType.addItem("0", "All Job Types");
-	// for (int i = 0; i < result.size(); i++) {
-	// listJobType.addItem(result.get(i).getLineofServiceId() + "",
-	// result.get(i).getName());
-	// }
-	//
-	// fetchDomain();
-	// }
-	// });
-	// }
-	private void fetchLineOFService() {
-		int domainId = Integer.parseInt(listBoxDomain.getValue(listBoxDomain.getSelectedIndex()));
-		rpcService.fetchLineOfService(domainId, new AsyncCallback<ArrayList<LineofService>>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				Window.alert("fail fetch LineOfService");
-			}
-
-			@Override
-			public void onSuccess(ArrayList<LineofService> result) {
-				listJobType.clear();
-
-				listJobType.addItem("0", "All Line Of Services");
-				for (int i = 0; i < result.size(); i++) {
-					listJobType.addItem(result.get(i).getLineofServiceId() + "", result.get(i).getName());
-				}
-
-			}
-		});
-	}
-
-	// private void fetchActivities() {
-	//
-	// int lineOfServiceId =
-	// Integer.parseInt(listJobType.getValue(listJobType.getSelectedIndex()));
-	// rpcService.fetchActivityReport(lineOfServiceId, new
-	// AsyncCallback<ArrayList<Activity>>() {
-	//
-	// @Override
-	// public void onFailure(Throwable caught) {
-	// Window.alert("fail fetchActivities");
-	//
-	// }
-	//
-	// @Override
-	// public void onSuccess(ArrayList<Activity> result) {
-	// listBoxActivities.clear();
-	// listBoxActivities.addItem("0", "All Activities");
-	// for (int i = 0; i < result.size(); i++) {
-	// listBoxActivities.addItem(result.get(i).getActivityId() + "",
-	// result.get(i).getActivityName());
-	//
-	// }
-	// }
-	// });
-	// }
 }

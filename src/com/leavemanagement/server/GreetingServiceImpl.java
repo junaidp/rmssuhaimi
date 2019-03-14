@@ -446,4 +446,12 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 		return rdbHelper.fetchJobsWithStatus(status);
 	}
 
+	@Override
+	public String fetchAllReportPDF(HashMap<String, Integer> map) {
+		ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+		MySQLRdbHelper rdbHelper = (MySQLRdbHelper) ctx.getBean("ManagerExams");
+		String rootDir = getServletContext().getRealPath("/");
+		return rdbHelper.fetchAllReportPDF(map, rootDir);
+	}
+
 }

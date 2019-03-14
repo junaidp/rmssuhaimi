@@ -135,4 +135,6 @@ public interface GreetingServiceAsync {
 
 	void fetchJobsWithStatus(String status, AsyncCallback<ArrayList<Job>> callback);
 
+	void fetchAllReportPDF(HashMap<String, Integer> map, AsyncCallback<String> callback);
+
 }

@@ -1,6 +1,7 @@
 package com.leavemanagement.database;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -28,6 +29,20 @@ import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.leavemanagement.client.presenter.HeaderAndFooterPdfPageEventHelper;
 import com.leavemanagement.shared.Activity;
 import com.leavemanagement.shared.AllJobsReportDTO;
 import com.leavemanagement.shared.Allocations;
@@ -2008,14 +2023,7 @@ public class MySQLRdbHelper {
 
 			FileOutputStream fileOut = new FileOutputStream(rootDir + "/FullReport/report.xls");
 			HSSFWorkbook workbook = new HSSFWorkbook();
-			allJobReport(jobReports, workbook, reportData.get("userId"), reportData.get("jobId"));
-
-			// if (reportData.get("userId") != null) { // Example for line of
-			// // service
-			// specificUserReport(workbook, reportData.get("userId"), rsList,
-			// session);
-			// }
-			// specificUserReport(workbook, 1, rsList, session);
+			allJobReport(jobReports, workbook, reportData.get("userId"), reportData.get("jobId"), rootDir);
 
 			workbook.write(fileOut);
 			fileOut.flush();
@@ -2030,10 +2038,142 @@ public class MySQLRdbHelper {
 
 	}
 
-	private void allJobReport(ArrayList<AllJobsReportDTO> jobReports, HSSFWorkbook workbook, Integer userId,
-			Integer jobId) {
-		HSSFSheet worksheet = workbook.createSheet("All Jobs Report");
+	//
+	public String fetchAllReportPDF(HashMap<String, Integer> reportData, String rootDir) {
+		ArrayList<AllJobsReportDTO> jobReports = new ArrayList<AllJobsReportDTO>();
+		Session session = null;
+		try {
+			session = sessionFactory.openSession();
+			Criteria crit = session.createCriteria(Job.class);
+			int month = 4;
 
+			// send all the listboxes values from clientside in a hashmap
+			// HashMap<String, Integer>
+
+			if (reportData.get("jobId") != null && reportData.get("jobId") != 0) { // EXAMPLE
+																					// FOR
+																					// adding
+																					// a
+																					// filter
+																					// for
+																					// job
+																					// name
+																					// listbox,
+																					// need
+																					// to
+																					// do
+																					// this
+																					// for
+																					// all
+																					// listboxes.
+				crit.add(Restrictions.eq("jobId", reportData.get("jobId")));
+			}
+
+			if (reportData.get("lineOfServiceId") != null && reportData.get("lineOfServiceId") != 0) { // Example
+																										// for
+																										// line
+																										// of
+																										// service
+				crit.createAlias("lineofServiceId", "lineofService");
+				crit.add(Restrictions.eq("lineofService.lineofServiceId", reportData.get("lineOfServiceId")));
+			}
+
+			if (reportData.get("companyId") != null && reportData.get("companyId") != 0) {
+				crit.add(Restrictions.eq("company", reportData.get("companyId")));
+			}
+			if (reportData.get("monthId") != null && reportData.get("monthId") != 0) {
+				month = reportData.get("monthId");
+			}
+			if (reportData.get("allocationId") != null && reportData.get("allocationId") != 0) {
+				crit.add(Restrictions.eq("allocation", reportData.get("allocationId")));
+
+			}
+
+			if (reportData.get("domainId") != null && reportData.get("domainId") != 0) {
+				crit.createAlias("domainId", "domain");
+				crit.add(Restrictions.eq("domain.domainId", reportData.get("domainId")));
+			}
+			if (reportData.get("activityId") != null && reportData.get("activityId") != 0) {
+				crit.createAlias("activityId", "activity");
+				crit.add(Restrictions.eq("activity.activityId", reportData.get("activityId")));
+			}
+
+			// Dont add filter for Users here , its already added at bottom..
+
+			List rsList = crit.list();
+
+			for (Iterator it = rsList.iterator(); it.hasNext();) {
+				Job job = (Job) it.next();
+				AllJobsReportDTO reportDTO = new AllJobsReportDTO();
+				reportDTO.setJobName(job.getJobName());
+				// reportDTO.setCompanyName(Branches.ALSUHAIMI.name());
+
+				for (Branches branch : Branches.values()) {
+					if (job.getCompany() == branch.getValue()) {
+						reportDTO.setCompanyName(branch.getName());
+					}
+				}
+
+				for (Allocations allocation : Allocations.values()) {
+					if (job.getAllocation() == allocation.getValue()) {
+						reportDTO.setAllocation(allocation.getName());
+					}
+				}
+				for (Location location : Location.values()) {
+					if (job.getLocation() == location.getValue()) {
+						reportDTO.setLocation(location.getName());
+					}
+				}
+				float totalHours = 0;
+				reportDTO.setDomain(job.getDomainId().getName());
+				reportDTO.setLineOfService(job.getLineofServiceId().getName());
+
+				reportDTO.setListTimeSheet(
+						getActualHours(job.getJobId(), session, reportData.get("monthId"), reportData.get("userId")));
+				for (int i = 0; i < getActualHours(job.getJobId(), session, reportData.get("monthId"),
+						reportData.get("userId")).size(); i++) {
+					reportDTO.setActivity(
+
+							getActualHours(job.getJobId(), session, reportData.get("monthId"), reportData.get("userId"))
+									.get(i).getActivity().getActivityName());
+
+					totalHours = totalHours + getActualHours(job.getJobId(), session, reportData.get("monthId"),
+							reportData.get("userId")).get(i).getHours();
+
+					reportDTO.setUser(
+							getActualHours(job.getJobId(), session, reportData.get("monthId"), reportData.get("userId"))
+									.get(i).getUserId().getName());
+					// budhethours is being used for month
+					reportDTO.setBudgetedHours(
+							getActualHours(job.getJobId(), session, reportData.get("monthId"), reportData.get("userId"))
+									.get(i).getMonth());
+
+				}
+				reportDTO.setTotalHours(totalHours);
+				reportDTO.setHoursVariance(reportDTO.getBudgetedHours() - reportDTO.getHoursWorked());
+
+				jobReports.add(reportDTO);
+
+				// }
+
+			}
+
+			FileOutputStream fileOut = new FileOutputStream(rootDir + "/FullReport/report.xls");
+			HSSFWorkbook workbook = new HSSFWorkbook();
+			allJobReportPDF(jobReports, workbook, reportData.get("userId"), reportData.get("jobId"), rootDir);
+
+		} catch (Exception ex) {
+
+			System.out.println("fail fetchAllReport");
+		}
+		session.close();
+		return "All report file generated";
+
+	}
+
+	private void allJobReport(ArrayList<AllJobsReportDTO> jobReports, HSSFWorkbook workbook, Integer userId,
+			Integer jobId, String rootDir) throws DocumentException, IOException {
+		HSSFSheet worksheet = workbook.createSheet("All Jobs Report");
 		HSSFRow rowUserName = worksheet.createRow((short) 0);
 		HSSFRow rowHeading = worksheet.createRow((short) 1);
 
@@ -2044,16 +2184,20 @@ public class MySQLRdbHelper {
 				if (jobId != 0) {
 					rowUserName.createCell((short) 0).setCellValue(
 							"Report For " + user.getName() + "For Job    " + jobReports.get(0).getJobName());
+
 				} else {
 					rowUserName.createCell((short) 0).setCellValue("    Report For " + user.getName());
+
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		} else if (jobId != 0) {
 			rowUserName.createCell((short) 0).setCellValue("Report For " + jobReports.get(0).getJobName());
+
 		} else {
 			rowUserName.createCell((short) 0).setCellValue("Report For All Jobs  Report For All Users");
+
 		}
 
 		rowHeading.createCell((short) 0).setCellValue("Sr.");
@@ -2070,10 +2214,6 @@ public class MySQLRdbHelper {
 		rowHeading.createCell((short) 12).setCellValue("Activity");
 		rowHeading.createCell((short) 13).setCellValue("Hours Worked");
 		rowHeading.createCell((short) 14).setCellValue("Total Hours");
-		// for (int j = 14; j < jobReports.size(); j++) {
-		// rowHeading.createCell((short)
-		// j).setCellValue(jobReports.get(j).getUser());
-		// }
 
 		int rowNum = 2;
 		for (int i = 0; i < jobReports.size(); i++) {
@@ -2105,7 +2245,124 @@ public class MySQLRdbHelper {
 
 				}
 			}
+
 		}
+
+	}
+
+	private void allJobReportPDF(ArrayList<AllJobsReportDTO> jobReports, HSSFWorkbook workbook, Integer userId,
+			Integer jobId, String rootDir) throws DocumentException, IOException {
+		Rectangle pagesize = new Rectangle(612, 861);
+		Document document = new Document(PageSize.A4);
+		String title = null;
+		if (userId != 0) {
+			User user;
+			try {
+				user = fetchUser(userId);
+				if (jobId != 0) {
+
+					title = "Report For " + user.getName() + "For Job    " + jobReports.get(0).getJobName();
+				} else {
+					title = " Report For " + user.getName();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if (jobId != 0) {
+			title = "Report For " + jobReports.get(0).getJobName();
+		} else {
+			title = "Report For All Jobs  Report For All Users";
+		}
+		//
+		// PdfContentByte cb = PdfWriter..getDirectContent();
+		// Font ffont = new Font(Font.FontFamily.UNDEFINED, 5, Font.ITALIC);
+		// Phrase header = new Phrase("this is a header", ffont);
+		// Phrase footer = new Phrase("this is a footer", ffont);
+		// ColumnText.showTextAligned(cb, Element.ALIGN_CENTER,
+		// header,
+		// (document.right() - document.left()) / 2 + document.leftMargin(),
+		// document.top() + 10, 0);
+		// ColumnText.showTextAligned(cb, Element.ALIGN_CENTER,
+		// footer,
+		// (document.right() - document.left()) / 2 + document.leftMargin(),
+		// document.bottom() - 10, 0);
+
+		PdfPTable table = new PdfPTable(new float[] { 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 });
+		table.setWidthPercentage(100);
+		table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+		table.addCell(new Phrase("Sr", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
+		table.addCell(new Phrase("Job Name", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
+		table.addCell(new Phrase("Company Name", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
+		table.addCell(new Phrase("Month", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
+		table.addCell(new Phrase("Allocation", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
+		table.addCell(new Phrase("Line Of Service", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
+		table.addCell(new Phrase("Domain", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
+		table.addCell(new Phrase("User", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
+		table.addCell(new Phrase("Activity", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
+		table.addCell(new Phrase("Hours Worked", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
+		table.addCell(new Phrase("Total Hours", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
+
+		table.setHeaderRows(1);
+		PdfPCell[] cells = table.getRow(0).getCells();
+		for (int j = 0; j < cells.length; j++) {
+			cells[j].setBackgroundColor(BaseColor.LIGHT_GRAY);
+		}
+
+		for (int i = 0; i < jobReports.size(); i++) {
+
+			for (TimeSheet timeSheet : jobReports.get(i).getListTimeSheet()) {
+
+				if (timeSheet.getHours() > 0) {
+
+					/// pdf
+					table.addCell(new Phrase(i + 1 + "", FontFactory.getFont(FontFactory.HELVETICA, 8)));
+
+					table.addCell(
+							new Phrase(jobReports.get(i).getJobName(), FontFactory.getFont(FontFactory.HELVETICA, 8)));
+					table.addCell(new Phrase(jobReports.get(i).getCompanyName(),
+							FontFactory.getFont(FontFactory.HELVETICA, 8)));
+					table.addCell(new Phrase(jobReports.get(i).getBudgetedHours() + "",
+							FontFactory.getFont(FontFactory.HELVETICA, 8)));
+					table.addCell(new Phrase(jobReports.get(i).getAllocation(),
+							FontFactory.getFont(FontFactory.HELVETICA, 8)));
+					table.addCell(new Phrase(jobReports.get(i).getLineOfService(),
+							FontFactory.getFont(FontFactory.HELVETICA, 8)));
+					table.addCell(
+							new Phrase(jobReports.get(i).getDomain(), FontFactory.getFont(FontFactory.HELVETICA, 8)));
+					table.addCell(
+							new Phrase(timeSheet.getUserId().getName(), FontFactory.getFont(FontFactory.HELVETICA, 8)));
+
+					table.addCell(new Phrase(timeSheet.getActivity().getActivityName(),
+							FontFactory.getFont(FontFactory.HELVETICA, 8)));
+
+					table.addCell(new Phrase(timeSheet.getHours() + "", FontFactory.getFont(FontFactory.HELVETICA, 8)));
+
+					table.addCell(new Phrase(jobReports.get(i).getTotalHours() + "",
+							FontFactory.getFont(FontFactory.HELVETICA, 8)));
+
+				}
+			}
+
+		}
+
+		FileOutputStream pdfFile = new FileOutputStream(rootDir + "/FullReport/report.pdf");
+		// PdfWriter.getInstance(document, pdfFile);
+		PdfWriter pdfWriter = PdfWriter.getInstance(document, pdfFile);
+		HeaderAndFooterPdfPageEventHelper headerAndFooter = new HeaderAndFooterPdfPageEventHelper();
+		pdfWriter.setPageEvent(headerAndFooter);
+		document.open();
+
+		Paragraph paragraph = new Paragraph(title,
+				FontFactory.getFont(FontFactory.TIMES_BOLD, 16, Font.BOLD, BaseColor.BLUE));
+
+		Paragraph p = new Paragraph();
+		document.add(paragraph);
+		document.add(new Paragraph(
+				"________________________________________________________________________________________________________________________"));
+		document.add(table);
+		document.close();
+
+		System.out.println("Done");
 	}
 
 	private void specificUserReport(HSSFWorkbook workbook, int userId, List rsList, Session session) {

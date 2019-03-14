@@ -120,6 +120,8 @@ public interface GreetingService extends RemoteService {
 
 	String fetchAllReport(HashMap<String, Integer> map);
 
+	String fetchAllReportPDF(HashMap<String, Integer> map);
+
 	String logOut();
 
 	User fetchLoggedInUser();
