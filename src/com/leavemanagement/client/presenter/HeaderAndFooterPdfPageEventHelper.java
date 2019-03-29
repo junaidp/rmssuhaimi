@@ -44,7 +44,7 @@ public class HeaderAndFooterPdfPageEventHelper extends PdfPageEventHelper {
 	// }
 
 	public void onEndPage(PdfWriter pdfWriter, Document document) {
-		System.out.println("onEndPage() method > Writing footer in file");
+		// System.out.println("onEndPage() method > Writing footer in file");
 		Rectangle rect = new Rectangle(PageSize.A4);
 		// Rectangle rect = pdfWriter.getBoxSize("rectangle");
 		// BOTTOM LEFT

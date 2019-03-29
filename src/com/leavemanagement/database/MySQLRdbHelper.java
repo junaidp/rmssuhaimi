@@ -77,6 +77,7 @@ public class MySQLRdbHelper {
 
 	private SessionFactory sessionFactory;
 	private final static Logger logger = Logger.getLogger("MySQLRdbHelper");
+	// Logger logger = Logger.getLogger(MySQLRdbHelper.class);
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
@@ -100,7 +101,8 @@ public class MySQLRdbHelper {
 			for (Iterator it = rsList.iterator(); it.hasNext();) {
 				users = (User) it.next();
 				System.out.println(users.getName() + " Signed In on" + new Date());
-
+				// BasicConfigurator.configure();
+				// logger1.info("This is my first log4j's statement");
 				logger.info(
 						"inside Getting Authentication LOG MSG-->" + users.getName() + " Signed In on" + new Date());
 			}
@@ -2045,7 +2047,7 @@ public class MySQLRdbHelper {
 		try {
 			session = sessionFactory.openSession();
 			Criteria crit = session.createCriteria(Job.class);
-			int month = 4;
+			int month = 0;
 
 			// send all the listboxes values from clientside in a hashmap
 			// HashMap<String, Integer>
@@ -2321,8 +2323,44 @@ public class MySQLRdbHelper {
 							new Phrase(jobReports.get(i).getJobName(), FontFactory.getFont(FontFactory.HELVETICA, 8)));
 					table.addCell(new Phrase(jobReports.get(i).getCompanyName(),
 							FontFactory.getFont(FontFactory.HELVETICA, 8)));
-					table.addCell(new Phrase(jobReports.get(i).getBudgetedHours() + "",
-							FontFactory.getFont(FontFactory.HELVETICA, 8)));
+					String month = null;
+					if (jobReports.get(i).getBudgetedHours() == 1) {
+						month = "January";
+					}
+					if (jobReports.get(i).getBudgetedHours() == 2) {
+						month = "Februrary";
+					}
+					if (jobReports.get(i).getBudgetedHours() == 3) {
+						month = "March";
+					}
+					if (jobReports.get(i).getBudgetedHours() == 4) {
+						month = "April";
+					}
+					if (jobReports.get(i).getBudgetedHours() == 5) {
+						month = "May";
+					}
+					if (jobReports.get(i).getBudgetedHours() == 6) {
+						month = "June";
+					}
+					if (jobReports.get(i).getBudgetedHours() == 7) {
+						month = "July";
+					}
+					if (jobReports.get(i).getBudgetedHours() == 8) {
+						month = "August";
+					}
+					if (jobReports.get(i).getBudgetedHours() == 9) {
+						month = "September";
+					}
+					if (jobReports.get(i).getBudgetedHours() == 10) {
+						month = "October";
+					}
+					if (jobReports.get(i).getBudgetedHours() == 11) {
+						month = "November";
+					}
+					if (jobReports.get(i).getBudgetedHours() == 12) {
+						month = "December";
+					}
+					table.addCell(new Phrase(month, FontFactory.getFont(FontFactory.HELVETICA, 8)));
 					table.addCell(new Phrase(jobReports.get(i).getAllocation(),
 							FontFactory.getFont(FontFactory.HELVETICA, 8)));
 					table.addCell(new Phrase(jobReports.get(i).getLineOfService(),
