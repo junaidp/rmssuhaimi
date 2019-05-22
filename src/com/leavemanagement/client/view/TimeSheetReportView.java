@@ -178,7 +178,30 @@ public class TimeSheetReportView extends MaterialColumn {
 	private void fetchJobs() {
 
 		String status = "Active";
-		rpcService.fetchJobsWithStatus(status, new AsyncCallback<ArrayList<Job>>() {
+		// rpcService.fetchJobsWithStatus(status, new
+		// AsyncCallback<ArrayList<Job>>() {
+		//
+		// @Override
+		// public void onSuccess(ArrayList<Job> result) {
+		// listJobForJobWise.clear();
+		// listJobs.clear();
+		// listJobs.addItem("0", "All Jobs");
+		// for (int i = 0; i < result.size(); i++) {
+		// listJobs.addItem(result.get(i).getJobId() + "",
+		// result.get(i).getJobName());
+		// listJobForJobWise.addItem(result.get(i).getJobId() + "",
+		// result.get(i).getJobName());
+		// }
+		//
+		// }
+		//
+		// @Override
+		// public void onFailure(Throwable caught) {
+		// Window.alert("fail fetch jobswithstatus");
+		//
+		// }
+		// });
+		rpcService.fetchJobs(loggedInUser, new AsyncCallback<ArrayList<Job>>() {
 
 			@Override
 			public void onSuccess(ArrayList<Job> result) {
@@ -230,6 +253,7 @@ public class TimeSheetReportView extends MaterialColumn {
 
 			@Override
 			public void onSuccess(ArrayList<Domains> result) {
+				listJobType.addItem("0", "All Line Of Services");
 				listBoxDomain.addItem("0", "All Domains");
 				for (int i = 0; i < result.size(); i++) {
 					listBoxDomain.addItem(result.get(i).getDomainId() + "", result.get(i).getName());

@@ -3,10 +3,12 @@ package com.leavemanagement.client.view;
 import java.util.ArrayList;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.Window;
@@ -14,6 +16,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.ValueBoxBase.TextAlignment;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.leavemanagement.client.GreetingService;
 import com.leavemanagement.client.GreetingServiceAsync;
@@ -28,7 +32,6 @@ import gwt.material.design.client.ui.MaterialLabel;
 import gwt.material.design.client.ui.MaterialListBox;
 import gwt.material.design.client.ui.MaterialLoader;
 import gwt.material.design.client.ui.MaterialRow;
-import gwt.material.design.client.ui.MaterialTextBox;
 
 public class TimeSheetTableView extends MaterialColumn {
 	private GreetingServiceAsync rpcService = GWT.create(GreetingService.class);
@@ -44,6 +47,7 @@ public class TimeSheetTableView extends MaterialColumn {
 		this.timeSheetTree = timeSheetTree;
 
 		MaterialRow columnMain = new MaterialRow();
+
 		ScrollPanel scrollPanelWidth = new ScrollPanel();
 		// columnMain.setWidth("1200px");
 		this.loggedInUser = loggedInUser2;
@@ -53,28 +57,31 @@ public class TimeSheetTableView extends MaterialColumn {
 		final FlexTable flex = new FlexTable();
 		final FlexTable flex1 = new FlexTable();
 		// Window.alert("start ");
-
+		ScrollPanel scrollFlex1 = new ScrollPanel();
+		scrollFlex1.setHeight("250px");
+		// scrollFlex1.setWidth("1700px");
+		scrollFlex1.add(flex1);
 		setHandler(job, flex, flex1, listMonth);
 		// Window.alert("before adding anything ");
-		scrollPanel.setHeight("400px");
-		scrollPanel.setWidth("1900px");
-		scrollPanel.add(flex1);
+		// scrollPanel.setHeight("400px");
+		// scrollPanel.setWidth("1896px");
+		// scrollPanel.add(flex1);
 		// Window.alert("adding flex1 in scrollpanel");
-		ScrollPanel sc = new ScrollPanel();
-		sc.setHeight("600px");
-		sc.setWidth("1285px");
+		// ScrollPanel sc = new ScrollPanel();
+		// sc.setHeight("600px");
+		// sc.setWidth("1300px");
 		// Window.alert("createed sc");
 		columnMain.add(flex);
 		// Window.alert("added flex in column main ");
 		// add(flex);
 		// add(scrollPanel);
 		// add(btnSave);
-		columnMain.add(scrollPanel);
+		columnMain.add(scrollFlex1);
 		// Window.alert("added scrollpanel in column main");
 		columnMain.add(btnSave);
-		sc.add(columnMain);
+		add(columnMain);
 		// Window.alert("adding cloumn main oto sc ");
-		add(sc);
+		// add(sc);
 
 		saveHandler(job, chargeable2, btnSave, flex1, flex);
 	}
@@ -94,23 +101,29 @@ public class TimeSheetTableView extends MaterialColumn {
 			vpHeading.add(heading);
 			heading.setWidth("30px");
 			vpHeading.add(lblSum);
+			Label lbl = new Label("32");
+			lbl.setStyleName("white");
 			flex.setWidget(0, k + 1, vpHeading);
+			flex.setWidget(0, 32, lbl);
 			// Window.alert("lbltotal before");
 			Label lblTotalHour = new Label("Total Hours:");
-			lblTotalHour.setWidth("300px");
+			lblTotalHour.addStyleName("blueBold");
+			lblTotalHour.setWidth("195px");
 			flex.setWidget(0, 0, lblTotalHour);
 			for (int i = 0; i < job.getActivityLists().size(); i++) {
 				Activity activity = job.getActivityLists().get(i);
 				Label lblName = new Label(activity.getActivityName());
 				// Window.alert("lbname");
-				lblName.setWidth("250px");
-				lblName.setWordWrap(false);
+				lblName.setWidth("150px");
+				lblName.setWordWrap(true);
 
 				flex1.setWidget(i + 1, 0, lblName);
 
 				// Window.alert("after adding lblname");
-				final MaterialTextBox text = new MaterialTextBox();
+				final TextBox text = new TextBox();
 				text.setText("0");
+				text.setAlignment(TextAlignment.CENTER);
+				text.setTitle(activity.getActivityName());
 				text.setWidth("30px");
 				flex1.setWidget(i + 1, k + 1, text);
 				// Window.alert("befotre adding text");
@@ -128,30 +141,46 @@ public class TimeSheetTableView extends MaterialColumn {
 
 					data.setSum(data.getSum() + Float.parseFloat(text.getValue()));
 					lblSum.setText(data.getSum() + "");
-					// Window.alert("try data sum");
-					text.addKeyPressHandler(new KeyPressHandler() {
+
+					text.addKeyDownHandler(new KeyDownHandler() {
 
 						@Override
-						public void onKeyPress(KeyPressEvent event) {
+						public void onKeyDown(KeyDownEvent event) {
 
 							if (!text.getText().isEmpty()) {
+
 								data.setOldValue(text.getValue().isEmpty() ? 0 : Float.parseFloat(text.getValue()));
+
 							}
+
 						}
 
 					});
 					// timeSheetTree.hoursCalculate(k, timeSheets, data, lblSum,
 					// listMonth2, loggedInUser);
 
+					text.addBlurHandler(new BlurHandler() {
+
+						@Override
+						public void onBlur(BlurEvent event) {
+
+						}
+					});
+
 					text.addKeyUpHandler(new KeyUpHandler() {
 
 						@Override
 						public void onKeyUp(KeyUpEvent event) {
+							if (text.getValue() == null || text.getValue().equals("")) {
+								text.setValue("0");
+							}
+							if (text.getValue().startsWith("0") && text.getValue().length() > 1) {
+								text.setValue(text.getValue().substring(1));
+							}
 							if (!text.getText().isEmpty()) {
 								data.setSum(data.getSum() - data.getOldValue());
 
 								data.setSum(data.getSum() + Float.parseFloat(text.getValue()));
-
 								lblSum.setText(data.getSum() + "");
 
 								// Uncomment this to test TotalHours
@@ -161,6 +190,7 @@ public class TimeSheetTableView extends MaterialColumn {
 								data.setOldValue(Float.parseFloat(text.getValue()));
 							}
 						}
+						// }
 					});
 
 				} catch (Exception ex) {
@@ -175,6 +205,7 @@ public class TimeSheetTableView extends MaterialColumn {
 				lblActicityId.setText(job.getActivityLists().get(i).getActivityId() + "");
 				lblActicityId.setStyleName("white");
 				flex1.setWidget(i + 1, 32, lblActicityId);
+				lblActicityId.setVisible(false);
 
 			}
 		}
@@ -198,7 +229,7 @@ public class TimeSheetTableView extends MaterialColumn {
 		ArrayList<TimeSheet> timeSheetList = new ArrayList<TimeSheet>();
 		for (int i = 0; i < flex.getRowCount() - 1; i++) {
 			for (int j = 0; j < 31; j++) {
-				MaterialTextBox text = (MaterialTextBox) flex.getWidget(i + 1, j + 1);
+				TextBox text = (TextBox) flex.getWidget(i + 1, j + 1);
 				text.setWidth("30px");
 				if (text.getText() != null && !text.getText().equals("")) {
 					TimeSheet timeSheet = new TimeSheet();

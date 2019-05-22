@@ -9,13 +9,14 @@
 	<d:MaterialRow>
 		<d:MaterialRow>
 			<d:MaterialColumn ui:field="rowMonth"></d:MaterialColumn>
+			<g:FlexTable ui:field="flex"></g:FlexTable>
 		</d:MaterialRow>
 		<d:MaterialRow ui:field="rowTotal"></d:MaterialRow>
-		<g:ScrollPanel height ="400px">
 		<t:MaterialTree ui:field="tree">
+		
 			<!-- <t:MaterialTreeItem iconType="FOLDER" text="Jobs" ui:field="treeItem"></t:MaterialTreeItem> -->
 		</t:MaterialTree>
-</g:ScrollPanel>
+
 	</d:MaterialRow>
 
 </ui:UiBinder> 

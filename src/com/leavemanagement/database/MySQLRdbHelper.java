@@ -1286,7 +1286,7 @@ public class MySQLRdbHelper {
 
 			crit.add(Restrictions.ne("status", "InActive"));
 			crit.add(Restrictions.ne("status", "office"));
-			crit.add(Restrictions.ne("status", "Closed"));
+			// crit.add(Restrictions.ne("status", "Closed"));
 
 			if (loggedInUser.getRoleId().getRoleId() != 5) {
 				ArrayList<Integer> jobIds = getUserJobs(loggedInUser.getUserId(), session);
@@ -2212,7 +2212,7 @@ public class MySQLRdbHelper {
 		rowHeading.createCell((short) 6).setCellValue("Allocation");
 		rowHeading.createCell((short) 7).setCellValue("Line Of Service");
 		rowHeading.createCell((short) 9).setCellValue("Domain");
-		rowHeading.createCell((short) 11).setCellValue("Usere");
+		rowHeading.createCell((short) 11).setCellValue("Users");
 		rowHeading.createCell((short) 12).setCellValue("Activity");
 		rowHeading.createCell((short) 13).setCellValue("Hours Worked");
 		rowHeading.createCell((short) 14).setCellValue("Total Hours");

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -13,6 +13,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -39,6 +40,8 @@ public class TimeSheetTree extends Composite {
 	@UiField
 	MaterialColumn rowMonth;
 	@UiField
+	FlexTable flex;
+	@UiField
 	MaterialRow rowTotal;
 	Label heading;
 	MaterialColumn c1 = new MaterialColumn();
@@ -46,6 +49,11 @@ public class TimeSheetTree extends Composite {
 	private boolean chargeable = false;
 	MaterialListBox listMonth = new MaterialListBox();
 	MaterialCheckBox chkChargeable = new MaterialCheckBox();
+	Boolean booleanJobClick = false;
+	Label lblTotalHour = new Label("Total Hours for all Jobs:");
+	MaterialColumn vpHeading;
+	private MaterialColumn vpLabel = new MaterialColumn();
+	private ArrayList<Job> listjob = new ArrayList<Job>();
 	private static TimeSheetTreeUiBinder uiBinder = GWT.create(TimeSheetTreeUiBinder.class);
 
 	private GreetingServiceAsync rpcService = GWT.create(GreetingService.class);
@@ -57,8 +65,24 @@ public class TimeSheetTree extends Composite {
 
 		initWidget(uiBinder.createAndBindUi(this));
 		System.out.println("hello");
+		// for (int k = 0; k < 31; k++) {
+		// // Window.alert("in loop k");
+		//
+		// VerticalPanel vpHeading = new VerticalPanel();
+		// Label heading = new Label(k + 1 + "");
+		// heading.addStyleName("blueBold");
+		// heading.setWidth("30px");
+		// vpHeading.add(heading);
+		//
+		// flex.getElement().getStyle().setMarginLeft(250, Unit.PX);
+		// flex.setWidget(0, k + 1, vpHeading);
+		//
+		// }
 		rowMonth.add(listMonth);
 		rowMonth.add(chkChargeable);
+		//
+		// lblTotalHour.setWidth("300px");
+		lblTotalHour.setVisible(false);
 
 		chkChargeable.setText(Allocations.CHARGEABLE.getName());
 		listMonth.addItem("0", "Select Month");
@@ -80,6 +104,7 @@ public class TimeSheetTree extends Composite {
 
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
+				lblTotalHour.setVisible(true);
 				tree.clear();
 				selectedMonth = Integer.parseInt(listMonth.getValue(listMonth.getSelectedIndex()));
 				fetchJobs(loggedInUser);
@@ -105,7 +130,9 @@ public class TimeSheetTree extends Composite {
 			public void onSuccess(final ArrayList<Job> result) {
 
 				// start
+				// rowTotal.getElement().getStyle().setMarginLeft(20, Unit.PX);
 				rowTotal.clear();
+
 				// tree.clear();
 				calculateTotalHoursForTimeSheet(result, loggedInUser);
 				// end
@@ -119,27 +146,29 @@ public class TimeSheetTree extends Composite {
 
 					treeItem1.setText(result.get(i).getJobName());
 					tree.add(treeItem1);
-					//
-					treeItem1.addDoubleClickHandler(new DoubleClickHandler() {
 
-						@Override
-						public void onDoubleClick(DoubleClickEvent event) {
-							// tree.clear();
-							// selectedMonth =
-							// Integer.parseInt(listMonth.getValue(listMonth.getSelectedIndex()));
-							// fetchJobs(loggedInUser);
-
-							fetchSelectedJobForTimeSheet(loggedInUser, job, treeItem1);
-
-							// displayInTree(loggedInUser, job, treeItem1,
-							// listMonth, chargeable);
-
-						}
-
-					});
-
+					clickHandler(loggedInUser, job, treeItem1);
 				}
 
+			}
+
+			private void clickHandler(final User loggedInUser, final Job job, final MaterialTreeItem treeItem1) {
+				treeItem1.addClickHandler(new ClickHandler() {
+
+					@Override
+					public void onClick(ClickEvent event) {
+
+						if (!listjob.contains(job)) {
+							if (booleanJobClick == false) {
+								booleanJobClick = true;
+								fetchSelectedJobForTimeSheet(loggedInUser, job, treeItem1);
+							}
+							booleanJobClick = false;
+							listjob.add(job);
+						}
+
+					}
+				});
 			}
 
 			@Override
@@ -171,19 +200,21 @@ public class TimeSheetTree extends Composite {
 	}
 
 	public void calculateTotalHoursForTimeSheet(List<Job> result, User loggedInUser) {
+		rowTotal.add(vpLabel);
+		for (int k = 1; k <= 31; k++) {
 
-		for (int k = 1; k < 32; k++) {
-
-			MaterialColumn vpHeading = new MaterialColumn();
+			vpLabel.add(lblTotalHour);
 			MaterialLabel lblSum = new MaterialLabel("0");
-
-			lblSum.setWidth("20px");
+			vpHeading = new MaterialColumn();
+			lblSum.setWidth("9px");
 			Data data = new Data();
 			data.setSum(0);
 
 			heading = new Label(k + "");
 			// Window.alert("after adding lbl heading");
-			heading.addStyleName("blueBold");
+			heading.addStyleName("blueBold1");
+			lblTotalHour.addStyleName("blueBold1");
+
 			vpHeading.add(heading);
 			vpHeading.add(lblSum);
 
@@ -201,7 +232,7 @@ public class TimeSheetTree extends Composite {
 	protected void updateTotalHours(int day, float currentHours, float newHours) {
 
 		try {
-			MaterialColumn vpHeading = (MaterialColumn) rowTotal.getWidget(day);
+			MaterialColumn vpHeading = (MaterialColumn) rowTotal.getWidget(day + 1);
 			MaterialLabel lblSum = (MaterialLabel) vpHeading.getWidget(1);
 			float oldHours = Float.parseFloat(lblSum.getText());
 			float totalHours = oldHours - currentHours;
@@ -231,16 +262,18 @@ public class TimeSheetTree extends Composite {
 	private void displayInTree(final User loggedInUser, final Job job, final MaterialTreeItem treeItem1,
 			final MaterialListBox listMonth, boolean chargeable2) {
 
-		c1.clear();
-		// p1.clear();
-		// p1.setHeight("400px");
-		// p1.setWidth("1360px");
-		// p1.add(c1);
-		// treeItem1.add(p1);
-		treeItem1.add(c1);
+		MaterialTreeItem tree2 = new MaterialTreeItem();
+		ScrollPanel scrolltimesheet = new ScrollPanel();
+		scrolltimesheet.setHeight("400px");
+		// scrolltimesheet.setWidth("1500px");
+
 		final TimeSheetTableView timeSheetTable = new TimeSheetTableView(job, loggedInUser, listMonth, chargeable2,
 				this);
-		c1.add(timeSheetTable);
+		scrolltimesheet.add(timeSheetTable);
+		tree2.add(scrolltimesheet);
+
+		treeItem1.add(tree2);
+
 	}
 
 }
