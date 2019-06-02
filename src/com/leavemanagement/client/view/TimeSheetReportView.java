@@ -47,6 +47,7 @@ public class TimeSheetReportView extends MaterialColumn {
 	private MaterialLabel lblDomain = new MaterialLabel("Domain");
 	private MaterialLabel lblUser = new MaterialLabel("User");
 	private MaterialLabel lblCompanyJobWise = new MaterialLabel("Company Name");
+	private MaterialLabel lblYear = new MaterialLabel("Year");
 	private MaterialLabel lblJobJobWise = new MaterialLabel("Job Name");
 	// private MaterialLabel lblActivities = new MaterialLabel("Activities");
 	private MaterialListBox listUsers = new MaterialListBox();
@@ -59,6 +60,7 @@ public class TimeSheetReportView extends MaterialColumn {
 	private MaterialListBox listJobType = new MaterialListBox();
 	private MaterialListBox listJobForJobWise = new MaterialListBox();
 	private MaterialListBox listCompanyForJobWise = new MaterialListBox();
+	private MaterialListBox listYear = new MaterialListBox();
 	// private MaterialListBox listBoxActivities = new MaterialListBox();
 	private User loggedInUser = null;
 	MaterialLabel lblHeadingTimeReport = new MaterialLabel("Time Report");
@@ -96,6 +98,14 @@ public class TimeSheetReportView extends MaterialColumn {
 		listMonth.addItem("10", "Oct");
 		listMonth.addItem("11", "Nov");
 		listMonth.addItem("12", "Dec");
+
+		listYear.addItem("0", "All Years");
+		listYear.addItem("2018", "2018");
+		listYear.addItem("2019", "2019");
+		listYear.addItem("2020", "2020");
+		listYear.addItem("2021", "2021");
+		listYear.addItem("2022", "2022");
+		listYear.addItem("2023", "2023");
 		fetchJobs();
 		fetchUsers();
 		fetchDomain();
@@ -123,8 +133,11 @@ public class TimeSheetReportView extends MaterialColumn {
 		flex.setWidget(6, 1, lblUser);
 		flex.setWidget(6, 2, listUsers);
 
-		flex.setWidget(7, 2, btnSearchAllReport);
-		flex.setWidget(7, 3, btnSearchAllReportPDF);
+		flex.setWidget(7, 1, lblYear);
+		flex.setWidget(7, 2, listYear);
+
+		flex.setWidget(8, 2, btnSearchAllReport);
+		flex.setWidget(8, 3, btnSearchAllReportPDF);
 
 		add(lblHeadingTimeReport);
 		add(flex);
@@ -317,6 +330,7 @@ public class TimeSheetReportView extends MaterialColumn {
 		int selectedLineOfService = (Integer.parseInt(listJobType.getSelectedValue()));
 		int selectedDomain = (Integer.parseInt(listBoxDomain.getSelectedValue()));
 		int selectedUser = (Integer.parseInt(listUsers.getSelectedValue()));
+		int selectedYear = (Integer.parseInt(listYear.getSelectedValue()));
 		// int selectedActivity =
 		// (Integer.parseInt(listBoxActivities.getSelectedValue()));
 
@@ -328,6 +342,7 @@ public class TimeSheetReportView extends MaterialColumn {
 		map.put("lineOfServiceId", selectedLineOfService);
 		map.put("domainId", selectedDomain);
 		map.put("userId", selectedUser);
+		map.put("yearId", selectedYear);
 		// map.put("activityId", selectedActivity);
 
 		rpcService.fetchAllReport(map, new AsyncCallback<String>() {
@@ -443,6 +458,8 @@ public class TimeSheetReportView extends MaterialColumn {
 		int selectedLineOfService = (Integer.parseInt(listJobType.getSelectedValue()));
 		int selectedDomain = (Integer.parseInt(listBoxDomain.getSelectedValue()));
 		int selectedUser = (Integer.parseInt(listUsers.getSelectedValue()));
+
+		int selectedYear = (Integer.parseInt(listYear.getSelectedValue()));
 		// int selectedActivity =
 		// (Integer.parseInt(listBoxActivities.getSelectedValue()));
 
@@ -454,6 +471,7 @@ public class TimeSheetReportView extends MaterialColumn {
 		map.put("lineOfServiceId", selectedLineOfService);
 		map.put("domainId", selectedDomain);
 		map.put("userId", selectedUser);
+		map.put("yearId", selectedYear);
 		// map.put("activityId", selectedActivity);
 
 		rpcService.fetchAllReportPDF(map, new AsyncCallback<String>() {

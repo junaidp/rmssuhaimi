@@ -13,6 +13,8 @@ public class AllJobsReportDTO implements Serializable {
 	private String Allocation;
 	private String location;
 	private String lineOfService;
+	private String year;
+
 	private String domain;
 	private String month;
 	private float totalHours;
@@ -134,6 +136,14 @@ public class AllJobsReportDTO implements Serializable {
 
 	public void setListTimeSheet(ArrayList<TimeSheet> listTimeSheet) {
 		this.listTimeSheet = listTimeSheet;
+	}
+
+	public String getYear() {
+		return year;
+	}
+
+	public void setYear(String year) {
+		this.year = year;
 	}
 
 }

@@ -35,8 +35,10 @@ public class JobsListView extends MaterialColumn {
 	Column<Job, String> jobStartDate;
 	Column<Job, String> jobDeliveryDate;
 	Column<Job, String> deleteJob;
+	Column<Job, String> reOpen;
 	Column<Job, String> closeJob;
 	String s;
+	GreetingServiceAsync rpcService = GWT.create(GreetingService.class);
 	private CellTable<Job> table = new CellTable<Job>();
 	private User loggedInUser = null;
 
@@ -63,6 +65,7 @@ public class JobsListView extends MaterialColumn {
 					return "redBackground";
 				}
 				return s;
+
 			}
 		});
 
@@ -182,6 +185,20 @@ public class JobsListView extends MaterialColumn {
 				return "Delete";
 			}
 		};
+		ButtonCell btnReOpen = new ButtonCell();
+		reOpen = new Column<Job, String>(btnReOpen) {
+			@Override
+			public String getValue(Job object) {
+				if (object.getStatus().equalsIgnoreCase("Closed")) {
+					// reOpen.setCellStyleNames("btnStyleReOpen");
+					return "Re Open";
+
+				} else
+
+					return "";
+
+			}
+		};
 
 		deleteJob.setCellStyleNames("btnStyleDelete");
 
@@ -231,9 +248,10 @@ public class JobsListView extends MaterialColumn {
 		// table.addColumn(jobDeliveryDate,"Submission Date");
 
 		if (loggedInUser.getRoleId().getRoleId() == 5) {
+
 			table.addColumn(closeJob, "");
 			table.addColumn(deleteJob, "");
-
+			table.addColumn(reOpen, "");
 		}
 
 		jobName.setFieldUpdater(new FieldUpdater<Job, String>() {
@@ -267,7 +285,26 @@ public class JobsListView extends MaterialColumn {
 			}
 
 		});
+		reOpen.setFieldUpdater(new FieldUpdater<Job, String>() {
 
+			@Override
+			public void update(int index, Job object, String value) {
+				object.setStatus("Avtive");
+				rpcService.saveJob(object, new AsyncCallback<String>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert("Failed");
+					}
+
+					@Override
+					public void onSuccess(String result) {
+						Window.alert(result);
+						fetchJobs();
+					}
+				});
+			}
+		});
 		deleteJob.setFieldUpdater(new FieldUpdater<Job, String>() {
 
 			@Override

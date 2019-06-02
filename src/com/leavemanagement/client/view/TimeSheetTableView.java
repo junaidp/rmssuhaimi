@@ -122,9 +122,12 @@ public class TimeSheetTableView extends MaterialColumn {
 				// Window.alert("after adding lblname");
 				final TextBox text = new TextBox();
 				text.setText("0");
+
+				text.getElement().setPropertyString("placeholder", "0");
 				text.setAlignment(TextAlignment.CENTER);
 				text.setTitle(activity.getActivityName());
 				text.setWidth("30px");
+				text.setMaxLength(2);
 				flex1.setWidget(i + 1, k + 1, text);
 				// Window.alert("befotre adding text");
 				for (int m = 0; m < activity.getTimeSheets().size(); m++) {
@@ -147,13 +150,26 @@ public class TimeSheetTableView extends MaterialColumn {
 						@Override
 						public void onKeyDown(KeyDownEvent event) {
 
-							if (!text.getText().isEmpty()) {
-
-								data.setOldValue(text.getValue().isEmpty() ? 0 : Float.parseFloat(text.getValue()));
-
+							if (isStringInt(text.getText())) {
+								if (!text.getText().isEmpty()) {
+									// if (event.getNativeKeyCode() != 9) {
+									// GWT.log(data.getOldValue() + "line 153
+									// after adding it to upper");
+									// Logging.console("testing logsss");
+									// System.out.println(data.getOldValue()
+									// + "line 153 after adding it to
+									// upper");
+									data.setOldValue(text.getValue().isEmpty() ? 0 : Float.parseFloat(text.getValue()));
+									// GWT.log(data.getOldValue() + "line 161
+									// before adding it to upper");
+									// System.out.println(data.getOldValue()
+									// + "line 156 before adding it to
+									// upper");
+								}
 							}
-
 						}
+
+						// }
 
 					});
 					// timeSheetTree.hoursCalculate(k, timeSheets, data, lblSum,
@@ -162,6 +178,7 @@ public class TimeSheetTableView extends MaterialColumn {
 					text.addBlurHandler(new BlurHandler() {
 
 						@Override
+
 						public void onBlur(BlurEvent event) {
 
 						}
@@ -170,27 +187,63 @@ public class TimeSheetTableView extends MaterialColumn {
 					text.addKeyUpHandler(new KeyUpHandler() {
 
 						@Override
-						public void onKeyUp(KeyUpEvent event) {
-							if (text.getValue() == null || text.getValue().equals("")) {
-								text.setValue("0");
-							}
-							if (text.getValue().startsWith("0") && text.getValue().length() > 1) {
-								text.setValue(text.getValue().substring(1));
-							}
-							if (!text.getText().isEmpty()) {
-								data.setSum(data.getSum() - data.getOldValue());
+						public void onKeyUp(final KeyUpEvent event) {
 
-								data.setSum(data.getSum() + Float.parseFloat(text.getValue()));
-								lblSum.setText(data.getSum() + "");
+							calculateTotal(lblSum, data, text, event);
 
-								// Uncomment this to test TotalHours
-								timeSheetTree.updateTotalHours(data.getDay(), data.getOldValue(),
-										Float.parseFloat(text.getValue()));
+						} // }
 
-								data.setOldValue(Float.parseFloat(text.getValue()));
+						private void calculateTotal(final MaterialLabel lblSum, final Data data, final TextBox text,
+								KeyUpEvent event) {
+							if (event.getNativeKeyCode() != 9) {
+								if (text.getValue() == null || text.getValue().equals("")) {
+									text.setValue("0");
+								}
+								if (isStringInt(text.getText())) {
+									if (text.getValue().startsWith("0") && text.getValue().length() > 1) {
+										// GWT.log(text.getValue() + "line 193
+										// after start with 0");
+										// System.out.println(text.getValue() +
+										// "line 186 after start with 0");
+										text.setValue(text.getValue().substring(1));
+										// GWT.log(text.getValue() + "line 197
+										// before starts with 0 condition");
+										// System.out.println(text.getValue() +
+										// "line 193 before starts with 0
+										// condition");
+									}
+									if (!text.getText().isEmpty()) {
+										GWT.log(data.getOldValue() + "line 203");
+										// System.out.println(data.getOldValue()
+										// +
+										// "line 198");
+										data.setSum(data.getSum() - data.getOldValue());
+										// GWT.log(data.getSum() +
+										// "data.getsum");
+										// GWT.log(data.getOldValue() + "old
+										// value data");
+										// GWT.log(data.getSum() -
+										// data.getOldValue() + "line 208
+										// data.setseum minnus");
+
+										data.setSum(data.getSum() + Float.parseFloat(text.getValue()));
+										// System.out.println(data.getSum() +
+										// Float.parseFloat(text.getValue())
+										// + "line 193 data.setseum minnus");
+										// GWT.log(data.getSum() +
+										// Float.parseFloat(text.getValue())
+										// + "line 215 data.setseum plus");
+										lblSum.setText(data.getSum() + "");
+										// GWT.log(data.getSum() + "");
+										// Uncomment this to test TotalHours
+										timeSheetTree.updateTotalHours(data.getDay(), data.getOldValue(),
+												Float.parseFloat(text.getValue()));
+
+										data.setOldValue(Float.parseFloat(text.getValue()));
+									}
+								}
 							}
 						}
-						// }
 					});
 
 				} catch (Exception ex) {
@@ -208,6 +261,7 @@ public class TimeSheetTableView extends MaterialColumn {
 				lblActicityId.setVisible(false);
 
 			}
+
 		}
 	}
 
@@ -308,4 +362,14 @@ public class TimeSheetTableView extends MaterialColumn {
 		});
 	}
 
+	public boolean isStringInt(String s) {
+		try {
+			Integer.parseInt(s);
+
+		} catch (NumberFormatException ex) {
+			return false;
+		}
+
+		return true;
+	}
 }

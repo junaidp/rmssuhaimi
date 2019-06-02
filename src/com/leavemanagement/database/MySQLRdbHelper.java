@@ -2,6 +2,7 @@ package com.leavemanagement.database;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -77,6 +78,7 @@ public class MySQLRdbHelper {
 
 	private SessionFactory sessionFactory;
 	private final static Logger logger = Logger.getLogger("MySQLRdbHelper");
+
 	// Logger logger = Logger.getLogger(MySQLRdbHelper.class);
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
@@ -84,7 +86,7 @@ public class MySQLRdbHelper {
 	}
 
 	public User getAuthentication(String userid, String password) throws Exception {
-
+		// logger.setLevel(Level.INFO);
 		User users = null;
 		Session session = null;
 
@@ -1068,6 +1070,10 @@ public class MySQLRdbHelper {
 	public String saveJob(Job job) throws Exception {
 		Session session = null;
 		Transaction tr = null;
+		if (job.getJobId() == 0) {
+			int year = Year.now().getValue();
+			job.setDateYear(year);
+		}
 		String result = "Job Created";
 		if (job != null && job.getJobId() != 0)
 			result = "Job Updated";
@@ -1078,39 +1084,43 @@ public class MySQLRdbHelper {
 			job.setStatus("Active");
 			session.saveOrUpdate(job);
 
+			// session.flush();
 			// saveEmployeeJob(job.getJobEmployeesList(),job.getSupervisorId().getUserId(),
 			// job.getPrincipalConsultantId().getUserId(), job.getJobId(),
 			// session);
 			// ArrayList<JobEmployees> jobEmployeeList = new
 			// ArrayList<JobEmployees>();
-			ArrayList<JobEmployees> jobUserList = new ArrayList<JobEmployees>();
-			// for(int i=0; i< job.getJobActivities().size(); i++){
-			// if(job.getJobActivities().get(i).getTotalHours()>0 ){
-			// JobEmployees jobEmployee = new JobEmployees();
-			// jobEmployee.setEmployeeId(job.getJobActivities().get(i).getUserId());
-			// jobEmployee.setJobId(job.getJobId());
-			// jobEmployeeList.add(jobEmployee);
-			//
-			// }
-			// }
-
-			for (int i = 0; i < job.getUsersList().size(); i++) {
-				// if(job.getUsersList().get(i).getTotalHours()>0 ){
-				JobEmployees jobEmployee = new JobEmployees();
-				jobEmployee.setEmployeeId(job.getUsersList().get(i));
-				jobEmployee.setJobId(job.getJobId());
-				jobUserList.add(jobEmployee);
-
+			if (job.getUsersList() != null) {
+				ArrayList<JobEmployees> jobUserList = new ArrayList<JobEmployees>();
+				// for(int i=0; i< job.getJobActivities().size(); i++){
+				// if(job.getJobActivities().get(i).getTotalHours()>0 ){
+				// JobEmployees jobEmployee = new JobEmployees();
+				// jobEmployee.setEmployeeId(job.getJobActivities().get(i).getUserId());
+				// jobEmployee.setJobId(job.getJobId());
+				// jobEmployeeList.add(jobEmployee);
+				//
 				// }
+				// }
+
+				for (int i = 0; i < job.getUsersList().size(); i++) {
+					// if(job.getUsersList().get(i).getTotalHours()>0 ){
+					JobEmployees jobEmployee = new JobEmployees();
+					jobEmployee.setEmployeeId(job.getUsersList().get(i));
+					jobEmployee.setJobId(job.getJobId());
+					jobUserList.add(jobEmployee);
+
+					// }
+				}
+
+				// jobUserList.add((JobEmployees) job.getUsersList());
+				// saveEmployeeJob(jobEmployeeList, job.getJobId(), session);
+				saveEmployeeJob(jobUserList, job.getJobId(), session);
+
+				session.flush();
+				setJobActivities(job.getJobActivities(), session, job);
+				// addPhase(job, session);
+
 			}
-
-			// jobUserList.add((JobEmployees) job.getUsersList());
-			// saveEmployeeJob(jobEmployeeList, job.getJobId(), session);
-			saveEmployeeJob(jobUserList, job.getJobId(), session);
-
-			session.flush();
-			setJobActivities(job.getJobActivities(), session, job);
-			// addPhase(job, session);
 			tr.commit();
 			//
 			// for(int i=0; i< job.getJobEmployeesList().size(); i++){
@@ -1287,7 +1297,7 @@ public class MySQLRdbHelper {
 			crit.add(Restrictions.ne("status", "InActive"));
 			crit.add(Restrictions.ne("status", "office"));
 			// crit.add(Restrictions.ne("status", "Closed"));
-
+			crit.addOrder(Order.asc("company"));
 			if (loggedInUser.getRoleId().getRoleId() != 5) {
 				ArrayList<Integer> jobIds = getUserJobs(loggedInUser.getUserId(), session);
 				Disjunction disc = Restrictions.disjunction();
@@ -1962,6 +1972,10 @@ public class MySQLRdbHelper {
 				crit.createAlias("activityId", "activity");
 				crit.add(Restrictions.eq("activity.activityId", reportData.get("activityId")));
 			}
+			if (reportData.get("yearId") != null && reportData.get("yearId") != 0) {
+				crit.add(Restrictions.eq("dateYear", reportData.get("yearId")));
+
+			}
 
 			// Dont add filter for Users here , its already added at bottom..
 
@@ -1971,6 +1985,8 @@ public class MySQLRdbHelper {
 				Job job = (Job) it.next();
 				AllJobsReportDTO reportDTO = new AllJobsReportDTO();
 				reportDTO.setJobName(job.getJobName());
+				reportDTO.setYear(job.getDateYear() + "");
+
 				// reportDTO.setCompanyName(Branches.ALSUHAIMI.name());
 
 				for (Branches branch : Branches.values()) {
@@ -1991,6 +2007,7 @@ public class MySQLRdbHelper {
 				}
 				float totalHours = 0;
 				reportDTO.setDomain(job.getDomainId().getName());
+				reportDTO.setYear(job.getDateYear() + "");
 				reportDTO.setLineOfService(job.getLineofServiceId().getName());
 
 				reportDTO.setListTimeSheet(
@@ -2082,6 +2099,7 @@ public class MySQLRdbHelper {
 
 			if (reportData.get("companyId") != null && reportData.get("companyId") != 0) {
 				crit.add(Restrictions.eq("company", reportData.get("companyId")));
+
 			}
 			if (reportData.get("monthId") != null && reportData.get("monthId") != 0) {
 				month = reportData.get("monthId");
@@ -2099,6 +2117,11 @@ public class MySQLRdbHelper {
 				crit.createAlias("activityId", "activity");
 				crit.add(Restrictions.eq("activity.activityId", reportData.get("activityId")));
 			}
+			// new for year
+			if (reportData.get("yearId") != null && reportData.get("yearId") != 0) {
+				crit.add(Restrictions.eq("dateYear", reportData.get("yearId")));
+
+			}
 
 			// Dont add filter for Users here , its already added at bottom..
 
@@ -2108,6 +2131,7 @@ public class MySQLRdbHelper {
 				Job job = (Job) it.next();
 				AllJobsReportDTO reportDTO = new AllJobsReportDTO();
 				reportDTO.setJobName(job.getJobName());
+				reportDTO.setYear(job.getDateYear() + "");
 				// reportDTO.setCompanyName(Branches.ALSUHAIMI.name());
 
 				for (Branches branch : Branches.values()) {
@@ -2209,15 +2233,18 @@ public class MySQLRdbHelper {
 		// rowHeading.createCell((short) 4).setCellValue("Budgeted Hours");
 		rowHeading.createCell((short) 4).setCellValue("Month");
 		// rowHeading.createCell((short) 5).setCellValue("Hours variance");
-		rowHeading.createCell((short) 6).setCellValue("Allocation");
-		rowHeading.createCell((short) 7).setCellValue("Line Of Service");
-		rowHeading.createCell((short) 9).setCellValue("Domain");
-		rowHeading.createCell((short) 11).setCellValue("Users");
-		rowHeading.createCell((short) 12).setCellValue("Activity");
-		rowHeading.createCell((short) 13).setCellValue("Hours Worked");
-		rowHeading.createCell((short) 14).setCellValue("Total Hours");
+		rowHeading.createCell((short) 5).setCellValue("  Day");
+		rowHeading.createCell((short) 6).setCellValue("  Day");
+		rowHeading.createCell((short) 7).setCellValue("Allocation");
+		rowHeading.createCell((short) 8).setCellValue("Line Of Service");
+		rowHeading.createCell((short) 10).setCellValue("Domain");
+		rowHeading.createCell((short) 12).setCellValue("Users");
+		rowHeading.createCell((short) 13).setCellValue("Activity");
+		rowHeading.createCell((short) 14).setCellValue("Hours Worked");
+		rowHeading.createCell((short) 15).setCellValue("Total Hours on the Job");
 
 		int rowNum = 2;
+		int count = 0;
 		for (int i = 0; i < jobReports.size(); i++) {
 			// for (int j = 0; j < jobReports.get(i).getListTimeSheet().size();
 			// j++) {
@@ -2225,25 +2252,69 @@ public class MySQLRdbHelper {
 				// TimeSheet timeSheet =
 				// jobReports.get(i).getListTimeSheet().get(j);
 				if (timeSheet.getHours() > 0) {
+					count++;
 					rowNum = rowNum + 1;
 					HSSFRow row = worksheet.createRow((short) rowNum == 1 ? 2 : rowNum == 2 ? 3 : rowNum);
-					row.createCell((short) 0).setCellValue(i + 1 + "");
+
+					row.createCell((short) 0).setCellValue(count);
 					row.createCell((short) 1).setCellValue(jobReports.get(i).getJobName());
 					row.createCell((short) 2).setCellValue(jobReports.get(i).getCompanyName());
+
 					// row.createCell((short)
 					// 3).setCellValue(jobReports.get(i).getHoursWorked());
-					row.createCell((short) 4).setCellValue(jobReports.get(i).getBudgetedHours());
+
+					String month = null;
+					if (jobReports.get(i).getBudgetedHours() == 1) {
+						month = "January";
+					}
+					if (jobReports.get(i).getBudgetedHours() == 2) {
+						month = "Februrary";
+					}
+					if (jobReports.get(i).getBudgetedHours() == 3) {
+						month = "March";
+					}
+					if (jobReports.get(i).getBudgetedHours() == 4) {
+						month = "April";
+					}
+					if (jobReports.get(i).getBudgetedHours() == 5) {
+						month = "May";
+					}
+					if (jobReports.get(i).getBudgetedHours() == 6) {
+						month = "June";
+					}
+					if (jobReports.get(i).getBudgetedHours() == 7) {
+						month = "July";
+					}
+					if (jobReports.get(i).getBudgetedHours() == 8) {
+						month = "August";
+					}
+					if (jobReports.get(i).getBudgetedHours() == 9) {
+						month = "September";
+					}
+					if (jobReports.get(i).getBudgetedHours() == 10) {
+						month = "October";
+					}
+					if (jobReports.get(i).getBudgetedHours() == 11) {
+						month = "November";
+					}
+					if (jobReports.get(i).getBudgetedHours() == 12) {
+						month = "December";
+					}
+
+					row.createCell((short) 4).setCellValue(month);
+					row.createCell((short) 5).setCellValue(timeSheet.getDay());
+					row.createCell((short) 6).setCellValue(jobReports.get(i).getYear());
 					// row.createCell((short)
 					// 5).setCellValue(jobReports.get(i).getHoursVariance());
-					row.createCell((short) 6).setCellValue(jobReports.get(i).getAllocation());
-					row.createCell((short) 7).setCellValue(jobReports.get(i).getLineOfService());
-					row.createCell((short) 9).setCellValue(jobReports.get(i).getDomain());
+					row.createCell((short) 7).setCellValue(jobReports.get(i).getAllocation());
+					row.createCell((short) 8).setCellValue(jobReports.get(i).getLineOfService());
+					row.createCell((short) 10).setCellValue(jobReports.get(i).getDomain());
 					// row.createCell((short)
 					// 11).setCellValue(jobReports.get(i).getUser());
-					row.createCell((short) 11).setCellValue(timeSheet.getUserId().getName());
-					row.createCell((short) 12).setCellValue(timeSheet.getActivity().getActivityName());
-					row.createCell((short) 13).setCellValue(timeSheet.getHours());
-					row.createCell((short) 14).setCellValue(jobReports.get(i).getTotalHours());
+					row.createCell((short) 12).setCellValue(timeSheet.getUserId().getName());
+					row.createCell((short) 13).setCellValue(timeSheet.getActivity().getActivityName());
+					row.createCell((short) 14).setCellValue(timeSheet.getHours());
+					row.createCell((short) 15).setCellValue(jobReports.get(i).getTotalHours());
 
 				}
 			}
@@ -2289,27 +2360,30 @@ public class MySQLRdbHelper {
 		// (document.right() - document.left()) / 2 + document.leftMargin(),
 		// document.bottom() - 10, 0);
 
-		PdfPTable table = new PdfPTable(new float[] { 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 });
+		PdfPTable table = new PdfPTable(new float[] { 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2 });
 		table.setWidthPercentage(100);
 		table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.addCell(new Phrase("Sr", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
 		table.addCell(new Phrase("Job Name", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
 		table.addCell(new Phrase("Company Name", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
 		table.addCell(new Phrase("Month", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
+		table.addCell(new Phrase("Day", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
+		table.addCell(new Phrase("Year", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
 		table.addCell(new Phrase("Allocation", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
 		table.addCell(new Phrase("Line Of Service", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
 		table.addCell(new Phrase("Domain", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
 		table.addCell(new Phrase("User", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
 		table.addCell(new Phrase("Activity", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
 		table.addCell(new Phrase("Hours Worked", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
-		table.addCell(new Phrase("Total Hours", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
+		table.addCell(new Phrase("Total Hours on the Job", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
 
 		table.setHeaderRows(1);
 		PdfPCell[] cells = table.getRow(0).getCells();
 		for (int j = 0; j < cells.length; j++) {
 			cells[j].setBackgroundColor(BaseColor.LIGHT_GRAY);
-		}
 
+		}
+		int count = 0;
 		for (int i = 0; i < jobReports.size(); i++) {
 
 			for (TimeSheet timeSheet : jobReports.get(i).getListTimeSheet()) {
@@ -2317,8 +2391,9 @@ public class MySQLRdbHelper {
 				if (timeSheet.getHours() > 0) {
 
 					/// pdf
-					table.addCell(new Phrase(i + 1 + "", FontFactory.getFont(FontFactory.HELVETICA, 8)));
 
+					count++;
+					table.addCell(new Phrase(count + "", FontFactory.getFont(FontFactory.HELVETICA, 8)));
 					table.addCell(
 							new Phrase(jobReports.get(i).getJobName(), FontFactory.getFont(FontFactory.HELVETICA, 8)));
 					table.addCell(new Phrase(jobReports.get(i).getCompanyName(),
@@ -2361,7 +2436,13 @@ public class MySQLRdbHelper {
 						month = "December";
 					}
 					table.addCell(new Phrase(month, FontFactory.getFont(FontFactory.HELVETICA, 8)));
+					table.addCell(new Phrase(timeSheet.getDay() + "", FontFactory.getFont(FontFactory.HELVETICA, 8)));
+
+					table.addCell(
+							new Phrase(jobReports.get(i).getYear(), FontFactory.getFont(FontFactory.HELVETICA, 8)));
+
 					table.addCell(new Phrase(jobReports.get(i).getAllocation(),
+
 							FontFactory.getFont(FontFactory.HELVETICA, 8)));
 					table.addCell(new Phrase(jobReports.get(i).getLineOfService(),
 							FontFactory.getFont(FontFactory.HELVETICA, 8)));

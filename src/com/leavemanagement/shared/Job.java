@@ -86,6 +86,9 @@ public class Job implements Serializable {
 	@Column(name = "status")
 	private String status;
 
+	@Column(name = "dateyear")
+	private int dateYear;
+
 	public Job() {
 	}
 
@@ -239,6 +242,14 @@ public class Job implements Serializable {
 
 	public void setFetchDefaultActivityList(ArrayList<Activity> fetchDefaultActivityList) {
 		this.fetchDefaultActivityList = fetchDefaultActivityList;
+	}
+
+	public int getDateYear() {
+		return dateYear;
+	}
+
+	public void setDateYear(int dateYear) {
+		this.dateYear = dateYear;
 	}
 
 }

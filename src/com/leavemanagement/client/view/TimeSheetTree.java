@@ -206,7 +206,7 @@ public class TimeSheetTree extends Composite {
 			vpLabel.add(lblTotalHour);
 			MaterialLabel lblSum = new MaterialLabel("0");
 			vpHeading = new MaterialColumn();
-			lblSum.setWidth("9px");
+			lblSum.setWidth("3px");
 			Data data = new Data();
 			data.setSum(0);
 
