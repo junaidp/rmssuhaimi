@@ -1,37 +1,38 @@
 package com.leavemanagement.client.view;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
-import gwt.material.design.client.ui.MaterialButton;
-import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.FlexTable;
-import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-
-import gwt.material.design.client.ui.MaterialTextBox;
-import gwt.material.design.client.ui.MaterialColumn;
 import com.leavemanagement.client.presenter.AddCompanyPresenter.Display;
 
+import gwt.material.design.client.ui.MaterialButton;
+import gwt.material.design.client.ui.MaterialColumn;
+import gwt.material.design.client.ui.MaterialRow;
+import gwt.material.design.client.ui.MaterialTextBox;
+
 public class AddCompanyView extends VerticalPanel implements Display {
-	
+
 	private MaterialButton btnSend = new MaterialButton("Save");
+	private MaterialButton btnBack = new MaterialButton("Back");
 	MaterialTextBox txtUser = new MaterialTextBox();
 	PasswordTextBox txtPassword = new PasswordTextBox();
 	PasswordTextBox txtConfrimPassword = new PasswordTextBox();
 	MaterialTextBox txtEmail = new MaterialTextBox();
 	MaterialTextBox txtCompanyName = new MaterialTextBox();
-	
-	
+
 	private MaterialButton btnUpdate = new MaterialButton("update");
-	
-	
-	public AddCompanyView(){
+
+	public AddCompanyView() {
 		MaterialColumn vpnl = new MaterialColumn();
 		add(vpnl);
 		Label lblHeading = new Label("Add a new Company");
 		lblHeading.addStyleName("blueBold");
-		lblHeading.setWidth(Window.getClientWidth()-100+"px");
+		lblHeading.setWidth(Window.getClientWidth() - 100 + "px");
 		MaterialRow hp = new MaterialRow();
 		hp.setWidth("100%");
 		vpnl.add(hp);
@@ -52,29 +53,43 @@ public class AddCompanyView extends VerticalPanel implements Display {
 		flex.setWidget(3, 1, txtEmail);
 		flex.setWidget(4, 0, lblCompanyName);
 		flex.setWidget(4, 1, txtCompanyName);
-		
-		
+		flex.setWidget(5, 0, btnSend);
+		flex.setWidget(5, 1, btnBack);
+
 		vpnl.add(flex);
-		MaterialRow hpnButton = new MaterialRow();
-		MaterialRow hpnSpace = new MaterialRow();
-		hpnSpace.setWidth("150px");
-		hpnButton.add(hpnSpace);
-		hpnButton.add(btnSend);
-		vpnl.add(hpnButton);
+		// MaterialRow hpnButton = new MaterialRow();
+		// MaterialRow hpnSpace = new MaterialRow();
+		// hpnSpace.setWidth("150px");
+		// hpnButton.add(hpnSpace);
+		// hpnButton.add(btnSend);
+
+		// vpnl.add(hpnButton);
 		layout();
-		
+		backMethod();
+
 	}
-	
-	public void layout(){
-		
-			txtUser.setWidth("200px");
-			 txtPassword.setWidth("200px");
-			 txtConfrimPassword.setWidth("200px");
-			 txtEmail.setWidth("200px");
-			
-			 btnUpdate.setWidth("80px");
-			 btnSend.setWidth("80px");
-			 txtCompanyName.setWidth("200px");
+
+	private void backMethod() {
+		btnBack.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				History.back();
+
+			}
+		});
+	}
+
+	public void layout() {
+
+		txtUser.setWidth("200px");
+		txtPassword.setWidth("200px");
+		txtConfrimPassword.setWidth("200px");
+		txtEmail.setWidth("200px");
+
+		btnUpdate.setWidth("80px");
+		btnSend.setWidth("80px");
+		txtCompanyName.setWidth("200px");
 	}
 
 	public MaterialButton getBtnSend() {
@@ -96,8 +111,6 @@ public class AddCompanyView extends VerticalPanel implements Display {
 	public PasswordTextBox getTxtPassword() {
 		return txtPassword;
 	}
-
-	
 
 	public MaterialTextBox getTxtEmail() {
 		return txtEmail;
@@ -126,7 +139,5 @@ public class AddCompanyView extends VerticalPanel implements Display {
 	public void setTxtCompanyName(MaterialTextBox txtCompanyName) {
 		this.txtCompanyName = txtCompanyName;
 	}
-
-	
 
 }

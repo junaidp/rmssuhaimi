@@ -11,6 +11,7 @@ import com.leavemanagement.client.GreetingServiceAsync;
 import com.leavemanagement.client.event.AdminEvent;
 import com.leavemanagement.client.event.ChangePasswordEvent;
 import com.leavemanagement.client.event.LeaveHistoryEvent;
+import com.leavemanagement.client.event.MainEvent;
 import com.leavemanagement.shared.User;
 
 import gwt.material.design.client.ui.MaterialLink;
@@ -39,6 +40,8 @@ public class HeaderPresenter implements Presenter
 
 		MaterialLink getadmin();
 
+		MaterialLink getuserView();
+
 	}
 
 	public HeaderPresenter(GreetingServiceAsync rpcService, HandlerManager eventBus, Display view, User loggedInUser) {
@@ -51,6 +54,7 @@ public class HeaderPresenter implements Presenter
 		}
 		if (loggedInUser.getUserId() == 1 && loggedInUser.getName().equalsIgnoreCase("nauman")) {
 			display.getaddCompany().setVisible(true);
+			display.getuserView().setVisible(false);
 		}
 	}
 
@@ -61,6 +65,25 @@ public class HeaderPresenter implements Presenter
 	}
 
 	public void bind() {
+		display.getuserView().addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				rpcService.fetchLoggedInUser(new AsyncCallback<User>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						MaterialToast.fireToast("getting loggedin User:" + caught.getLocalizedMessage());
+					}
+
+					@Override
+					public void onSuccess(User result) {
+						eventBus.fireEvent(new MainEvent(result));
+					}
+				});
+
+			}
+		});
 		display.getaddUser().addClickHandler(new ClickHandler() {
 
 			@Override
@@ -103,6 +126,7 @@ public class HeaderPresenter implements Presenter
 					public void onSuccess(String result) {
 						// loggedInUser = null;
 						History.newItem("login");
+
 					}
 				});
 
@@ -131,8 +155,19 @@ public class HeaderPresenter implements Presenter
 
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
-				eventBus.fireEvent(new LeaveHistoryEvent(loggedInUser));
+
+				rpcService.fetchLoggedInUser(new AsyncCallback<User>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						MaterialToast.fireToast("getting loggedin User:" + caught.getLocalizedMessage());
+					}
+
+					@Override
+					public void onSuccess(User result) {
+						eventBus.fireEvent(new LeaveHistoryEvent(result));
+					}
+				});
 
 			}
 		});

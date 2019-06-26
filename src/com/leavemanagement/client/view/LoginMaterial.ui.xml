@@ -34,8 +34,8 @@ padding: 5%;
 <m:MaterialPanel addStyleNames="{style.fieldPanel}">
 <m:MaterialImage url="suhaimilogo.png"  width="250px" addStyleNames="{style.imgProfile} z-depth-1" />
 <g:Label ui:field="lblError" visible="false"></g:Label>
-<m:MaterialTextBox type="EMAIL" placeholder="Username" text="nauman" ui:field="txtUserName"/>
-<m:MaterialTextBox type="PASSWORD" placeholder="Password" text="nauman" ui:field="txtPassword"/>
+<m:MaterialTextBox type="EMAIL" placeholder="Username"  ui:field="txtUserName"/>
+<m:MaterialTextBox type="PASSWORD" placeholder="Password" ui:field="txtPassword"/>
 <m:MaterialButton waves="LIGHT" text="Log In" width="100%" ui:field="btnSubmit"/>
 <m:MaterialRow addStyleNames="{style.rowAction}">
 <m:MaterialColumn grid="s12 m12 l6">

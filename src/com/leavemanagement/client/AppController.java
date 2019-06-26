@@ -60,6 +60,7 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 
 		eventBus.addHandler(MainEvent.TYPE, new MainEventHandler() {
 			public void onMain(MainEvent event) {
+
 				loggedInUser = event.getLoggedInUser();
 				selectedYear = event.getSelectedYear();
 

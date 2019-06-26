@@ -19,9 +19,10 @@ public class MaterialTab extends Composite {
 	public MaterialTab() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
+
 	@UiField
 	MaterialColumn tab1;
-	
+
 	@UiField
 	MaterialColumn tab2;
 
@@ -42,12 +43,18 @@ public class MaterialTab extends Composite {
 
 	@UiField
 	MaterialColumn tab8;
-	
+
 	@UiField
 	MaterialTabItem tabTimeReport;
-	
-	
-	
+
+	@UiField
+	MaterialTabItem tabPendingLeave;
+
+	@UiField
+	MaterialTabItem tabEmployeeLeave;
+	@UiField
+	MaterialTabItem tabLeaveHistory;
+
 	public MaterialColumn getTab1() {
 		return tab1;
 	}
@@ -84,6 +91,16 @@ public class MaterialTab extends Composite {
 		return tabTimeReport;
 	}
 
+	public MaterialTabItem getTabPendingLeave() {
+		return tabPendingLeave;
+	}
 
+	public MaterialTabItem getTabEmployeeLeave() {
+		return tabEmployeeLeave;
+	}
+
+	public MaterialTabItem getTabLeaveHistory() {
+		return tabLeaveHistory;
+	}
 
 }

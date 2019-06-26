@@ -44,7 +44,7 @@ public class TimeSheetTree extends Composite {
 	@UiField
 	MaterialRow rowTotal;
 	Label heading;
-	MaterialColumn c1 = new MaterialColumn();
+	MaterialColumn c2;
 	ScrollPanel panelScroll = new ScrollPanel();
 	private boolean chargeable = false;
 	MaterialListBox listMonth = new MaterialListBox();
@@ -55,7 +55,7 @@ public class TimeSheetTree extends Composite {
 	private MaterialColumn vpLabel = new MaterialColumn();
 	private ArrayList<Job> listjob = new ArrayList<Job>();
 	private static TimeSheetTreeUiBinder uiBinder = GWT.create(TimeSheetTreeUiBinder.class);
-
+	float sum;
 	private GreetingServiceAsync rpcService = GWT.create(GreetingService.class);
 
 	interface TimeSheetTreeUiBinder extends UiBinder<Widget, TimeSheetTree> {
@@ -136,15 +136,18 @@ public class TimeSheetTree extends Composite {
 				// tree.clear();
 				calculateTotalHoursForTimeSheet(result, loggedInUser);
 				// end
+
 				for (int i = 0; i < result.size(); i++) {
+					sum = 0;
 					final Job job = result.get(i);
+
 					final MaterialTreeItem treeItem1 = new MaterialTreeItem();
 					treeItem1.setIconType(IconType.FOLDER_SHARED);
+					treeItem1.setText(result.get(i).getJobName());
 
 					final Data data = new Data();
 					data.setDataDisplayed(false);
 
-					treeItem1.setText(result.get(i).getJobName());
 					tree.add(treeItem1);
 
 					clickHandler(loggedInUser, job, treeItem1);
@@ -269,6 +272,7 @@ public class TimeSheetTree extends Composite {
 
 		final TimeSheetTableView timeSheetTable = new TimeSheetTableView(job, loggedInUser, listMonth, chargeable2,
 				this);
+
 		scrolltimesheet.add(timeSheetTable);
 		tree2.add(scrolltimesheet);
 

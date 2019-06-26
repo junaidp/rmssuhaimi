@@ -1,22 +1,23 @@
 package com.leavemanagement.client.view;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.FlexTable;
-import gwt.material.design.client.ui.MaterialRow;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
-import gwt.material.design.client.ui.MaterialTextBox;
+import com.google.gwt.user.datepicker.client.DateBox;
+import com.leavemanagement.client.presenter.AddUserPresenter.Display;
 
 import gwt.material.design.client.ui.MaterialButton;
 import gwt.material.design.client.ui.MaterialColumn;
 import gwt.material.design.client.ui.MaterialListBox;
-
-import com.google.gwt.user.datepicker.client.DateBox;
-import com.leavemanagement.client.presenter.AddUserPresenter.Display;
+import gwt.material.design.client.ui.MaterialRow;
+import gwt.material.design.client.ui.MaterialTextBox;
 
 public class AddUserView extends MaterialColumn implements Display {
-	
+
 	private MaterialButton btnSend = new MaterialButton("Save");
 	MaterialTextBox txtUser = new MaterialTextBox();
 	PasswordTextBox txtPassword = new PasswordTextBox();
@@ -24,7 +25,7 @@ public class AddUserView extends MaterialColumn implements Display {
 	MaterialTextBox txtEmail = new MaterialTextBox();
 	MaterialTextBox txtExamLeaves = new MaterialTextBox();
 	MaterialListBox listUser = new MaterialListBox();
-	
+
 	MaterialListBox listDesignation = new MaterialListBox();
 	MaterialListBox listReportingTo = new MaterialListBox();
 	DateBox joiningDate = new DateBox();
@@ -33,21 +34,20 @@ public class AddUserView extends MaterialColumn implements Display {
 	MaterialTextBox bankAccountNumber = new MaterialTextBox();
 	private MaterialButton btnRemove = new MaterialButton("delete user");
 	private MaterialButton btnUpdate = new MaterialButton("update");
-	
-	
-	public AddUserView(){
+
+	public AddUserView() {
 		MaterialColumn vpnl = new MaterialColumn();
 		add(vpnl);
-		//chargeRate.setEnabled(false);
-	Label lblHeading = new Label("Add a new user");
+		// chargeRate.setEnabled(false);
+		Label lblHeading = new Label("Add a new user");
 		lblHeading.setStyleName("headerSignin");
-		lblHeading.setWidth(Window.getClientWidth()-100+"px");
+		lblHeading.setWidth(Window.getClientWidth() - 100 + "px");
 		listUser.addItem("Select User");
 		MaterialRow hp = new MaterialRow();
 		vpnl.add(hp);
 		hp.setWidth("100%");
 		hp.add(lblHeading);
-		
+
 		FlexTable flex = new FlexTable();
 		Label lblJoiningDate = new Label("Joingin Date");
 		Label lblcontactNumber = new Label("Emergency Contact Number");
@@ -60,8 +60,9 @@ public class AddUserView extends MaterialColumn implements Display {
 		Label lblEmail = new Label("Email");
 		Label lblExamLeaves = new Label("Exam Leaves");
 		Label lblEditUser = new Label("Edit User");
+		MaterialButton btnBack = new MaterialButton("Back");
 		Label lblReportingTo = new Label("Reporting To");
-		
+
 		flex.setWidget(0, 0, lblUser);
 		flex.setWidget(0, 1, txtUser);
 		flex.setWidget(1, 0, lblPassword);
@@ -82,48 +83,56 @@ public class AddUserView extends MaterialColumn implements Display {
 		flex.setWidget(8, 1, listDesignation);
 		flex.setWidget(9, 0, lblReportingTo);
 		flex.setWidget(9, 1, listReportingTo);
-		//flex.setWidget(10, 0, lblChargeRate);
-		//flex.setWidget(10, 1, chargeRate);
-//		flex.setWidget(10, 2, new Label("Numeric value only"));
+		// flex.setWidget(10, 0, lblChargeRate);
+		// flex.setWidget(10, 1, chargeRate);
+		// flex.setWidget(10, 2, new Label("Numeric value only"));
 		flex.setWidget(0, 2, lblEditUser);
 		flex.setWidget(0, 3, listUser);
-		
-		
+		flex.setWidget(1, 3, btnBack);
+
 		vpnl.add(flex);
 		MaterialRow hpnButton = new MaterialRow();
 		MaterialRow hpnSpace = new MaterialRow();
-		
+
 		MaterialColumn mcSend = new MaterialColumn();
 		MaterialColumn mcUPDATE = new MaterialColumn();
 		MaterialColumn mcRemore = new MaterialColumn();
 		mcSend.add(btnSend);
-		
+
 		mcUPDATE.add(btnUpdate);
 		mcRemore.add(btnRemove);
 		hpnButton.add(mcSend);
 		hpnButton.add(mcUPDATE);
 		hpnButton.add(mcRemore);
-	vpnl.add(hpnButton);
+		vpnl.add(hpnButton);
 		layout();
-		//vpnl.setSpacing(4);
-		
+		// vpnl.setSpacing(4);
+		btnBack.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				History.back();
+
+			}
+		});
+
 	}
-	
-	public void layout(){
-		
-			txtUser.setWidth("200px");
-			 txtPassword.setWidth("200px");
-			 txtConfrimPassword.setWidth("200px");
-			 txtEmail.setWidth("200px");
-			 listUser.setWidth("200px");
-			 listDesignation.setWidth("200px");
-			 listReportingTo.setWidth("200px");
-			 joiningDate.setWidth("200px");
-			 contactNumber.setWidth("200px");
-			 chargeRate.setWidth("200px");
-			 bankAccountNumber.setWidth("200px");
-			
-			 txtExamLeaves.setWidth("200px");
+
+	public void layout() {
+
+		txtUser.setWidth("200px");
+		txtPassword.setWidth("200px");
+		txtConfrimPassword.setWidth("200px");
+		txtEmail.setWidth("200px");
+		listUser.setWidth("200px");
+		listDesignation.setWidth("200px");
+		listReportingTo.setWidth("200px");
+		joiningDate.setWidth("200px");
+		contactNumber.setWidth("200px");
+		chargeRate.setWidth("200px");
+		bankAccountNumber.setWidth("200px");
+
+		txtExamLeaves.setWidth("200px");
 	}
 
 	public MaterialButton getBtnSend() {
@@ -145,8 +154,6 @@ public class AddUserView extends MaterialColumn implements Display {
 	public PasswordTextBox getTxtPassword() {
 		return txtPassword;
 	}
-
-	
 
 	public MaterialTextBox getTxtEmail() {
 		return txtEmail;

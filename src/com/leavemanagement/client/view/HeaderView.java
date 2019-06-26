@@ -32,9 +32,12 @@ public class HeaderView extends Composite implements Display {
 	MaterialLink admin;
 	@UiField
 	MaterialNavBar nav;
+	@UiField
+	MaterialLink userView;
 
 	public HeaderView() {
 		initWidget(uiBinder.createAndBindUi(this));
+
 	}
 
 	public void adminView() {
@@ -54,6 +57,7 @@ public class HeaderView extends Composite implements Display {
 		logOff.setVisible(true);
 		addCompany.setVisible(false);
 		addUser.setVisible(true);
+		userView.setVisible(true);
 	}
 
 	public void userView() {
@@ -64,6 +68,7 @@ public class HeaderView extends Composite implements Display {
 		logOff.setVisible(true);
 		addCompany.setVisible(false);
 		addUser.setVisible(false);
+		userView.setVisible(false);
 	}
 
 	@Override
@@ -84,6 +89,13 @@ public class HeaderView extends Composite implements Display {
 	@Override
 	public MaterialLink getlogOff() {
 		return logOff;
+
+	}
+
+	@Override
+	public MaterialLink getuserView() {
+		return userView;
+
 	}
 
 	public MaterialLink getleaveHistory() {

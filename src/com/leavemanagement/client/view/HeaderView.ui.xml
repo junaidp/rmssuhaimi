@@ -12,6 +12,8 @@
 <m:MaterialLink iconType="FACE" iconPosition="LEFT" text="Admin" textColor="WHITE" waves="LIGHT" ui:field="admin"/>
 <m:MaterialLink iconType="NOTE_ADD" visible="false" iconPosition="LEFT" text="Add Company" textColor="WHITE" waves="LIGHT" ui:field="addCompany"/>
 <m:MaterialLink iconType="VPN_KEY" iconPosition="LEFT" text="Change Password" textColor="WHITE" waves="LIGHT" ui:field="changePassword"/>
+<m:MaterialLink iconType="PERSON" iconPosition="LEFT" text="UserView" textColor="WHITE" waves="LIGHT" ui:field="userView"/>
+
 <m:MaterialLink iconType="EXIT_TO_APP" iconPosition="LEFT" text="LOG OFF" textColor="WHITE" waves="LIGHT" ui:field="logOff"/>
 
 </m:MaterialNavSection>

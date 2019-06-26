@@ -1376,7 +1376,7 @@ public class MySQLRdbHelper {
 			// crit.createAlias("principalConsultantId", "principalConsultant");
 			// crit.createAlias("principalConsultant.roleId", "rolep");
 			// crit.createAlias("principalConsultant.companyId", "companyp");
-
+			crit.addOrder(Order.asc("company"));
 			crit.add(Restrictions.ne("status", "InActive"));
 			crit.add(Restrictions.ne("status", "Closed"));
 			if (chargeable) {
@@ -1397,9 +1397,9 @@ public class MySQLRdbHelper {
 
 			for (Iterator it = rsList.iterator(); it.hasNext();) {
 				Job job = (Job) it.next();
-				if (job.getJobId() == 281) {
-					jobs.set(0, job);
-				}
+				// if (job.getJobId() == 281) {
+				// jobs.set(0, job);
+				// }
 
 				job.setActivityLists(
 						fetchActivities(session, job, loggedInUser.getRoleId().getRoleId(), loggedInUser.getUserId()));
@@ -1409,9 +1409,9 @@ public class MySQLRdbHelper {
 				job.setJobAttributes(fetchjobAttributes(session, job.getJobId()));
 				job.setTimeSheets(fetchJobTimeSheets(session, job.getJobId(), loggedInUser.getRoleId().getRoleId(),
 						loggedInUser.getUserId()));
-				if (job.getJobId() != 281) {
-					jobs.add(job);
-				}
+				// if (job.getJobId() != 281) {
+				jobs.add(job);
+				// }
 			}
 
 			return jobs;
@@ -2241,10 +2241,13 @@ public class MySQLRdbHelper {
 		rowHeading.createCell((short) 12).setCellValue("Users");
 		rowHeading.createCell((short) 13).setCellValue("Activity");
 		rowHeading.createCell((short) 14).setCellValue("Hours Worked");
-		rowHeading.createCell((short) 15).setCellValue("Total Hours on the Job");
+		rowHeading.createCell((short) 15).setCellValue("Activity in Month");
+		rowHeading.createCell((short) 16).setCellValue("Activity on Job");
+		rowHeading.createCell((short) 17).setCellValue("Total Hours on the Job");
 
 		int rowNum = 2;
 		int count = 0;
+		HashMap<Integer, HashMap<Integer, Float>> mapActivityCount = getAcitivityCount(jobReports);
 		for (int i = 0; i < jobReports.size(); i++) {
 			// for (int j = 0; j < jobReports.get(i).getListTimeSheet().size();
 			// j++) {
@@ -2264,42 +2267,7 @@ public class MySQLRdbHelper {
 					// 3).setCellValue(jobReports.get(i).getHoursWorked());
 
 					String month = null;
-					if (jobReports.get(i).getBudgetedHours() == 1) {
-						month = "January";
-					}
-					if (jobReports.get(i).getBudgetedHours() == 2) {
-						month = "Februrary";
-					}
-					if (jobReports.get(i).getBudgetedHours() == 3) {
-						month = "March";
-					}
-					if (jobReports.get(i).getBudgetedHours() == 4) {
-						month = "April";
-					}
-					if (jobReports.get(i).getBudgetedHours() == 5) {
-						month = "May";
-					}
-					if (jobReports.get(i).getBudgetedHours() == 6) {
-						month = "June";
-					}
-					if (jobReports.get(i).getBudgetedHours() == 7) {
-						month = "July";
-					}
-					if (jobReports.get(i).getBudgetedHours() == 8) {
-						month = "August";
-					}
-					if (jobReports.get(i).getBudgetedHours() == 9) {
-						month = "September";
-					}
-					if (jobReports.get(i).getBudgetedHours() == 10) {
-						month = "October";
-					}
-					if (jobReports.get(i).getBudgetedHours() == 11) {
-						month = "November";
-					}
-					if (jobReports.get(i).getBudgetedHours() == 12) {
-						month = "December";
-					}
+					month = getMonth(timeSheet, i, month);
 
 					row.createCell((short) 4).setCellValue(month);
 					row.createCell((short) 5).setCellValue(timeSheet.getDay());
@@ -2314,7 +2282,16 @@ public class MySQLRdbHelper {
 					row.createCell((short) 12).setCellValue(timeSheet.getUserId().getName());
 					row.createCell((short) 13).setCellValue(timeSheet.getActivity().getActivityName());
 					row.createCell((short) 14).setCellValue(timeSheet.getHours());
-					row.createCell((short) 15).setCellValue(jobReports.get(i).getTotalHours());
+					HashMap<Integer, Float> mapMonth = mapActivityCount.get(timeSheet.getActivity().getActivityId());
+					float sum = 0.0f;
+					for (float f : mapMonth.values()) {
+						sum += f;
+					}
+
+					// row.createCell((short)
+					// 15).setCellValue(mapMonth.get(timeSheet.getMonth()));
+					row.createCell((short) 16).setCellValue(sum);
+					row.createCell((short) 17).setCellValue(jobReports.get(i).getTotalHours());
 
 				}
 			}
@@ -2326,7 +2303,7 @@ public class MySQLRdbHelper {
 	private void allJobReportPDF(ArrayList<AllJobsReportDTO> jobReports, HSSFWorkbook workbook, Integer userId,
 			Integer jobId, String rootDir) throws DocumentException, IOException {
 		Rectangle pagesize = new Rectangle(612, 861);
-		Document document = new Document(PageSize.A4);
+		Document document = new Document(PageSize.A3);
 		String title = null;
 		if (userId != 0) {
 			User user;
@@ -2360,7 +2337,8 @@ public class MySQLRdbHelper {
 		// (document.right() - document.left()) / 2 + document.leftMargin(),
 		// document.bottom() - 10, 0);
 
-		PdfPTable table = new PdfPTable(new float[] { 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2 });
+		PdfPTable table = new PdfPTable(new float[] { 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2 });
+		// { 1, 2, 2, 1, 1, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2 });
 		table.setWidthPercentage(100);
 		table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.addCell(new Phrase("Sr", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
@@ -2375,6 +2353,8 @@ public class MySQLRdbHelper {
 		table.addCell(new Phrase("User", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
 		table.addCell(new Phrase("Activity", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
 		table.addCell(new Phrase("Hours Worked", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
+		table.addCell(new Phrase("Activity in Month", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
+		table.addCell(new Phrase("Avtivity on Job", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
 		table.addCell(new Phrase("Total Hours on the Job", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
 
 		table.setHeaderRows(1);
@@ -2384,6 +2364,15 @@ public class MySQLRdbHelper {
 
 		}
 		int count = 0;
+
+		/////
+		// HashMap<Integer, Float> mapActivityCount =
+		// getAcitivityCountPerMonth(jobReports);
+		// HashMap<Integer, Float> mapPerMonthActivityCount =
+		// getAcitivityCountPerMonth(jobReports);
+		/////
+		HashMap<Integer, HashMap<Integer, Float>> mapActivityCount = getAcitivityCount(jobReports);
+
 		for (int i = 0; i < jobReports.size(); i++) {
 
 			for (TimeSheet timeSheet : jobReports.get(i).getListTimeSheet()) {
@@ -2399,43 +2388,8 @@ public class MySQLRdbHelper {
 					table.addCell(new Phrase(jobReports.get(i).getCompanyName(),
 							FontFactory.getFont(FontFactory.HELVETICA, 8)));
 					String month = null;
-					if (jobReports.get(i).getBudgetedHours() == 1) {
-						month = "January";
-					}
-					if (jobReports.get(i).getBudgetedHours() == 2) {
-						month = "Februrary";
-					}
-					if (jobReports.get(i).getBudgetedHours() == 3) {
-						month = "March";
-					}
-					if (jobReports.get(i).getBudgetedHours() == 4) {
-						month = "April";
-					}
-					if (jobReports.get(i).getBudgetedHours() == 5) {
-						month = "May";
-					}
-					if (jobReports.get(i).getBudgetedHours() == 6) {
-						month = "June";
-					}
-					if (jobReports.get(i).getBudgetedHours() == 7) {
-						month = "July";
-					}
-					if (jobReports.get(i).getBudgetedHours() == 8) {
-						month = "August";
-					}
-					if (jobReports.get(i).getBudgetedHours() == 9) {
-						month = "September";
-					}
-					if (jobReports.get(i).getBudgetedHours() == 10) {
-						month = "October";
-					}
-					if (jobReports.get(i).getBudgetedHours() == 11) {
-						month = "November";
-					}
-					if (jobReports.get(i).getBudgetedHours() == 12) {
-						month = "December";
-					}
-					table.addCell(new Phrase(month, FontFactory.getFont(FontFactory.HELVETICA, 8)));
+					month = getMonth(timeSheet, i, month);
+					table.addCell(new Phrase(month + "", FontFactory.getFont(FontFactory.HELVETICA, 8)));
 					table.addCell(new Phrase(timeSheet.getDay() + "", FontFactory.getFont(FontFactory.HELVETICA, 8)));
 
 					table.addCell(
@@ -2454,8 +2408,29 @@ public class MySQLRdbHelper {
 					table.addCell(new Phrase(timeSheet.getActivity().getActivityName(),
 							FontFactory.getFont(FontFactory.HELVETICA, 8)));
 
-					table.addCell(new Phrase(timeSheet.getHours() + "", FontFactory.getFont(FontFactory.HELVETICA, 8)));
+					// table.addCell(new Phrase(timeSheet.getHours() + "",
+					// FontFactory.getFont(FontFactory.HELVETICA, 8)));
+					//
+					// table.addCell(new
 
+					table.addCell(new Phrase(timeSheet.getHours() + "", FontFactory.getFont(FontFactory.HELVETICA, 8)));
+					HashMap<Integer, Float> mapMonth = mapActivityCount.get(timeSheet.getActivity().getActivityId());
+
+					// Float mapMonth =
+					// mapActivityCount.get(timeSheet.getActivity().getActivityId());
+					float sum = 0.0f;
+					for (float f : mapMonth.values()) {
+						sum += f;
+					}
+					table.addCell(new Phrase(mapMonth.get(timeSheet.getMonth()) + "",
+							FontFactory.getFont(FontFactory.HELVETICA, 8)));
+					table.addCell(new Phrase(sum + "", FontFactory.getFont(FontFactory.HELVETICA, 8)));
+
+					// table.addCell(new Phrase(mapMonth.toString(),
+					// FontFactory.getFont(FontFactory.HELVETICA, 8)));
+
+					// table.addCell(new Phrase(mapMonth.get
+					// FontFactory.getFont(FontFactory.HELVETICA, 8)));
 					table.addCell(new Phrase(jobReports.get(i).getTotalHours() + "",
 							FontFactory.getFont(FontFactory.HELVETICA, 8)));
 
@@ -2482,6 +2457,105 @@ public class MySQLRdbHelper {
 		document.close();
 
 		System.out.println("Done");
+	}
+
+	private HashMap<Integer, Float> getAcitivityCountPerMonth(ArrayList<AllJobsReportDTO> jobReports) {
+		HashMap<Integer, Float> map = new HashMap<Integer, Float>();
+		for (int i = 0; i < jobReports.size(); i++) {
+
+			for (TimeSheet timeSheet : jobReports.get(i).getListTimeSheet()) {
+
+				if (timeSheet.getHours() > 0) {
+					try {
+						map.put(timeSheet.getActivity().getActivityId(),
+								timeSheet.getHours() + map.get(timeSheet.getActivity().getActivityId()));
+					} catch (Exception ex) {
+						map.put(timeSheet.getActivity().getActivityId(), timeSheet.getHours());
+					}
+				}
+			}
+		}
+		return map;
+	}
+
+	private HashMap<Integer, HashMap<Integer, Float>> getAcitivityCount(ArrayList<AllJobsReportDTO> jobReports) {
+
+		HashMap<Integer, HashMap<Integer, Float>> map = new HashMap<Integer, HashMap<Integer, Float>>();
+		// HashMap<Float, Float> month = new HashMap<Float, Float>();
+
+		// HashMap<Float, Float> month = new HashMap<Float, Float>();
+		for (int i = 0; i < jobReports.size(); i++) {
+
+			for (TimeSheet timeSheet : jobReports.get(i).getListTimeSheet()) {
+
+				if (timeSheet.getHours() > 0) {
+
+					try {
+
+						HashMap<Integer, Float> month = map.get(timeSheet.getActivity().getActivityId());
+						if (month != null) {
+
+							float alreadySavedMonthHours = month.get(timeSheet.getMonth()) == null ? 0
+									: month.get(timeSheet.getMonth());
+
+							month.put(timeSheet.getMonth(), timeSheet.getHours() + alreadySavedMonthHours);
+						} else {
+							month = new HashMap<Integer, Float>();
+							month.put(timeSheet.getMonth(), timeSheet.getHours());
+						}
+						map.put(timeSheet.getActivity().getActivityId(), month);
+
+					} catch (Exception ex) {
+						// month.put(jobReports.get(i).getBudgetedHours(),
+						// timeSheet.getHours());
+						// map.put(timeSheet.getActivity().getActivityId(),
+						// month);
+
+					}
+				}
+			}
+		}
+		return map;
+	}
+
+	private String getMonth(TimeSheet timeSheet, int i, String month) {
+		if (timeSheet.getMonth() == 1) {
+			month = "January";
+		}
+		if (timeSheet.getMonth() == 2) {
+			month = "Februrary";
+		}
+		if (timeSheet.getMonth() == 3) {
+			month = "March";
+		}
+		if (timeSheet.getMonth() == 4) {
+			month = "April";
+		}
+		if (timeSheet.getMonth() == 5) {
+			month = "May";
+		}
+		if (timeSheet.getMonth() == 6) {
+			month = "June";
+		}
+		if (timeSheet.getMonth() == 7) {
+			month = "July";
+		}
+		if (timeSheet.getMonth() == 8) {
+			month = "August";
+		}
+		if (timeSheet.getMonth() == 9) {
+			month = "September";
+		}
+		if (timeSheet.getMonth() == 10) {
+			month = "October";
+		}
+		if (timeSheet.getMonth() == 11) {
+			month = "November";
+		}
+		if (timeSheet.getMonth() == 12) {
+			month = "December";
+		}
+		return month;
 	}
 
 	private void specificUserReport(HSSFWorkbook workbook, int userId, List rsList, Session session) {

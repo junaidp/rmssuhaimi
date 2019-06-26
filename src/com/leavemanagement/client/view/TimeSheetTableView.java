@@ -37,8 +37,9 @@ public class TimeSheetTableView extends MaterialColumn {
 	private GreetingServiceAsync rpcService = GWT.create(GreetingService.class);
 	private User loggedInUser = null;
 	private TimeSheetTree timeSheetTree;
-
+	private Label lblTotalHour;
 	private int selectedMonth = 0;
+	private Label heading;
 
 	public TimeSheetTableView(final Job job, User loggedInUser2, MaterialListBox listMonth, final boolean chargeable2,
 			TimeSheetTree timeSheetTree) {
@@ -95,7 +96,7 @@ public class TimeSheetTableView extends MaterialColumn {
 			data.setDay(k);
 			lblSum.setWidth("30px");
 
-			Label heading = new Label(k + 1 + "");
+			heading = new Label(k + 1 + "");
 			// Window.alert("after adding lbl heading");
 			heading.addStyleName("blueBold");
 			vpHeading.add(heading);
@@ -106,7 +107,7 @@ public class TimeSheetTableView extends MaterialColumn {
 			flex.setWidget(0, k + 1, vpHeading);
 			flex.setWidget(0, 32, lbl);
 			// Window.alert("lbltotal before");
-			Label lblTotalHour = new Label("Total Hours:");
+			lblTotalHour = new Label("Total Hours:");
 			lblTotalHour.addStyleName("blueBold");
 			lblTotalHour.setWidth("195px");
 			flex.setWidget(0, 0, lblTotalHour);
@@ -121,9 +122,11 @@ public class TimeSheetTableView extends MaterialColumn {
 
 				// Window.alert("after adding lblname");
 				final TextBox text = new TextBox();
-				text.setText("0");
 
-				text.getElement().setPropertyString("placeholder", "0");
+				// text.setValue("0");
+				text.setValue("0");
+				text.setText("0");
+				// text.getElement().setPropertyString("placeholder", "0");
 				text.setAlignment(TextAlignment.CENTER);
 				text.setTitle(activity.getActivityName());
 				text.setWidth("30px");
@@ -371,5 +374,21 @@ public class TimeSheetTableView extends MaterialColumn {
 		}
 
 		return true;
+	}
+
+	public Label getLblTotalHour() {
+		return lblTotalHour;
+	}
+
+	public void setLblTotalHour(Label lblTotalHour) {
+		this.lblTotalHour = lblTotalHour;
+	}
+
+	public Label getHeading() {
+		return heading;
+	}
+
+	public void setHeading(Label heading) {
+		this.heading = heading;
 	}
 }
