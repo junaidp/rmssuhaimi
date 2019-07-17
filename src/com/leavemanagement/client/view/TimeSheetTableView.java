@@ -88,8 +88,9 @@ public class TimeSheetTableView extends MaterialColumn {
 	}
 
 	private void setHandler(final Job job, final FlexTable flex, final FlexTable flex1, MaterialListBox listMonth) {
+
 		for (int k = 0; k < 31; k++) {
-			// Window.alert("in loop k");
+
 			VerticalPanel vpHeading = new VerticalPanel();
 			final MaterialLabel lblSum = new MaterialLabel("0");
 			final Data data = new Data();
@@ -125,7 +126,7 @@ public class TimeSheetTableView extends MaterialColumn {
 
 				// text.setValue("0");
 				text.setValue("0");
-				text.setText("0");
+				text.setText("");
 				// text.getElement().setPropertyString("placeholder", "0");
 				text.setAlignment(TextAlignment.CENTER);
 				text.setTitle(activity.getActivityName());
@@ -144,8 +145,11 @@ public class TimeSheetTableView extends MaterialColumn {
 				}
 
 				try {
-
-					data.setSum(data.getSum() + Float.parseFloat(text.getValue()));
+					if (text.getValue().isEmpty()) {
+						data.setSum(data.getSum() + 0);
+					} else {
+						data.setSum(data.getSum() + Float.parseFloat(text.getValue()));
+					}
 					lblSum.setText(data.getSum() + "");
 
 					text.addKeyDownHandler(new KeyDownHandler() {
@@ -154,21 +158,22 @@ public class TimeSheetTableView extends MaterialColumn {
 						public void onKeyDown(KeyDownEvent event) {
 
 							if (isStringInt(text.getText())) {
-								if (!text.getText().isEmpty()) {
-									// if (event.getNativeKeyCode() != 9) {
-									// GWT.log(data.getOldValue() + "line 153
-									// after adding it to upper");
-									// Logging.console("testing logsss");
-									// System.out.println(data.getOldValue()
-									// + "line 153 after adding it to
-									// upper");
-									data.setOldValue(text.getValue().isEmpty() ? 0 : Float.parseFloat(text.getValue()));
-									// GWT.log(data.getOldValue() + "line 161
-									// before adding it to upper");
-									// System.out.println(data.getOldValue()
-									// + "line 156 before adding it to
-									// upper");
-								}
+
+								// if (!text.getText().isEmpty()) {
+								// if (event.getNativeKeyCode() != 9) {
+								// GWT.log(data.getOldValue() + "line 153
+								// after adding it to upper");
+								// Logging.console("testing logsss");
+								// System.out.println(data.getOldValue()
+								// + "line 153 after adding it to
+								// upper");
+								data.setOldValue(text.getValue().isEmpty() ? 0 : Float.parseFloat(text.getValue()));
+								// GWT.log(data.getOldValue() + "line 161
+								// before adding it to upper");
+								// System.out.println(data.getOldValue()
+								// + "line 156 before adding it to
+								// upper");
+								// }
 							}
 						}
 
@@ -199,23 +204,26 @@ public class TimeSheetTableView extends MaterialColumn {
 						private void calculateTotal(final MaterialLabel lblSum, final Data data, final TextBox text,
 								KeyUpEvent event) {
 							if (event.getNativeKeyCode() != 9) {
+								String textValue = "0";
 								if (text.getValue() == null || text.getValue().equals("")) {
-									text.setValue("0");
+									textValue = "0";
+								} else {
+									textValue = text.getValue();
 								}
-								if (isStringInt(text.getText())) {
-									if (text.getValue().startsWith("0") && text.getValue().length() > 1) {
+								if (isStringInt(textValue)) {
+									if (textValue.startsWith("0") && textValue.length() > 1) {
 										// GWT.log(text.getValue() + "line 193
 										// after start with 0");
 										// System.out.println(text.getValue() +
 										// "line 186 after start with 0");
-										text.setValue(text.getValue().substring(1));
+										text.setValue(textValue.substring(1));
 										// GWT.log(text.getValue() + "line 197
 										// before starts with 0 condition");
 										// System.out.println(text.getValue() +
 										// "line 193 before starts with 0
 										// condition");
 									}
-									if (!text.getText().isEmpty()) {
+									if (!textValue.isEmpty()) {
 										GWT.log(data.getOldValue() + "line 203");
 										// System.out.println(data.getOldValue()
 										// +
@@ -229,7 +237,7 @@ public class TimeSheetTableView extends MaterialColumn {
 										// data.getOldValue() + "line 208
 										// data.setseum minnus");
 
-										data.setSum(data.getSum() + Float.parseFloat(text.getValue()));
+										data.setSum(data.getSum() + Float.parseFloat(textValue));
 										// System.out.println(data.getSum() +
 										// Float.parseFloat(text.getValue())
 										// + "line 193 data.setseum minnus");
@@ -240,9 +248,9 @@ public class TimeSheetTableView extends MaterialColumn {
 										// GWT.log(data.getSum() + "");
 										// Uncomment this to test TotalHours
 										timeSheetTree.updateTotalHours(data.getDay(), data.getOldValue(),
-												Float.parseFloat(text.getValue()));
+												Float.parseFloat(textValue));
 
-										data.setOldValue(Float.parseFloat(text.getValue()));
+										data.setOldValue(Float.parseFloat(textValue));
 									}
 								}
 							}
@@ -303,7 +311,7 @@ public class TimeSheetTableView extends MaterialColumn {
 					user.setUserId(loggedInUser.getUserId());
 					timeSheet.setUserId(user);
 					timeSheet.setStatus(0);
-					if (timeSheet.getHours() > 0)
+					if (timeSheet.getHours() >= 0)
 						timeSheetList.add(timeSheet);
 
 				}
@@ -367,6 +375,8 @@ public class TimeSheetTableView extends MaterialColumn {
 
 	public boolean isStringInt(String s) {
 		try {
+			if (s.isEmpty())
+				s = "0";
 			Integer.parseInt(s);
 
 		} catch (NumberFormatException ex) {

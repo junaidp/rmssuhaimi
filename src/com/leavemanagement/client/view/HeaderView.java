@@ -3,13 +3,13 @@ package com.leavemanagement.client.view;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.leavemanagement.client.presenter.HeaderPresenter.Display;
 
 import gwt.material.design.client.ui.MaterialLink;
 import gwt.material.design.client.ui.MaterialNavBar;
+import gwt.material.design.client.ui.MaterialNavSection;
 
 public class HeaderView extends Composite implements Display {
 
@@ -18,6 +18,8 @@ public class HeaderView extends Composite implements Display {
 	interface HeaderViewUiBinder extends UiBinder<Widget, HeaderView> {
 	}
 
+	@UiField
+	MaterialNavSection navSection;
 	@UiField
 	MaterialLink addUser;
 	@UiField
@@ -41,15 +43,19 @@ public class HeaderView extends Composite implements Display {
 	}
 
 	public void adminView() {
-		nav.setVisible(false);
-		Timer t = new Timer() {
+		// navSection.setVisible(false);
+		// nav.hideProgress();
+		// Timer t = new Timer() {
+		//
+		// @Override
+		// public void run() {
+		// navSection.setVisible(true);
+		//
+		// }
+		// };
+		//
+		// t.schedule(1000);
 
-			@Override
-			public void run() {
-				nav.setVisible(true);
-			}
-		};
-		t.schedule(800);
 		changePassword.setVisible(true);
 
 		leaveHistory.setVisible(false);

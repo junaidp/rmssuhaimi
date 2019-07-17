@@ -55,7 +55,7 @@ public class TimeSheetTree extends Composite {
 	private MaterialColumn vpLabel = new MaterialColumn();
 	private ArrayList<Job> listjob = new ArrayList<Job>();
 	private static TimeSheetTreeUiBinder uiBinder = GWT.create(TimeSheetTreeUiBinder.class);
-	float sum;
+	float sum = 0;
 	private GreetingServiceAsync rpcService = GWT.create(GreetingService.class);
 
 	interface TimeSheetTreeUiBinder extends UiBinder<Widget, TimeSheetTree> {
@@ -107,7 +107,7 @@ public class TimeSheetTree extends Composite {
 				lblTotalHour.setVisible(true);
 				tree.clear();
 				selectedMonth = Integer.parseInt(listMonth.getValue(listMonth.getSelectedIndex()));
-				fetchJobs(loggedInUser);
+				fetchJobs(loggedInUser, selectedMonth);
 			}
 		});
 
@@ -117,14 +117,14 @@ public class TimeSheetTree extends Composite {
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
 				tree.clear();
 				chargeable = event.getValue();
-				fetchJobs(loggedInUser);
+				fetchJobs(loggedInUser, selectedMonth);
 			}
 		});
 
 	}
 
-	private void fetchJobs(final User loggedInUser) {
-		rpcService.fetchJobsForTimeSheet(loggedInUser, chargeable, new AsyncCallback<ArrayList<Job>>() {
+	private void fetchJobs(final User loggedInUser, int selectedMonth2) {
+		rpcService.fetchJobsForTimeSheet(loggedInUser, chargeable, selectedMonth2, new AsyncCallback<ArrayList<Job>>() {
 
 			@Override
 			public void onSuccess(final ArrayList<Job> result) {
@@ -134,16 +134,34 @@ public class TimeSheetTree extends Composite {
 				rowTotal.clear();
 
 				// tree.clear();
+
 				calculateTotalHoursForTimeSheet(result, loggedInUser);
 				// end
 
 				for (int i = 0; i < result.size(); i++) {
-					sum = 0;
+					// sum = 0;
 					final Job job = result.get(i);
+					float sum = 0;
+					float total = 0;
+
+					total = calculatePerJobHour(job, total);
 
 					final MaterialTreeItem treeItem1 = new MaterialTreeItem();
 					treeItem1.setIconType(IconType.FOLDER_SHARED);
-					treeItem1.setText(result.get(i).getJobName());
+					//
+					// FlexTable tableTree = new FlexTable();
+					// HTML htmlTotal = new HTML(total + "");
+					// HTML htmlText = new HTML(result.get(i).getJobName());
+					// Label lblt = new Label(htmlText + "");
+					// htmlText.setWidth("300px");
+					// tableTree.setWidget(0, 1, htmlText);
+					// tableTree.setWidget(0, 2, htmlTotal);
+					//
+					// HTML html = new HTML(total+"");
+					// html.getElement().getStyle().setColor(value);
+					// treeItem1.add(tableTree);
+
+					treeItem1.setText(result.get(i).getJobName() + " " + "(" + total + ")");
 
 					final Data data = new Data();
 					data.setDataDisplayed(false);
@@ -153,6 +171,19 @@ public class TimeSheetTree extends Composite {
 					clickHandler(loggedInUser, job, treeItem1);
 				}
 
+			}
+
+			private float calculatePerJobHour(final Job job, float total) {
+				float sum;
+				for (int j = 0; j < job.getTimeSheets().size(); j++) {
+
+					if (selectedMonth == job.getTimeSheets().get(j).getMonth()) {
+						sum = job.getTimeSheets().get(j).getHours();
+						total = total + sum;
+					}
+
+				}
+				return total;
 			}
 
 			private void clickHandler(final User loggedInUser, final Job job, final MaterialTreeItem treeItem1) {
@@ -255,6 +286,8 @@ public class TimeSheetTree extends Composite {
 			if (k == timeSheets.get(i).getDay() && (selectedMonth == timeSheets.get(i).getMonth())) {
 				float total = timeSheets.get(i).getHours();
 				data.setSum(data.getSum() + total);
+				sum = total + sum;
+
 				// fetchJobs(loggedInUser);
 			}
 

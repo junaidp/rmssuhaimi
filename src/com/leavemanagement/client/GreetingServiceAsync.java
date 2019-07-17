@@ -105,7 +105,8 @@ public interface GreetingServiceAsync {
 
 	void fetchMonthAllowedhours(int month, AsyncCallback<Integer> asyncCallback);
 
-	void fetchJobsForTimeSheet(User loggedInUser, boolean chargeable, AsyncCallback<ArrayList<Job>> callback);
+	void fetchJobsForTimeSheet(User loggedInUser, boolean chargeable, int selectedMonth2,
+			AsyncCallback<ArrayList<Job>> callback);
 
 	void fetchUsersWithJobs(AsyncCallback<ArrayList<JobUsersDTO>> callback);
 

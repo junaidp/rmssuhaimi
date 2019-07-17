@@ -4,17 +4,17 @@
 	xmlns:m="urn:import:gwt.material.design.client.ui">
 
 <m:MaterialNavBar ui:field="nav" >
-<m:MaterialImage url="suhaimilogo.png" width="200px" height="50px"/>
-<m:MaterialNavBrand href="#Test" float="LEFT" text="Resource Management System" ui:field="lblRSM" />
-<m:MaterialNavSection float="RIGHT">
-<m:MaterialLink iconType="ACCOUNT_CIRCLE" iconPosition="LEFT" text="Add User" textColor="WHITE" waves="LIGHT" ui:field="addUser"/>
-<m:MaterialLink iconType="HISTORY" iconPosition="LEFT" text="Leave History" textColor="WHITE" waves="LIGHT" ui:field="leaveHistory"/>
-<m:MaterialLink iconType="FACE" iconPosition="LEFT" text="Admin" textColor="WHITE" waves="LIGHT" ui:field="admin"/>
-<m:MaterialLink iconType="NOTE_ADD" visible="false" iconPosition="LEFT" text="Add Company" textColor="WHITE" waves="LIGHT" ui:field="addCompany"/>
-<m:MaterialLink iconType="VPN_KEY" iconPosition="LEFT" text="Change Password" textColor="WHITE" waves="LIGHT" ui:field="changePassword"/>
-<m:MaterialLink iconType="PERSON" iconPosition="LEFT" text="UserView" textColor="WHITE" waves="LIGHT" ui:field="userView"/>
+<m:MaterialImage float="LEFT" url="suhaimilogo.png" width="200px" height="50px"/>
+<m:MaterialNavBrand float="LEFT" href="#Test"  text="Resource Management System" ui:field="lblRSM" />
+<m:MaterialNavSection float="RIGHT" ui:field="navSection" >
+<m:MaterialLink iconType="ACCOUNT_CIRCLE" float="LEFT" text="Add User" textColor="WHITE" ui:field="addUser"/>
+<m:MaterialLink iconType="HISTORY" float="LEFT" text="Leave History" textColor="WHITE"  ui:field="leaveHistory"/>
+<m:MaterialLink iconType="FACE" float="LEFT" text="Admin" textColor="WHITE" ui:field="admin"/>
+<m:MaterialLink iconType="NOTE_ADD" float="LEFT" visible="false" text="Add Company" textColor="WHITE" ui:field="addCompany"/>
+<m:MaterialLink iconType="VPN_KEY" float="LEFT"  text="Change Password" textColor="WHITE"  ui:field="changePassword"/>
+<m:MaterialLink iconType="PERSON" float="LEFT" text="UserView" textColor="WHITE"  ui:field="userView"/>
 
-<m:MaterialLink iconType="EXIT_TO_APP" iconPosition="LEFT" text="LOG OFF" textColor="WHITE" waves="LIGHT" ui:field="logOff"/>
+<m:MaterialLink iconType="EXIT_TO_APP" float="LEFT" text="LOG OFF" textColor="WHITE"  ui:field="logOff"/>
 
 </m:MaterialNavSection>
 </m:MaterialNavBar>

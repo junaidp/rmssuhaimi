@@ -1346,7 +1346,8 @@ public class MySQLRdbHelper {
 		}
 	}
 
-	public ArrayList<Job> fetchJobsForTimeSheet(User loggedInUser, boolean chargeable) throws Exception {
+	public ArrayList<Job> fetchJobsForTimeSheet(User loggedInUser, boolean chargeable, int selectedMonth)
+			throws Exception {
 		ArrayList<Job> jobs = new ArrayList<Job>();
 		Session session = null;
 		try {
@@ -1864,9 +1865,11 @@ public class MySQLRdbHelper {
 					timeSheet.get(0).getJobId().getJobId(), session);
 
 			for (int i = 0; i < timeSheet.size(); i++) {
-				timeSheet.get(i).setActivity(timeSheet.get(i).getActivity());
-				session.saveOrUpdate(timeSheet.get(i));
-				session.flush();
+				if (timeSheet.get(i).getHours() > 0) {
+					timeSheet.get(i).setActivity(timeSheet.get(i).getActivity());
+					session.saveOrUpdate(timeSheet.get(i));
+					session.flush();
+				}
 			}
 
 		} catch (Exception ex) {
@@ -2248,12 +2251,12 @@ public class MySQLRdbHelper {
 		int rowNum = 2;
 		int count = 0;
 		HashMap<Integer, HashMap<Integer, Float>> mapActivityCount = getAcitivityCount(jobReports);
+		HashMap<Integer, HashMap<Integer, Float>> mapActivityCountJob = getAcitivityCountJob(jobReports);
+
 		for (int i = 0; i < jobReports.size(); i++) {
-			// for (int j = 0; j < jobReports.get(i).getListTimeSheet().size();
-			// j++) {
+
 			for (TimeSheet timeSheet : jobReports.get(i).getListTimeSheet()) {
-				// TimeSheet timeSheet =
-				// jobReports.get(i).getListTimeSheet().get(j);
+
 				if (timeSheet.getHours() > 0) {
 					count++;
 					rowNum = rowNum + 1;
@@ -2262,35 +2265,27 @@ public class MySQLRdbHelper {
 					row.createCell((short) 0).setCellValue(count);
 					row.createCell((short) 1).setCellValue(jobReports.get(i).getJobName());
 					row.createCell((short) 2).setCellValue(jobReports.get(i).getCompanyName());
-
-					// row.createCell((short)
-					// 3).setCellValue(jobReports.get(i).getHoursWorked());
-
 					String month = null;
 					month = getMonth(timeSheet, i, month);
 
 					row.createCell((short) 4).setCellValue(month);
 					row.createCell((short) 5).setCellValue(timeSheet.getDay());
 					row.createCell((short) 6).setCellValue(jobReports.get(i).getYear());
-					// row.createCell((short)
-					// 5).setCellValue(jobReports.get(i).getHoursVariance());
 					row.createCell((short) 7).setCellValue(jobReports.get(i).getAllocation());
 					row.createCell((short) 8).setCellValue(jobReports.get(i).getLineOfService());
 					row.createCell((short) 10).setCellValue(jobReports.get(i).getDomain());
-					// row.createCell((short)
-					// 11).setCellValue(jobReports.get(i).getUser());
 					row.createCell((short) 12).setCellValue(timeSheet.getUserId().getName());
 					row.createCell((short) 13).setCellValue(timeSheet.getActivity().getActivityName());
 					row.createCell((short) 14).setCellValue(timeSheet.getHours());
 					HashMap<Integer, Float> mapMonth = mapActivityCount.get(timeSheet.getActivity().getActivityId());
+					HashMap<Integer, Float> mapActivityPerJob = mapActivityCountJob
+							.get(timeSheet.getActivity().getActivityId());
 					float sum = 0.0f;
 					for (float f : mapMonth.values()) {
 						sum += f;
 					}
-
-					// row.createCell((short)
-					// 15).setCellValue(mapMonth.get(timeSheet.getMonth()));
-					row.createCell((short) 16).setCellValue(sum);
+					row.createCell((short) 15).setCellValue(mapMonth.get(timeSheet.getMonth()));
+					row.createCell((short) 16).setCellValue(mapActivityPerJob.get(timeSheet.getJobId().getJobId()));
 					row.createCell((short) 17).setCellValue(jobReports.get(i).getTotalHours());
 
 				}
@@ -2323,22 +2318,9 @@ public class MySQLRdbHelper {
 		} else {
 			title = "Report For All Jobs  Report For All Users";
 		}
-		//
-		// PdfContentByte cb = PdfWriter..getDirectContent();
-		// Font ffont = new Font(Font.FontFamily.UNDEFINED, 5, Font.ITALIC);
-		// Phrase header = new Phrase("this is a header", ffont);
-		// Phrase footer = new Phrase("this is a footer", ffont);
-		// ColumnText.showTextAligned(cb, Element.ALIGN_CENTER,
-		// header,
-		// (document.right() - document.left()) / 2 + document.leftMargin(),
-		// document.top() + 10, 0);
-		// ColumnText.showTextAligned(cb, Element.ALIGN_CENTER,
-		// footer,
-		// (document.right() - document.left()) / 2 + document.leftMargin(),
-		// document.bottom() - 10, 0);
 
 		PdfPTable table = new PdfPTable(new float[] { 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2 });
-		// { 1, 2, 2, 1, 1, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2 });
+
 		table.setWidthPercentage(100);
 		table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.addCell(new Phrase("Sr", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8)));
@@ -2364,15 +2346,8 @@ public class MySQLRdbHelper {
 
 		}
 		int count = 0;
-
-		/////
-		// HashMap<Integer, Float> mapActivityCount =
-		// getAcitivityCountPerMonth(jobReports);
-		// HashMap<Integer, Float> mapPerMonthActivityCount =
-		// getAcitivityCountPerMonth(jobReports);
-		/////
 		HashMap<Integer, HashMap<Integer, Float>> mapActivityCount = getAcitivityCount(jobReports);
-
+		HashMap<Integer, HashMap<Integer, Float>> mapActivityCountJob = getAcitivityCountJob(jobReports);
 		for (int i = 0; i < jobReports.size(); i++) {
 
 			for (TimeSheet timeSheet : jobReports.get(i).getListTimeSheet()) {
@@ -2407,30 +2382,19 @@ public class MySQLRdbHelper {
 
 					table.addCell(new Phrase(timeSheet.getActivity().getActivityName(),
 							FontFactory.getFont(FontFactory.HELVETICA, 8)));
-
-					// table.addCell(new Phrase(timeSheet.getHours() + "",
-					// FontFactory.getFont(FontFactory.HELVETICA, 8)));
-					//
-					// table.addCell(new
-
 					table.addCell(new Phrase(timeSheet.getHours() + "", FontFactory.getFont(FontFactory.HELVETICA, 8)));
 					HashMap<Integer, Float> mapMonth = mapActivityCount.get(timeSheet.getActivity().getActivityId());
+					HashMap<Integer, Float> mapActivityPerJob = mapActivityCountJob
+							.get(timeSheet.getActivity().getActivityId());
 
-					// Float mapMonth =
-					// mapActivityCount.get(timeSheet.getActivity().getActivityId());
 					float sum = 0.0f;
 					for (float f : mapMonth.values()) {
 						sum += f;
 					}
 					table.addCell(new Phrase(mapMonth.get(timeSheet.getMonth()) + "",
 							FontFactory.getFont(FontFactory.HELVETICA, 8)));
-					table.addCell(new Phrase(sum + "", FontFactory.getFont(FontFactory.HELVETICA, 8)));
-
-					// table.addCell(new Phrase(mapMonth.toString(),
-					// FontFactory.getFont(FontFactory.HELVETICA, 8)));
-
-					// table.addCell(new Phrase(mapMonth.get
-					// FontFactory.getFont(FontFactory.HELVETICA, 8)));
+					table.addCell(new Phrase(mapActivityPerJob.get(timeSheet.getJobId().getJobId()) + "",
+							FontFactory.getFont(FontFactory.HELVETICA, 8)));
 					table.addCell(new Phrase(jobReports.get(i).getTotalHours() + "",
 							FontFactory.getFont(FontFactory.HELVETICA, 8)));
 
@@ -2459,18 +2423,36 @@ public class MySQLRdbHelper {
 		System.out.println("Done");
 	}
 
-	private HashMap<Integer, Float> getAcitivityCountPerMonth(ArrayList<AllJobsReportDTO> jobReports) {
-		HashMap<Integer, Float> map = new HashMap<Integer, Float>();
+	private HashMap<Integer, HashMap<Integer, Float>> getAcitivityCountJob(ArrayList<AllJobsReportDTO> jobReports) {
+
+		HashMap<Integer, HashMap<Integer, Float>> map = new HashMap<Integer, HashMap<Integer, Float>>();
 		for (int i = 0; i < jobReports.size(); i++) {
 
 			for (TimeSheet timeSheet : jobReports.get(i).getListTimeSheet()) {
 
 				if (timeSheet.getHours() > 0) {
+
 					try {
-						map.put(timeSheet.getActivity().getActivityId(),
-								timeSheet.getHours() + map.get(timeSheet.getActivity().getActivityId()));
+
+						HashMap<Integer, Float> jobMap = map.get(timeSheet.getActivity().getActivityId());
+						if (jobMap != null) {
+
+							float alreadySavedJobHours = jobMap.get(timeSheet.getJobId().getJobId()) == null ? 0
+									: jobMap.get(timeSheet.getJobId().getJobId());
+
+							jobMap.put(timeSheet.getJobId().getJobId(), timeSheet.getHours() + alreadySavedJobHours);
+						} else {
+							jobMap = new HashMap<Integer, Float>();
+							jobMap.put(timeSheet.getJobId().getJobId(), timeSheet.getHours());
+						}
+						map.put(timeSheet.getActivity().getActivityId(), jobMap);
+
 					} catch (Exception ex) {
-						map.put(timeSheet.getActivity().getActivityId(), timeSheet.getHours());
+						// month.put(jobReports.get(i).getBudgetedHours(),
+						// timeSheet.getHours());
+						// map.put(timeSheet.getActivity().getActivityId(),
+						// month);
+
 					}
 				}
 			}
@@ -2481,9 +2463,7 @@ public class MySQLRdbHelper {
 	private HashMap<Integer, HashMap<Integer, Float>> getAcitivityCount(ArrayList<AllJobsReportDTO> jobReports) {
 
 		HashMap<Integer, HashMap<Integer, Float>> map = new HashMap<Integer, HashMap<Integer, Float>>();
-		// HashMap<Float, Float> month = new HashMap<Float, Float>();
 
-		// HashMap<Float, Float> month = new HashMap<Float, Float>();
 		for (int i = 0; i < jobReports.size(); i++) {
 
 			for (TimeSheet timeSheet : jobReports.get(i).getListTimeSheet()) {
