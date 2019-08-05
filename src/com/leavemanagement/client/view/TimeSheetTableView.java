@@ -123,7 +123,7 @@ public class TimeSheetTableView extends MaterialColumn {
 
 				// Window.alert("after adding lblname");
 				final TextBox text = new TextBox();
-
+				// setdoublle
 				// text.setValue("0");
 				text.setValue("0");
 				text.setText("");
