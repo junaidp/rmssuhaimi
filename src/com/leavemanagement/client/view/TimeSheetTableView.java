@@ -138,7 +138,9 @@ public class TimeSheetTableView extends MaterialColumn {
 					TimeSheet timeSheet = activity.getTimeSheets().get(m);
 					if (timeSheet.getMonth() == selectedMonth && timeSheet.getDay() == k + 1
 							&& job.getJobId() == timeSheet.getJobId().getJobId()) {
-						text.setValue(timeSheet.getHours() + "");
+
+						double roundOff1 = Math.round(timeSheet.getHours() * 100.0) / 100.0;
+						text.setValue(roundOff1 + "");
 						// break; //TODO
 
 					}
