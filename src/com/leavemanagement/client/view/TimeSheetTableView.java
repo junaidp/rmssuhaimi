@@ -131,7 +131,7 @@ public class TimeSheetTableView extends MaterialColumn {
 				text.setAlignment(TextAlignment.CENTER);
 				text.setTitle(activity.getActivityName());
 				text.setWidth("30px");
-				text.setMaxLength(2);
+				text.setMaxLength(4);
 				flex1.setWidget(i + 1, k + 1, text);
 				// Window.alert("befotre adding text");
 				for (int m = 0; m < activity.getTimeSheets().size(); m++) {
@@ -150,7 +150,8 @@ public class TimeSheetTableView extends MaterialColumn {
 					} else {
 						data.setSum(data.getSum() + Float.parseFloat(text.getValue()));
 					}
-					lblSum.setText(data.getSum() + "");
+					double roundOff = Math.round(data.getSum() * 100.0) / 100.0;
+					lblSum.setText(roundOff + "");
 
 					text.addKeyDownHandler(new KeyDownHandler() {
 
@@ -244,7 +245,9 @@ public class TimeSheetTableView extends MaterialColumn {
 										// GWT.log(data.getSum() +
 										// Float.parseFloat(text.getValue())
 										// + "line 215 data.setseum plus");
-										lblSum.setText(data.getSum() + "");
+
+										double roundOff = Math.round(data.getSum() * 100.0) / 100.0;
+										lblSum.setText(roundOff + "");
 										// GWT.log(data.getSum() + "");
 										// Uncomment this to test TotalHours
 										timeSheetTree.updateTotalHours(data.getDay(), data.getOldValue(),
@@ -375,9 +378,11 @@ public class TimeSheetTableView extends MaterialColumn {
 
 	public boolean isStringInt(String s) {
 		try {
+
 			if (s.isEmpty())
 				s = "0";
-			Integer.parseInt(s);
+			if (s.equals("."))
+				Integer.parseInt(s);
 
 		} catch (NumberFormatException ex) {
 			return false;

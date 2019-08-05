@@ -315,10 +315,11 @@ public class MySQLRdbHelper {
 			session.save(leaveRecord);
 			User user = fetchUser(leaveRecord.getUserId().getReportingTo());
 			session.flush();
+			// 2019 july changing mail of sir faheem
 			sendEmail(
 					"Leave Request Received: from " + leaveRecord.getUserId().getName() + ", Reason : "
 							+ leaveRecord.getReason(),
-					user.getEmail(), "mfaheempiracha@gmail.com", "Leave Request Received");
+					user.getEmail(), "n.sohail@alsuhaimi.net", "Leave Request Received");
 
 		} catch (Exception ex) {
 			logger.warn(String.format("Exception occured in saveLeaveRequest", ex.getMessage()), ex);

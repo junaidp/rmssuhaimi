@@ -160,8 +160,8 @@ public class TimeSheetTree extends Composite {
 					// HTML html = new HTML(total+"");
 					// html.getElement().getStyle().setColor(value);
 					// treeItem1.add(tableTree);
-
-					treeItem1.setText(result.get(i).getJobName() + " " + "(" + total + ")");
+					double jobtotalworkhour = Math.round(total * 100.0) / 100.0;
+					treeItem1.setText(result.get(i).getJobName() + " " + "(" + jobtotalworkhour + ")");
 
 					final Data data = new Data();
 					data.setDataDisplayed(false);
@@ -256,8 +256,8 @@ public class TimeSheetTree extends Composite {
 			for (int i = 0; i < result.size(); i++) {
 				hoursCalculate(k, result.get(i).getTimeSheets(), data, lblSum, listMonth, loggedInUser);
 			}
-
-			lblSum.setText(data.getSum() + "");
+			double roundOff1 = Math.round(data.getSum() * 100.0) / 100.0;
+			lblSum.setText(roundOff1 + "");
 		}
 
 	}
@@ -269,10 +269,12 @@ public class TimeSheetTree extends Composite {
 			MaterialColumn vpHeading = (MaterialColumn) rowTotal.getWidget(day + 1);
 			MaterialLabel lblSum = (MaterialLabel) vpHeading.getWidget(1);
 			float oldHours = Float.parseFloat(lblSum.getText());
-			float totalHours = oldHours - currentHours;
+			float totalHours = 0;
+			totalHours = oldHours - currentHours;
 			totalHours = totalHours + newHours;
+			double roundOff = Math.round(totalHours * 100.0) / 100.0;
 
-			lblSum.setText(totalHours + "");
+			lblSum.setText(roundOff + "");
 		} catch (Exception ex) {
 			System.out.println("error in update Total Hours(TimeSheetTree");
 		}
