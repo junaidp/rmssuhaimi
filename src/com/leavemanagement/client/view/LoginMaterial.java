@@ -5,8 +5,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PasswordTextBox;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.leavemanagement.client.presenter.LoginPresenter.Display;
 
@@ -23,29 +21,40 @@ public class LoginMaterial extends Composite implements Display {
 	public LoginMaterial() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
-	
-	@UiField MaterialTextBox txtUserName;
-	@UiField MaterialTextBox txtPassword;
-	@UiField MaterialButton btnSubmit;
-	@UiField Label lblError;
+
+	@UiField
+	MaterialTextBox txtUserName;
+	@UiField
+	MaterialTextBox txtPassword;
+	@UiField
+	MaterialButton btnSubmit;
+	@UiField
+	Label lblError;
+
 	public MaterialTextBox getTxtUserName() {
 		return txtUserName;
 	}
+
 	public void setTxtUserName(MaterialTextBox txtUserName) {
 		this.txtUserName = txtUserName;
 	}
+
 	public MaterialTextBox getTxtPassword() {
 		return txtPassword;
 	}
+
 	public void setTxtPassword(MaterialTextBox txtPassword) {
 		this.txtPassword = txtPassword;
 	}
+
 	public MaterialButton getBtnSubmit() {
 		return btnSubmit;
 	}
+
 	public void setBtnSubmit(MaterialButton btnSubmit) {
 		this.btnSubmit = btnSubmit;
 	}
+
 	@Override
 	public Label getLblError() {
 		// TODO Auto-generated method stub

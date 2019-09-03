@@ -83,7 +83,7 @@ public class Job implements Serializable {
 	@Transient
 	private ArrayList<Activity> fetchDefaultActivityList;
 
-	@Column(name = "status")
+	@Column(name = "jobStatus")
 	private String status;
 
 	@Column(name = "dateyear")

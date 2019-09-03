@@ -93,7 +93,7 @@ public class JobsListView extends MaterialColumn {
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
-				Window.alert("fetch jobs list failed in joblist view");
+				Window.alert("fetch jobs list failed in joblist view !" + caught);
 			}
 		});
 	}

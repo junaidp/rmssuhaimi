@@ -78,7 +78,7 @@ public class MySQLRdbHelper {
 
 	private SessionFactory sessionFactory;
 	private final static Logger logger = Logger.getLogger("MySQLRdbHelper");
-
+	String error = "";
 	// Logger logger = Logger.getLogger(MySQLRdbHelper.class);
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
@@ -1268,9 +1268,12 @@ public class MySQLRdbHelper {
 	public ArrayList<Job> fetchJobs(User loggedInUser) throws Exception {
 		ArrayList<Job> jobs = new ArrayList<Job>();
 		Session session = null;
+
 		try {
+
 			session = sessionFactory.openSession();
 			Criteria crit = session.createCriteria(Job.class);
+			error = "below session.createcriteria1275";
 			crit.createAlias("lineofServiceId", "lineofService");
 			// crit.createAlias("subLineofServiceId", "subLineofService");
 			// crit.createAlias("subLineofService.domainId", "sublineDomain");
@@ -1294,35 +1297,48 @@ public class MySQLRdbHelper {
 			// crit.createAlias("principalConsultantId", "principalConsultant");
 			// crit.createAlias("principalConsultant.roleId", "rolep");
 			// crit.createAlias("principalConsultant.companyId", "companyp");
-
+			error = "below criterias 1299";
 			crit.add(Restrictions.ne("status", "InActive"));
 			crit.add(Restrictions.ne("status", "office"));
+			error = "below restrictions 1302";
 			// crit.add(Restrictions.ne("status", "Closed"));
 			crit.addOrder(Order.asc("company"));
+			error = "below ascendingorder 1305";
 			if (loggedInUser.getRoleId().getRoleId() != 5) {
+				error = "below roleidcheck 1307";
 				ArrayList<Integer> jobIds = getUserJobs(loggedInUser.getUserId(), session);
+				error = "below getuserjobfunction 1309";
 				Disjunction disc = Restrictions.disjunction();
+				error = "1311";
 				for (int i = 0; i < jobIds.size(); i++) {
 					disc.add(Restrictions.eq("jobId", jobIds.get(i)));
+					error = "1314";
 				}
 				crit.add(disc);
+				error = "1317";
 
 			}
 			List rsList = crit.list();
-
+			error = "1321";
 			for (Iterator it = rsList.iterator(); it.hasNext();) {
+				error = "1323";
 				Job job = (Job) it.next();
+				error = "1326";
 				// job.setJobPhases(fetchJobPhases(job.getJobId()));
 				job.setJobEmployeesList(fetchJobEmployees(session, job.getJobId()));
+				error = "1329";
 				job.setJobAttributes(fetchjobAttributes(session, job.getJobId()));
+				error = "1331";
 				job.setTimeSheets(fetchJobTimeSheets(session, job.getJobId(), loggedInUser.getRoleId().getRoleId(),
 						loggedInUser.getUserId()));
+				error = "1332";
 				HibernateDetachUtility.nullOutUninitializedFields(job,
 						HibernateDetachUtility.SerializationType.SERIALIZATION);
 				HibernateDetachUtility.nullOutUninitializedFields(job.getLineofServiceId(),
 						HibernateDetachUtility.SerializationType.SERIALIZATION);
 				HibernateDetachUtility.nullOutUninitializedFields(job.getDomainId(),
 						HibernateDetachUtility.SerializationType.SERIALIZATION);
+				error = "1339";
 				// HibernateDetachUtility.nullOutUninitializedFields(job.getPrincipalConsultantId(),
 				// HibernateDetachUtility.SerializationType.SERIALIZATION);
 				// HibernateDetachUtility.nullOutUninitializedFields(job.getSubLineofServiceId(),
@@ -1331,17 +1347,20 @@ public class MySQLRdbHelper {
 						HibernateDetachUtility.SerializationType.SERIALIZATION);
 				// HibernateDetachUtility.nullOutUninitializedFields(job.getSupervisorId(),
 				// HibernateDetachUtility.SerializationType.SERIALIZATION);
+				error = "1348";
 				job.setJobActivities(fetchJobActivities(session, job.getJobId()));
-
+				error = "1350";
 				jobs.add(job);
+				error = "1352";
 			}
-
+			error = "1352";
 			return jobs;
+
 		} catch (Exception ex) {
 			logger.warn(String.format("Exception occured in fetchJobs", ex.getMessage()), ex);
 			System.out.println("Exception occured in fetchJobs" + ex.getMessage());
-
-			throw new Exception("Exception occured in fetchJobs");
+			error = error + "1362" + ex.getLocalizedMessage() + "'" + ex.fillInStackTrace();
+			throw new Exception("Exception occured in fetchJobs .." + ex + error);
 		} finally {
 			session.close();
 		}
@@ -1418,10 +1437,10 @@ public class MySQLRdbHelper {
 
 			return jobs;
 		} catch (Exception ex) {
-			logger.warn(String.format("Exception occured in fetchJobs", ex.getMessage()), ex);
-			System.out.println("Exception occured in fetchJobs" + ex.getMessage());
+			logger.warn(String.format("Exception occured in fetchJobsForTimeSheet", ex.getMessage()), ex);
+			System.out.println("Exception occured in fetchJobsForTimeSheet" + ex.getMessage());
 
-			throw new Exception("Exception occured in fetchJobs");
+			throw new Exception("Exception occured in fetchJobsForTimeSheet");
 		} finally {
 			session.close();
 		}
@@ -1472,10 +1491,10 @@ public class MySQLRdbHelper {
 
 			return jobs;
 		} catch (Exception ex) {
-			logger.warn(String.format("Exception occured in fetchJobs", ex.getMessage()), ex);
-			System.out.println("Exception occured in fetchJobs" + ex.getMessage());
+			logger.warn(String.format("Exception occured in fetchSelectedJobForTimeSheet", ex.getMessage()), ex);
+			System.out.println("Exception occured in fetchSelectedJobForTimeSheet" + ex.getMessage());
 
-			throw new Exception("Exception occured in fetchJobs");
+			throw new Exception("Exception occured in fetchSelectedJobForTimeSheet");
 		} finally {
 			session.close();
 		}
@@ -1699,22 +1718,33 @@ public class MySQLRdbHelper {
 	private ArrayList<JobEmployees> fetchJobEmployees(Session session, int jobId) throws Exception {
 		try {
 			ArrayList<JobEmployees> jobEmployeesList = new ArrayList<JobEmployees>();
-
+			error = "1721";
 			Criteria crit = session.createCriteria(JobEmployees.class);
+			error = "1723";
 			crit.createAlias("employeeId", "employee");
+			error = "1725";
 			crit.createAlias("employee.companyId", "employeeComp");
 			crit.createAlias("employee.roleId", "employeeRole");
+			error = "1728";
 			crit.add(Restrictions.eq("jobId", jobId));
+			error = "1730";
 			List rsList = crit.list();
-
+			error = "1732";
 			for (Iterator it = rsList.iterator(); it.hasNext();) {
+				error = "1734";
 				JobEmployees jobEmployees = (JobEmployees) it.next();
+				error = "1736";
 				jobEmployeesList.add(jobEmployees);
+				error = "1738";
 			}
+			error = "1740";
 			return jobEmployeesList;
+
 		} catch (Exception ex) {
+			error = error + "1743" + ex.getLocalizedMessage() + "'" + ex.fillInStackTrace() + "'" + ex.getMessage();
 			System.out.println("fetchJobEmployees failed");
-			throw ex;
+
+			throw new Exception("Exception occured in fetchJobEmployees .." + ex + error);
 		}
 	}
 
@@ -3322,7 +3352,7 @@ public class MySQLRdbHelper {
 			crit.add(Restrictions.ne("status", "Closed"));
 
 			List rsList = crit.list();
-
+			//
 			for (Iterator it = rsList.iterator(); it.hasNext();) {
 				Job job = (Job) it.next();
 				ArrayList<User> users = fetchUsersonSelectedJob(job.getJobId());
@@ -3341,10 +3371,10 @@ public class MySQLRdbHelper {
 
 			return jobUsersDTOs;
 		} catch (Exception ex) {
-			logger.warn(String.format("Exception occured in fetchJobs", ex.getMessage()), ex);
-			System.out.println("Exception occured in fetchJobs" + ex.getMessage());
+			logger.warn(String.format("Exception occured in fetchUsersWithJobs", ex.getMessage()), ex);
+			System.out.println("Exception occured in fetchUsersWithJobs" + ex.getMessage());
 
-			throw new Exception("Exception occured in fetchJobs");
+			throw new Exception("Exception occured in fetchUsersWithJobs");
 		} finally {
 			session.close();
 		}
@@ -3451,8 +3481,8 @@ public class MySQLRdbHelper {
 
 			return jobs;
 		} catch (Exception ex) {
-			logger.warn(String.format("Exception occured in fetchJobs", ex.getMessage()), ex);
-			System.out.println("Exception occured in fetchJobs" + ex.getMessage());
+			logger.warn(String.format("Exception occured in fetchALLJobs", ex.getMessage()), ex);
+			System.out.println("Exception occured in fetchAllJobs" + ex.getMessage());
 
 			throw new Exception("Exception occured in fetchAllJobs");
 		} finally {
@@ -3667,10 +3697,10 @@ public class MySQLRdbHelper {
 
 			return jobs;
 		} catch (Exception ex) {
-			logger.warn(String.format("Exception occured in fetchJobs", ex.getMessage()), ex);
-			System.out.println("Exception occured in fetchJobs" + ex.getMessage());
+			logger.warn(String.format("Exception occured in fetchJobsWithStatus", ex.getMessage()), ex);
+			System.out.println("Exception occured in fetchJobsWithStatus" + ex.getMessage());
 
-			throw new Exception("Exception occured in fetchAllJobs");
+			throw new Exception("Exception occured in fetchJobsWithStatus");
 		} finally {
 			session.close();
 		}
