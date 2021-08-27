@@ -347,11 +347,11 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 	}
 
 	@Override
-	public ArrayList<Job> fetchJobsForTimeSheet(User loggedInUser, boolean chargeable, int selectedMonth)
-			throws Exception {
+	public ArrayList<Job> fetchJobsForTimeSheet(User loggedInUser, boolean chargeable, int selectedMonth,
+			int selectedYear) throws Exception {
 		ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
 		MySQLRdbHelper rdbHelper = (MySQLRdbHelper) ctx.getBean("ManagerExams");
-		return rdbHelper.fetchJobsForTimeSheet(loggedInUser, chargeable, selectedMonth);
+		return rdbHelper.fetchJobsForTimeSheet(loggedInUser, chargeable, selectedMonth, selectedYear);
 	}
 
 	@Override

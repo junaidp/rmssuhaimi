@@ -39,14 +39,15 @@ public class TimeSheetTableView extends MaterialColumn {
 	private TimeSheetTree timeSheetTree;
 	private Label lblTotalHour;
 	private int selectedMonth = 0;
+	private int selectedYear = 0;
 	private Label heading;
 
-	public TimeSheetTableView(final Job job, User loggedInUser2, MaterialListBox listMonth, final boolean chargeable2,
-			TimeSheetTree timeSheetTree) {
+	public TimeSheetTableView(final Job job, User loggedInUser2, MaterialListBox listMonth, MaterialListBox listYear,
+			final boolean chargeable2, TimeSheetTree timeSheetTree) {
 		selectedMonth = Integer.parseInt(listMonth.getSelectedValue());
+		selectedYear = Integer.parseInt(listYear.getSelectedItemText());
 
 		this.timeSheetTree = timeSheetTree;
-
 		MaterialRow columnMain = new MaterialRow();
 
 		ScrollPanel scrollPanelWidth = new ScrollPanel();
@@ -62,7 +63,7 @@ public class TimeSheetTableView extends MaterialColumn {
 		scrollFlex1.setHeight("250px");
 		// scrollFlex1.setWidth("1700px");
 		scrollFlex1.add(flex1);
-		setHandler(job, flex, flex1, listMonth);
+		setHandler(job, flex, flex1, listMonth, listYear);
 		// Window.alert("before adding anything ");
 		// scrollPanel.setHeight("400px");
 		// scrollPanel.setWidth("1896px");
@@ -87,7 +88,8 @@ public class TimeSheetTableView extends MaterialColumn {
 		saveHandler(job, chargeable2, btnSave, flex1, flex);
 	}
 
-	private void setHandler(final Job job, final FlexTable flex, final FlexTable flex1, MaterialListBox listMonth) {
+	private void setHandler(final Job job, final FlexTable flex, final FlexTable flex1, MaterialListBox listMonth,
+			MaterialListBox listYear) {
 
 		for (int k = 0; k < 31; k++) {
 
@@ -137,8 +139,8 @@ public class TimeSheetTableView extends MaterialColumn {
 				for (int m = 0; m < activity.getTimeSheets().size(); m++) {
 					TimeSheet timeSheet = activity.getTimeSheets().get(m);
 					if (timeSheet.getMonth() == selectedMonth && timeSheet.getDay() == k + 1
+							&& timeSheet.getYear() == selectedYear
 							&& job.getJobId() == timeSheet.getJobId().getJobId()) {
-
 						double roundOff1 = Math.round(timeSheet.getHours() * 100.0) / 100.0;
 						text.setValue(roundOff1 + "");
 						// break; //TODO
@@ -307,6 +309,7 @@ public class TimeSheetTableView extends MaterialColumn {
 					timeSheet.setHours(Float.parseFloat(text.getText()));
 					totalHours = totalHours + timeSheet.getHours();
 					timeSheet.setMonth(selectedMonth);
+					timeSheet.setYear(selectedYear);
 					Label activityField = (Label) flex.getWidget(i + 1, 32);
 					Activity activity = new Activity();
 					activity.setActivityId(Integer.parseInt(activityField.getText()));

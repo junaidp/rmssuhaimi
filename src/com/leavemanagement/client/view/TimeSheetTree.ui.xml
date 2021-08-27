@@ -8,7 +8,7 @@
 
 	<d:MaterialRow>
 		<d:MaterialRow>
-			<d:MaterialColumn ui:field="rowMonth"></d:MaterialColumn>
+			<d:MaterialRow ui:field="rowMonth"></d:MaterialRow>
 			<g:FlexTable ui:field="flex"></g:FlexTable>
 		</d:MaterialRow>
 		<d:MaterialRow ui:field="rowTotal"></d:MaterialRow>

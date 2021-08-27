@@ -5,20 +5,31 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
 	default-lazy-init="true">
-
-	<!-- Datasource for LOCAL database connection  
-      
-   	<bean id="dataSource"
+<!-- 
+ Datasource for LOCAL database connection  
+  -->     
+    	<!-- <bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://localhost/leavedb" />
+		<property name="url" value="jdbc:mysql://localhost/leavedb2021" />
 		<property name="username" value="root" />
 		<property name="password" value="0502" />
 
-	</bean>
-	-->
+	</bean>   --> 
+	
+		<!-- Datasource for LOCAL database connection  -->
+      
+  	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://mysql3000.mochahost.com/internal_alsuhaimi" />
+		<property name="username" value="internal_shuaimi" />
+		<property name="password" value="junaidp" />
+
+	</bean>  
+	
 	 <!--
-	 -->
+	
 	   	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
@@ -27,6 +38,7 @@ http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
 		<property name="password" value="Password1" />
 
 	</bean>  
+	 -->
 	 <!-- 
     <bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">

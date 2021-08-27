@@ -106,7 +106,8 @@ public interface GreetingService extends RemoteService {
 
 	Integer fetchMonthAllowedhours(int month) throws Exception;
 
-	ArrayList<Job> fetchJobsForTimeSheet(User loggedInUser, boolean chargeable, int selectedMonth2) throws Exception;
+	ArrayList<Job> fetchJobsForTimeSheet(User loggedInUser, boolean chargeable, int selectedMonth2, int selectedYear2)
+			throws Exception;
 
 	ArrayList<JobUsersDTO> fetchUsersWithJobs() throws Exception;
 

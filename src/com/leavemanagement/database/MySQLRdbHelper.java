@@ -930,7 +930,7 @@ public class MySQLRdbHelper {
 
 			throw new Exception("Exception occured in getJobAttributes");
 		} finally {
-
+			session.close();
 		}
 	}
 
@@ -955,13 +955,13 @@ public class MySQLRdbHelper {
 
 			throw new Exception("Exception occured in getLineOfServices");
 		} finally {
-
+			session.close();
 		}
 	}
 
 	public ArrayList<SubLineofService> fetchSubLineOfServices(int domainId) throws Exception {
 		ArrayList<SubLineofService> subLineofServices = new ArrayList<SubLineofService>();
-		Session session;
+		Session session = null;
 		try {
 			session = sessionFactory.openSession();
 			Criteria crit = session.createCriteria(SubLineofService.class);
@@ -982,7 +982,7 @@ public class MySQLRdbHelper {
 
 			throw new Exception("Exception occured in getSubLineOfServices");
 		} finally {
-
+			session.close();
 		}
 	}
 
@@ -1034,7 +1034,7 @@ public class MySQLRdbHelper {
 
 			throw new Exception("Exception occured in getDomains");
 		} finally {
-
+			session.close();
 		}
 	}
 
@@ -1064,7 +1064,7 @@ public class MySQLRdbHelper {
 
 			throw new Exception("Exception occured in getDomains");
 		} finally {
-
+			session.close();
 		}
 	}
 
@@ -1323,6 +1323,7 @@ public class MySQLRdbHelper {
 			for (Iterator it = rsList.iterator(); it.hasNext();) {
 				error = "1323";
 				Job job = (Job) it.next();
+				
 				error = "1326";
 				// job.setJobPhases(fetchJobPhases(job.getJobId()));
 				job.setJobEmployeesList(fetchJobEmployees(session, job.getJobId()));
@@ -1338,7 +1339,6 @@ public class MySQLRdbHelper {
 						HibernateDetachUtility.SerializationType.SERIALIZATION);
 				HibernateDetachUtility.nullOutUninitializedFields(job.getDomainId(),
 						HibernateDetachUtility.SerializationType.SERIALIZATION);
-				error = "1339";
 				// HibernateDetachUtility.nullOutUninitializedFields(job.getPrincipalConsultantId(),
 				// HibernateDetachUtility.SerializationType.SERIALIZATION);
 				// HibernateDetachUtility.nullOutUninitializedFields(job.getSubLineofServiceId(),
@@ -1347,14 +1347,13 @@ public class MySQLRdbHelper {
 						HibernateDetachUtility.SerializationType.SERIALIZATION);
 				// HibernateDetachUtility.nullOutUninitializedFields(job.getSupervisorId(),
 				// HibernateDetachUtility.SerializationType.SERIALIZATION);
-				error = "1348";
 				job.setJobActivities(fetchJobActivities(session, job.getJobId()));
-				error = "1350";
-				jobs.add(job);
-				error = "1352";
+				//if((job.getJobId()!= 62) &&(job.getJobId()!=63)) 
+					jobs.add(job);
 			}
-			error = "1352";
+			
 			return jobs;
+			
 
 		} catch (Exception ex) {
 			logger.warn(String.format("Exception occured in fetchJobs", ex.getMessage()), ex);
@@ -1366,8 +1365,8 @@ public class MySQLRdbHelper {
 		}
 	}
 
-	public ArrayList<Job> fetchJobsForTimeSheet(User loggedInUser, boolean chargeable, int selectedMonth)
-			throws Exception {
+	public ArrayList<Job> fetchJobsForTimeSheet(User loggedInUser, boolean chargeable, int selectedMonth,
+			int selectedYear) throws Exception {
 		ArrayList<Job> jobs = new ArrayList<Job>();
 		Session session = null;
 		try {
@@ -1431,6 +1430,22 @@ public class MySQLRdbHelper {
 				job.setTimeSheets(fetchJobTimeSheets(session, job.getJobId(), loggedInUser.getRoleId().getRoleId(),
 						loggedInUser.getUserId()));
 				// if (job.getJobId() != 281) {
+				
+				HibernateDetachUtility.nullOutUninitializedFields(job,
+						HibernateDetachUtility.SerializationType.SERIALIZATION);
+				HibernateDetachUtility.nullOutUninitializedFields(job.getLineofServiceId(),
+						HibernateDetachUtility.SerializationType.SERIALIZATION);
+				HibernateDetachUtility.nullOutUninitializedFields(job.getDomainId(),
+						HibernateDetachUtility.SerializationType.SERIALIZATION);
+				// HibernateDetachUtility.nullOutUninitializedFields(job.getPrincipalConsultantId(),
+				// HibernateDetachUtility.SerializationType.SERIALIZATION);
+				// HibernateDetachUtility.nullOutUninitializedFields(job.getSubLineofServiceId(),
+				// HibernateDetachUtility.SerializationType.SERIALIZATION);
+				HibernateDetachUtility.nullOutUninitializedFields(job.getCountryId(),
+						HibernateDetachUtility.SerializationType.SERIALIZATION);
+				// HibernateDetachUtility.nullOutUninitializedFields(job.getSupervisorId(),
+				// HibernateDetachUtility.SerializationType.SERIALIZATION);
+				
 				jobs.add(job);
 				// }
 			}
@@ -1871,6 +1886,9 @@ public class MySQLRdbHelper {
 		} catch (Exception ex) {
 			System.out.println("fail job delte ");
 		}
+		finally {
+			session.close();
+		}
 		return "job deleted";
 	}
 
@@ -1883,7 +1901,7 @@ public class MySQLRdbHelper {
 		} catch (Exception ex) {
 			System.out.println("fail job attributes save");
 		} finally {
-
+			session.close();
 		}
 		return "job attributes saved";
 	}
@@ -1906,7 +1924,7 @@ public class MySQLRdbHelper {
 		} catch (Exception ex) {
 			System.out.println("fail saveTimeSheet");
 		} finally {
-
+			session.close();
 		}
 		return null;
 
@@ -1955,6 +1973,7 @@ public class MySQLRdbHelper {
 			session = sessionFactory.openSession();
 			Criteria crit = session.createCriteria(Job.class);
 			int month = 4;
+			int year = 0;
 
 			// send all the listboxes values from clientside in a hashmap
 			// HashMap<String, Integer>
@@ -2007,7 +2026,10 @@ public class MySQLRdbHelper {
 				crit.add(Restrictions.eq("activity.activityId", reportData.get("activityId")));
 			}
 			if (reportData.get("yearId") != null && reportData.get("yearId") != 0) {
-				crit.add(Restrictions.eq("dateYear", reportData.get("yearId")));
+				// 2020 feb
+				// crit.add(Restrictions.eq("dateYear",
+				// reportData.get("yearId")));
+				year = reportData.get("yearId");
 
 			}
 
@@ -2044,25 +2066,23 @@ public class MySQLRdbHelper {
 				reportDTO.setYear(job.getDateYear() + "");
 				reportDTO.setLineOfService(job.getLineofServiceId().getName());
 
-				reportDTO.setListTimeSheet(
-						getActualHours(job.getJobId(), session, reportData.get("monthId"), reportData.get("userId")));
+				reportDTO.setListTimeSheet(getActualHours(job.getJobId(), session, reportData.get("monthId"),
+						reportData.get("userId"), reportData.get("yearId")));
 				for (int i = 0; i < getActualHours(job.getJobId(), session, reportData.get("monthId"),
-						reportData.get("userId")).size(); i++) {
+						reportData.get("userId"), reportData.get("yearId")).size(); i++) {
 					reportDTO.setActivity(
 
-							getActualHours(job.getJobId(), session, reportData.get("monthId"), reportData.get("userId"))
-									.get(i).getActivity().getActivityName());
+							getActualHours(job.getJobId(), session, reportData.get("monthId"), reportData.get("userId"),
+									reportData.get("yearId")).get(i).getActivity().getActivityName());
 
 					totalHours = totalHours + getActualHours(job.getJobId(), session, reportData.get("monthId"),
-							reportData.get("userId")).get(i).getHours();
+							reportData.get("userId"), reportData.get("yearId")).get(i).getHours();
 
-					reportDTO.setUser(
-							getActualHours(job.getJobId(), session, reportData.get("monthId"), reportData.get("userId"))
-									.get(i).getUserId().getName());
+					reportDTO.setUser(getActualHours(job.getJobId(), session, reportData.get("monthId"),
+							reportData.get("userId"), reportData.get("yearId")).get(i).getUserId().getName());
 					// budhethours is being used for month
-					reportDTO.setBudgetedHours(
-							getActualHours(job.getJobId(), session, reportData.get("monthId"), reportData.get("userId"))
-									.get(i).getMonth());
+					reportDTO.setBudgetedHours(getActualHours(job.getJobId(), session, reportData.get("monthId"),
+							reportData.get("userId"), reportData.get("yearId")).get(i).getMonth());
 
 				}
 				reportDTO.setTotalHours(totalHours);
@@ -2086,7 +2106,11 @@ public class MySQLRdbHelper {
 
 			System.out.println("fail fetchAllReport");
 		}
-		session.close();
+		finally {
+			session.close();
+		}
+		
+		
 		return "All report file generated";
 
 	}
@@ -2099,6 +2123,7 @@ public class MySQLRdbHelper {
 			session = sessionFactory.openSession();
 			Criteria crit = session.createCriteria(Job.class);
 			int month = 0;
+			int year = 0;
 
 			// send all the listboxes values from clientside in a hashmap
 			// HashMap<String, Integer>
@@ -2153,7 +2178,10 @@ public class MySQLRdbHelper {
 			}
 			// new for year
 			if (reportData.get("yearId") != null && reportData.get("yearId") != 0) {
-				crit.add(Restrictions.eq("dateYear", reportData.get("yearId")));
+				// 2020 feb
+				// crit.add(Restrictions.eq("dateYear",
+				// reportData.get("yearId")));
+				year = reportData.get("yearId");
 
 			}
 
@@ -2188,25 +2216,23 @@ public class MySQLRdbHelper {
 				reportDTO.setDomain(job.getDomainId().getName());
 				reportDTO.setLineOfService(job.getLineofServiceId().getName());
 
-				reportDTO.setListTimeSheet(
-						getActualHours(job.getJobId(), session, reportData.get("monthId"), reportData.get("userId")));
+				reportDTO.setListTimeSheet(getActualHours(job.getJobId(), session, reportData.get("monthId"),
+						reportData.get("userId"), reportData.get("yearId")));
 				for (int i = 0; i < getActualHours(job.getJobId(), session, reportData.get("monthId"),
-						reportData.get("userId")).size(); i++) {
+						reportData.get("userId"), reportData.get("yearId")).size(); i++) {
 					reportDTO.setActivity(
 
-							getActualHours(job.getJobId(), session, reportData.get("monthId"), reportData.get("userId"))
-									.get(i).getActivity().getActivityName());
+							getActualHours(job.getJobId(), session, reportData.get("monthId"), reportData.get("userId"),
+									reportData.get("yearId")).get(i).getActivity().getActivityName());
 
 					totalHours = totalHours + getActualHours(job.getJobId(), session, reportData.get("monthId"),
-							reportData.get("userId")).get(i).getHours();
+							reportData.get("userId"), reportData.get("yearId")).get(i).getHours();
 
-					reportDTO.setUser(
-							getActualHours(job.getJobId(), session, reportData.get("monthId"), reportData.get("userId"))
-									.get(i).getUserId().getName());
+					reportDTO.setUser(getActualHours(job.getJobId(), session, reportData.get("monthId"),
+							reportData.get("userId"), reportData.get("yearId")).get(i).getUserId().getName());
 					// budhethours is being used for month
-					reportDTO.setBudgetedHours(
-							getActualHours(job.getJobId(), session, reportData.get("monthId"), reportData.get("userId"))
-									.get(i).getMonth());
+					reportDTO.setBudgetedHours(getActualHours(job.getJobId(), session, reportData.get("monthId"),
+							reportData.get("userId"), reportData.get("yearId")).get(i).getMonth());
 
 				}
 				reportDTO.setTotalHours(totalHours);
@@ -2226,7 +2252,10 @@ public class MySQLRdbHelper {
 
 			System.out.println("fail fetchAllReport");
 		}
-		session.close();
+		finally {
+			session.close();
+		}
+		
 		return "All report file generated";
 
 	}
@@ -2301,7 +2330,7 @@ public class MySQLRdbHelper {
 
 					row.createCell((short) 4).setCellValue(month);
 					row.createCell((short) 5).setCellValue(timeSheet.getDay());
-					row.createCell((short) 6).setCellValue(jobReports.get(i).getYear());
+					row.createCell((short) 6).setCellValue(timeSheet.getYear());
 					row.createCell((short) 7).setCellValue(jobReports.get(i).getAllocation());
 					row.createCell((short) 8).setCellValue(jobReports.get(i).getLineOfService());
 					row.createCell((short) 10).setCellValue(jobReports.get(i).getDomain());
@@ -2398,8 +2427,7 @@ public class MySQLRdbHelper {
 					table.addCell(new Phrase(month + "", FontFactory.getFont(FontFactory.HELVETICA, 8)));
 					table.addCell(new Phrase(timeSheet.getDay() + "", FontFactory.getFont(FontFactory.HELVETICA, 8)));
 
-					table.addCell(
-							new Phrase(jobReports.get(i).getYear(), FontFactory.getFont(FontFactory.HELVETICA, 8)));
+					table.addCell(new Phrase(timeSheet.getYear() + "", FontFactory.getFont(FontFactory.HELVETICA, 8)));
 
 					table.addCell(new Phrase(jobReports.get(i).getAllocation(),
 
@@ -2750,7 +2778,7 @@ public class MySQLRdbHelper {
 		return totalHours;
 	}
 
-	private ArrayList<TimeSheet> getActualHours(int jobId, Session session, int month, int userId) {
+	private ArrayList<TimeSheet> getActualHours(int jobId, Session session, int month, int userId, Integer year) {
 		Criteria crit = session.createCriteria(TimeSheet.class);
 		ArrayList<TimeSheet> listTimeSheet = new ArrayList<TimeSheet>();
 		crit.createAlias("jobId", "job");
@@ -2764,6 +2792,9 @@ public class MySQLRdbHelper {
 		}
 		if (month != 0) {
 			crit.add(Restrictions.eq("month", month));
+		}
+		if (year != 0) {
+			crit.add(Restrictions.eq("year", year));
 		}
 
 		///
@@ -2980,7 +3011,10 @@ public class MySQLRdbHelper {
 			System.out.println("fail fetch job wise report");
 
 		}
-		session.close();
+		finally {
+			session.close();
+		}
+		
 		return "job WIse report generated";
 	}
 
@@ -3132,6 +3166,9 @@ public class MySQLRdbHelper {
 		} catch (Exception ex) {
 			System.out.println("fail job delte");
 		}
+		finally {
+			session.close();
+		}
 		// return "Total Number of hours worked: " + numberOfHours;
 		return timeSheetlist;
 	}
@@ -3220,6 +3257,9 @@ public class MySQLRdbHelper {
 			System.out.println("fail saveRating");
 			throw ex;
 		}
+		finally {
+			session.close();
+		}
 	}
 
 	private void saveNewRating(int jobId, int levelSaved, int scoreSaved, int userSaved, String nameSaved,
@@ -3240,6 +3280,9 @@ public class MySQLRdbHelper {
 		} catch (Exception ex) {
 			System.out.println("error saving new attribute" + ex);
 		}
+		finally{
+			session.close();
+		}
 
 	}
 
@@ -3256,6 +3299,9 @@ public class MySQLRdbHelper {
 			return allowedhours;
 		} catch (Exception ex) {
 			throw ex;
+		}
+		finally {
+			session.close();
 		}
 
 	}
@@ -3365,10 +3411,23 @@ public class MySQLRdbHelper {
 				// job.setTimeSheets(fetchJobTimeSheets(session, job.getJobId(),
 				// loggedInUser.getRoleId().getRoleId()));
 				// jobs.add(job);
+				HibernateDetachUtility.nullOutUninitializedFields(job,
+						HibernateDetachUtility.SerializationType.SERIALIZATION);
+				HibernateDetachUtility.nullOutUninitializedFields(job.getLineofServiceId(),
+						HibernateDetachUtility.SerializationType.SERIALIZATION);
+				HibernateDetachUtility.nullOutUninitializedFields(job.getDomainId(),
+						HibernateDetachUtility.SerializationType.SERIALIZATION);
+				
+				HibernateDetachUtility.nullOutUninitializedFields(job.getCountryId(),
+						HibernateDetachUtility.SerializationType.SERIALIZATION);
+
+				HibernateDetachUtility.nullOutUninitializedFields(job.getLineofServiceId().getDomainId(),
+						HibernateDetachUtility.SerializationType.SERIALIZATION);
+
 				jobUsersDTOs.add(jobUsersDTO);
 
 			}
-
+			
 			return jobUsersDTOs;
 		} catch (Exception ex) {
 			logger.warn(String.format("Exception occured in fetchUsersWithJobs", ex.getMessage()), ex);
@@ -3403,6 +3462,9 @@ public class MySQLRdbHelper {
 			System.out.println("fail : fetchUsersonSelectedJob: " + ex);
 			throw ex;
 		}
+		finally {
+			session.close();
+		}
 
 	}
 
@@ -3426,6 +3488,9 @@ public class MySQLRdbHelper {
 			System.out.println("Exception occured in AttributeRating" + ex.getMessage());
 
 			throw new Exception("Exception occured in AttributeRating");
+		}
+		finally {
+			session.close();
 		}
 
 	}
@@ -3530,7 +3595,7 @@ public class MySQLRdbHelper {
 
 			throw new Exception("Exception occured in getLineOfService");
 		} finally {
-
+			session.close();
 		}
 
 	}
@@ -3633,6 +3698,9 @@ public class MySQLRdbHelper {
 		} catch (Exception ex) {
 			System.out.println("fail : fetchActivities: " + ex);
 			throw ex;
+		}
+		finally {
+			session.close();
 		}
 	}
 
